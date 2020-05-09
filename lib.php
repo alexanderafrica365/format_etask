@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains main class for the course format Topic
+ * This file contains main class for eTask topics course format.
  *
  * @since     Moodle 2.0
  * @package   format_etask
@@ -26,6 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/lib.php');
 require_once($CFG->dirroot. '/course/format/etask/format_etask_lib.php');
+
+use core\output\inplace_editable;
 
 /**
  * Main class for the eTask topics course format.
@@ -41,7 +43,7 @@ class format_etask extends format_base {
      *
      * @return bool
      */
-    public function uses_sections() {
+    public function uses_sections(): bool {
         return true;
     }
 
@@ -53,11 +55,11 @@ class format_etask extends format_base {
      * @param int|stdClass $section Section object from database or just field section.section
      * @return string Display name that the course format prefers, e.g. "Topic 2"
      */
-    public function get_section_name($section) {
+    public function get_section_name($section): string {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
             return format_string($section->name, true,
-                    array('context' => context_course::instance($this->courseid)));
+                ['context' => context_course::instance($this->courseid)]);
         } else {
             return $this->get_default_section_name($section);
         }
@@ -73,7 +75,7 @@ class format_etask extends format_base {
      * @param stdClass $section Section object from database or just field course_sections section
      * @return string The default value for the section name.
      */
-    public function get_default_section_name($section) {
+    public function get_default_section_name($section): string {
         if ($section->section == 0) {
             // Return the general section.
             return get_string('section0name', 'format_etask');
@@ -94,10 +96,10 @@ class format_etask extends format_base {
      *     'sr' (int) used by multipage formats to specify to which section to return
      * @return null|moodle_url
      */
-    public function get_view_url($section, $options = array()) {
+    public function get_view_url($section, $options = []): ?moodle_url {
         global $CFG;
         $course = $this->get_course();
-        $url = new moodle_url('/course/view.php', array('id' => $course->id));
+        $url = new moodle_url('/course/view.php', ['id' => $course->id]);
 
         $sr = null;
         if (array_key_exists('sr', $options)) {
@@ -139,7 +141,7 @@ class format_etask extends format_base {
      *
      * @return stdClass
      */
-    public function supports_ajax() {
+    public function supports_ajax(): stdClass {
         $ajaxsupport = new stdClass();
         $ajaxsupport->capable = true;
         return $ajaxsupport;
@@ -150,8 +152,9 @@ class format_etask extends format_base {
      *
      * @param global_navigation $navigation
      * @param navigation_node $node The course node within the navigation
+     * @return void
      */
-    public function extend_course_navigation($navigation, navigation_node $node) {
+    public function extend_course_navigation($navigation, navigation_node $node): void {
         global $PAGE;
         // If section is specified in course/view.php, make sure it is expanded in navigation.
         if ($navigation->includesectionnum === false) {
@@ -186,9 +189,9 @@ class format_etask extends format_base {
      *
      * @return array This will be passed in ajax respose
      */
-    public function ajax_section_move() {
+    public function ajax_section_move(): array {
         global $PAGE;
-        $titles = array();
+        $titles = [];
         $course = $this->get_course();
         $modinfo = get_fast_modinfo($course);
         $renderer = $this->get_renderer($PAGE);
@@ -197,7 +200,7 @@ class format_etask extends format_base {
                 $titles[$number] = $renderer->section_title($section, $course);
             }
         }
-        return array('sectiontitles' => $titles, 'action' => 'move');
+        return ['sectiontitles' => $titles, 'action' => 'move'];
     }
 
     /**
@@ -206,19 +209,19 @@ class format_etask extends format_base {
      * @return array of default blocks, must contain two keys BLOCK_POS_LEFT and BLOCK_POS_RIGHT
      *     each of values is an array of block names (for left and right side columns)
      */
-    public function get_default_blocks() {
-        return array(
-            BLOCK_POS_LEFT => array(),
-            BLOCK_POS_RIGHT => array()
-        );
+    public function get_default_blocks(): array {
+        return [
+            BLOCK_POS_LEFT => [],
+            BLOCK_POS_RIGHT => [],
+        ];
     }
 
     /**
      * Definitions of the additional options that this course format uses for course.
      *
      * eTask topics format uses the following options:
-     * - hiddensections
      * - coursedisplay
+     * - hiddensections
      * - privateview
      * - progressbars
      * - studentsperpage
@@ -227,11 +230,10 @@ class format_etask extends format_base {
      * @param bool $foreditform
      * @return array of options
      */
-    public function course_format_options($foreditform = false) {
+    public function course_format_options($foreditform = false): array {
         static $courseformatoptions = false;
         if ($courseformatoptions === false) {
             $courseconfig = get_config('moodlecourse');
-
             $courseformatoptions = [
                 'hiddensections' => [
                     'default' => $courseconfig->hiddensections,
@@ -290,7 +292,7 @@ class format_etask extends format_base {
                     'help_component' => 'moodle',
                 ],
             ];
-            // ETask settings.
+            // The eTask settings.
             $etasksettings = [
                 'privateview' => [
                     'label' => new lang_string('privateview', 'format_etask'),
@@ -372,7 +374,7 @@ class format_etask extends format_base {
      * @param bool $forsection 'true' if this is a section edit form, 'false' if this is course edit form.
      * @return array array of references to the added form elements.
      */
-    public function create_edit_form_elements(&$mform, $forsection = false) {
+    public function create_edit_form_elements(&$mform, $forsection = false): array {
         global $COURSE;
         $elements = parent::create_edit_form_elements($mform, $forsection);
 
@@ -405,7 +407,7 @@ class format_etask extends format_base {
      *     this object contains information about the course before update
      * @return bool whether there were any changes to the options values
      */
-    public function update_course_format_options($data, $oldcourse = null) {
+    public function update_course_format_options($data, $oldcourse = null): bool {
         $data = (array)$data;
         if ($oldcourse !== null) {
             $oldcourse = (array)$oldcourse;
@@ -429,7 +431,7 @@ class format_etask extends format_base {
      * @param int|stdClass|section_info $section
      * @return bool
      */
-    public function can_delete_section($section) {
+    public function can_delete_section($section): bool {
         return true;
     }
 
@@ -441,10 +443,10 @@ class format_etask extends format_base {
      * @param bool $editable
      * @param null|lang_string|string $edithint
      * @param null|lang_string|string $editlabel
-     * @return \core\output\inplace_editable
+     * @return inplace_editable
      */
     public function inplace_editable_render_section_name($section, $linkifneeded = true,
-        $editable = null, $edithint = null, $editlabel = null) {
+            $editable = null, $edithint = null, $editlabel = null): inplace_editable {
         if (empty($edithint)) {
             $edithint = new lang_string('editsectionname', 'format_etask');
         }
@@ -460,7 +462,7 @@ class format_etask extends format_base {
      *
      * @return bool
      */
-    public function supports_news() {
+    public function supports_news(): bool {
         return true;
     }
 
@@ -472,25 +474,25 @@ class format_etask extends format_base {
      * @param stdClass|section_info $section section where this module is located or will be added to
      * @return bool
      */
-    public function allow_stealth_module_visibility($cm, $section) {
+    public function allow_stealth_module_visibility($cm, $section): bool {
         // Allow the third visibility state inside visible sections or in section 0.
         return !$section->section || $section->visible;
     }
 
     /**
-     * Callback used in WS core_course_edit_section when teacher performs an AJAX action on a section (show/hide)
+     * Callback used in WS core_course_edit_section when teacher performs an AJAX action on a section (show/hide).
      *
      * Access to the course is already validated in the WS but the callback has to make sure
      * that particular action is allowed by checking capabilities
      *
-     * Course formats should register
+     * Course formats should register.
      *
-     * @param stdClass|section_info $section
+     * @param section_info|stdClass $section
      * @param string $action
      * @param int $sr
-     * @return null|array|stdClass any data for the Javascript post-processor (must be json-encodeable)
+     * @return null|array any data for the Javascript post-processor (must be json-encodeable)
      */
-    public function section_action($section, $action, $sr) {
+    public function section_action($section, $action, $sr): ?array {
         global $PAGE;
 
         if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
@@ -513,7 +515,7 @@ class format_etask extends format_base {
      * @return array the list of configuration settings
      * @since Moodle 3.5
      */
-    public function get_config_for_external() {
+    public function get_config_for_external(): array {
         // Return everything (nothing to hide).
         return $this->get_format_options();
     }
@@ -525,15 +527,15 @@ class format_etask extends format_base {
  * @param string $itemtype
  * @param int $itemid
  * @param mixed $newvalue
- * @return \core\output\inplace_editable
+ * @return inplace_editable
  */
-function format_etask_inplace_editable($itemtype, $itemid, $newvalue) {
+function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_editable {
     global $DB, $CFG;
     require_once($CFG->dirroot . '/course/lib.php');
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            array($itemid, 'etask'), MUST_EXIST);
+            [$itemid, 'etask'], MUST_EXIST);
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }

@@ -18,7 +18,7 @@
  * This file contains the forms to create and edit an instance of this module
  *
  * @package   format_etask
- * @copyright 2013 Martin Drlik
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ require_once("$CFG->libdir/formslib.php");
  * Grade settings form.
  *
  * @package     format_etask
- * @copyright   2017 Martin Drlik <martin.drlik@email.cz>
+ * @copyright   2020, Martin Drlik <martin.drlik@email.cz>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class GradeTableForm extends moodleform
