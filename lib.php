@@ -106,15 +106,15 @@ class format_etask extends format_topics {
                     'type' => PARAM_INT,
                 ],
                 'studentsperpage' => [
-                    'default' => format_etask::STUDENTS_PER_PAGE_DEFAULT,
+                    'default' => self::STUDENTS_PER_PAGE_DEFAULT,
                     'type' => PARAM_INT,
                 ],
                 'activitiessorting' => [
-                    'default' => format_etask::ACTIVITIES_SORTING_LATEST,
+                    'default' => self::ACTIVITIES_SORTING_LATEST,
                     'type' => PARAM_ALPHA,
                 ],
                 'placement' => [
-                    'default' => format_etask::PLACEMENT_ABOVE,
+                    'default' => self::PLACEMENT_ABOVE,
                     'type' => PARAM_ALPHA,
                 ],
             ];
@@ -185,13 +185,13 @@ class format_etask extends format_topics {
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            format_etask::ACTIVITIES_SORTING_LATEST => new lang_string(
+                            self::ACTIVITIES_SORTING_LATEST => new lang_string(
                                 'activitiessorting_latest', 'format_etask'
                             ),
-                            format_etask::ACTIVITIES_SORTING_OLDEST => new lang_string(
+                            self::ACTIVITIES_SORTING_OLDEST => new lang_string(
                                 'activitiessorting_oldest', 'format_etask'
                             ),
-                            format_etask::ACTIVITIES_SORTING_INHERIT => new lang_string(
+                            self::ACTIVITIES_SORTING_INHERIT => new lang_string(
                                 'activitiessorting_inherit', 'format_etask'
                             ),
                         ],
@@ -204,10 +204,10 @@ class format_etask extends format_topics {
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            format_etask::PLACEMENT_ABOVE => new lang_string(
+                            self::PLACEMENT_ABOVE => new lang_string(
                                 'placement_above', 'format_etask'
                             ),
-                            format_etask::PLACEMENT_BELOW => new lang_string(
+                            self::PLACEMENT_BELOW => new lang_string(
                                 'placement_below', 'format_etask'
                             ),
                         ],
@@ -336,16 +336,16 @@ class format_etask extends format_topics {
         $gradepass = (int) $gradeitem->gradepass;
         if (empty($grade) && $activitycompletionstate === true) {
             // Activity no have grade value and have completed status or is marked as completed.
-            $status = format_etask::STATUS_COMPLETED;
+            $status = self::STATUS_COMPLETED;
         } else if (empty($grade) || empty($gradepass)) {
             // Activity no have grade value and is not completed or grade to pass is not set.
-            $status = format_etask::STATUS_NONE;
+            $status = self::STATUS_NONE;
         } else if ($grade >= $gradepass) {
             // Activity grade value is higher then grade to pass.
-            $status = format_etask::STATUS_PASSED;
+            $status = self::STATUS_PASSED;
         } else if ($grade < $gradepass) {
             // Activity grade value is lower then grade to pass.
-            $status = format_etask::STATUS_FAILED;
+            $status = self::STATUS_FAILED;
         }
 
         return $status;
@@ -402,9 +402,9 @@ class format_etask extends format_topics {
         return [
             'privateview' => (bool) $course->privateview ?? true,
             'progressbars' => (bool) $course->progressbars ?? true,
-            'studentsperpage' => (int) $course->studentsperpage ?? format_etask::STUDENTS_PER_PAGE_DEFAULT,
-            'activitiessorting' => $course->activitiessorting ?? format_etask::ACTIVITIES_SORTING_LATEST,
-            'placement' => $course->placement ?? format_etask::PLACEMENT_ABOVE,
+            'studentsperpage' => (int) $course->studentsperpage ?? self::STUDENTS_PER_PAGE_DEFAULT,
+            'activitiessorting' => $course->activitiessorting ?? self::ACTIVITIES_SORTING_LATEST,
+            'placement' => $course->placement ?? self::PLACEMENT_ABOVE,
         ];
     }
 

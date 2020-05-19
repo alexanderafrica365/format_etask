@@ -9,7 +9,8 @@ require(['jquery', 'theme_boost/tether'], function($, Tether) {
             placement: 'bottom',
             trigger: 'hover',
             sanitize: false,
-    });
+            delay: { "show": 500, "hide": 1000000 },
+        });
     });
 });
 

@@ -136,7 +136,8 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetopassvalue = !empty($gradetopass) ? $gradetopass : get_string('notset', 'format_etask');
         $badgetype = $gradetopass ? 'success' : 'secondary';
 
-        $popover = new popover($progresscompleted, $progresspassed, $duedatevalue, $gradetopassvalue, $badgetype, $this->config['progressbars']);
+        $popover = new popover($progresscompleted, $progresspassed, $duedatevalue, $gradetopassvalue, $badgetype,
+            $this->config['progressbars']);
 
         // Prepare activity short link.
         if (has_capability('format/etask:teacher', $this->page->context)) {
@@ -408,7 +409,8 @@ class format_etask_renderer extends format_topics_renderer {
                         ksort($gradeitems);
                         break;
                     case format_etask::ACTIVITIES_SORTING_INHERIT:
-                        $gradeitems = course_get_format($this->page->course)->sort_grade_items_by_sections($gradeitems, $moditems, $modinfo->sections);
+                        $gradeitems = course_get_format($this->page->course)->sort_grade_items_by_sections($gradeitems, $moditems,
+                            $modinfo->sections);
                         break;
                     default:
                         krsort($gradeitems);

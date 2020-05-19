@@ -24,6 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot.'/course/format/topics/restore_format_topics_plugin.class.php');
 
 /**
  * Specialised restore for eTask topics course format.
@@ -35,54 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2017 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_format_etask_plugin extends restore_format_plugin {
-
-    /** @var int */
-    protected $originalnumsections = 0;
-
-    /**
-     * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
-     * and potential "orphaned" sections in the end of the course.
-     *
-     * @return bool
-     */
-    protected function need_restore_numsections(): bool {
-        $backupinfo = $this->step->get_task()->get_info();
-        $backuprelease = $backupinfo->backup_release;
-        return version_compare($backuprelease, '3.3', 'lt');
-    }
-
-    /**
-     * Creates a dummy path element in order to be able to execute code after restore.
-     *
-     * @return restore_path_element[]
-     */
-    public function define_course_plugin_structure(): array {
-        global $DB;
-
-        // Since this method is executed before the restore we can do some pre-checks here.
-        // In case of merging backup into existing course find the current number of sections.
-        $target = $this->step->get_task()->get_target();
-        if (($target == backup::TARGET_CURRENT_ADDING || $target == backup::TARGET_EXISTING_ADDING) &&
-                $this->need_restore_numsections()) {
-            $maxsection = $DB->get_field_sql(
-                'SELECT max(section) FROM {course_sections} WHERE course = ?',
-                [$this->step->get_task()->get_courseid()]);
-            $this->originalnumsections = (int)$maxsection;
-        }
-
-        // Dummy path element is needed in order for after_restore_course() to be called.
-        return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
-    }
-
-    /**
-     * Dummy process method.
-     *
-     * @return void
-     */
-    public function process_dummy_course(): void {
-
-    }
+class restore_format_etask_plugin extends restore_format_topics_plugin {
 
     /**
      * Executed after course restore is complete.
