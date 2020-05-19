@@ -1,0 +1,44 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_etask/footer
+
+    This template renders the eTask popover.
+
+    Example context (json):
+    {
+        "groups": "<form><select><option>...</option></select></form>",
+        "pagination": "<nav><ul><li>...</li></ul></nav>"
+    }
+}}
+
+<div class="row grade-table-footer">
+    <div class="col-md-4">
+        {{{groups}}}
+    </div>
+    <div class="col-md-4">
+        {{{pagination}}}
+    </div>
+    <div class="col-md-4">
+        <div class="legend">
+            {{#str}}legend, format_etask{{/str}}:
+            <span class="badge badge-warning completed">{{#str}}activitycompleted, format_etask{{/str}}</span>
+            <span class="badge badge-success passed">{{#str}}activitypassed, format_etask{{/str}}</span>
+            <span class="badge badge-danger failed">{{#str}}activityfailed, format_etask{{/str}}</span>
+        </div>
+    </div>
+</div>

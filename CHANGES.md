@@ -1,0 +1,1 @@
+- odebrán typ aktivity z titulku popoveru

@@ -1,115 +1,121 @@
 /* Popover. */
-.popover {
-    width: 430px;
-    max-width: 700px;
+body.format-etask .popover {
+    /*max-width: none;
+    width: 430px;*/
+    max-width: 457px;
 }
-.popover-body .grade-to-pass {
-    padding-top: 8px;
+body.format-etask h3.popover-header {
+    text-align: justify;
 }
-.badge.badge-success {
+body.format-etask .badge.badge-success {
     background-color: #28a745;
+}
+body.format-etask .border-success {
+    border-color: #28a745 !important;
+}
+body.format-etask .duedate, body.format-etask .grade-to-pass {
+    line-height: initial;
 }
 /* Progress bars. */
-.progress-bar-passed .progress-bar.bar {
+body.format-etask .progress-bar-passed, body.format-etask .progress-bar-completed {
+    width: 150px;
+}
+body.format-etask .progress-bar-passed .progress-bar.bar {
     background-color: #28a745;
 }
-.progress-bar-completed .progress-bar.bar {
+body.format-etask .progress-bar-completed .progress-bar.bar {
     background-color: #ffc107;
 }
 /* Section line. */
-.etask-grade-table.above {
+body.format-etask .etask-grade-table.above {
     border-bottom: 1px solid #dee2e6;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
 }
-.etask-grade-table.below {
+body.format-etask .etask-grade-table.below {
     border-top: 1px solid #dee2e6;
     padding-top: 1rem;
     margin-top: 1rem;
 }
 /* Grade table. */
-.etask-grade-table img.item-ico {
-    width: 16px;
-    height: 16px;
-}
-.etask-grade-table th.grade-item-header {
+body.format-etask .etask-grade-table th.grade-item-header {
     min-width: 50px;
     height: 35px;
     padding: 8px 5px;
     white-space: nowrap;
 }
-.etask-grade-table td.user-header {
+body.format-etask .etask-grade-table td.user-header {
     min-width: 130px;
     padding-right: 5px;
     white-space: nowrap;
     height: 37px;
 }
-.etask-grade-table table .text-center {
+body.format-etask .etask-grade-table table .text-center {
     text-align: center;
 }
-.etask-grade-table td a.grade-item-body {
+body.format-etask .etask-grade-table td a.grade-item-body {
     display: block;
     width: 100%;
 }
-.etask-grade-table .pointer {
+body.format-etask .etask-grade-table .pointer {
     cursor: pointer;
 }
-.etask-grade-table .grade-item-dialog {
+body.format-etask .etask-grade-table .grade-item-dialog {
     opacity: 0.5;
 }
-.grade-item-dialog i.icon {
+body.format-etask .grade-item-dialog i.icon {
     margin: 0 0 0 3px;
 }
 /* Grade table activity colors. */
-.etask-grade-table .completed {
+body.format-etask .etask-grade-table .completed {
     color: #fff;
     background-color: #ffc107;
 }
-.etask-grade-table .passed {
+body.format-etask .etask-grade-table .passed {
     color: #fff;
     background-color: #28a745;
 }
-.etask-grade-table .failed {
+body.format-etask .etask-grade-table .failed {
     color: #fff;
     background-color: #dc3545;
 }
-.etask-grade-table .completed a {
+body.format-etask .etask-grade-table .completed a {
     color: #fff;
 }
-.etask-grade-table .passed a {
+body.format-etask .etask-grade-table .passed a {
     color: #fff;
 }
-.etask-grade-table .failed a {
+body.format-etask .etask-grade-table .failed a {
     color: #fff;
 }
 /* Legend. */
-.etask-grade-table .legend {
+body.format-etask .etask-grade-table .legend {
     line-height: 2.5em;
     text-align: right;
     padding-bottom: 20px;
 }
-.etask-grade-table .legend span {
+body.format-etask .etask-grade-table .legend span {
     padding: 8px;
     margin-left: 10px;
 }
 /* Hack of mform. */
-.inline-form .form-group {
+body.format-etask .inline-form .form-group {
     margin-left: 0;
 }
-.inline-form .form-group .col-md-3,
-.inline-form .form-group .col-md-9 {
+body.format-etask .inline-form .form-group .col-md-3,
+body.format-etask .inline-form .form-group .col-md-9 {
     padding-left: 0;
 }
-.inline-form .form-group .col-md-3 {
+body.format-etask .inline-form .form-group .col-md-3 {
     margin-top: 5px;
 }
 /* Pagination. */
-.etask-grade-table nav ul {
+body.format-etask .etask-grade-table nav ul {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
     margin-top: 0;
 }
-.grade-table-footer {
+body.format-etask .grade-table-footer {
     margin-top: 13px;
 }

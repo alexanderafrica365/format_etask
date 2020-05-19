@@ -1,87 +1,40 @@
-// Javascript functions for Topics course format
+// Popover.
+require(['jquery', 'theme_boost/tether'], function($, Tether) {
+    window.jQuery = $;
+    window.Tether = Tether;
+    require(['theme_boost/popover'], function() {
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            container: 'body',
+            placement: 'bottom',
+            trigger: 'hover',
+            sanitize: false,
+    });
+    });
+});
 
-M.course = M.course || {};
+// Dialog grade settings.
+require(['jquery', 'core/modal_factory'], function($, ModalFactory) {
+    var elements = $('.grade-item-dialog');
+    $.each(elements, function(index, element) {
+        var trigger = $('#' + element.id);
+        var gradesettings = $('#grade-settings-' + element.id);
+        var title = $(gradesettings).find('.title');
+        var body = $(gradesettings).find('.grade-settings-form');
 
-M.course.format = M.course.format || {};
-
-/**
- * Get sections config for this format
- *
- * The section structure is:
- * <ul class="topics">
- *  <li class="section">...</li>
- *  <li class="section">...</li>
- *   ...
- * </ul>
- *
- * @return {object} section list configuration
- */
-M.course.format.get_config = function() {
-    return {
-        container_node: 'ul',
-        container_class: 'topics',
-        section_node: 'li',
-        section_class: 'section'
-    };
-};
-
-/**
- * Swap section
- *
- * @param {YUI} Y YUI3 instance
- * @param {string} node1 node to swap to
- * @param {string} node2 node to swap with
- */
-M.course.format.swap_sections = function(Y, node1, node2) {
-    var CSS = {
-        COURSECONTENT: 'course-content',
-        SECTIONADDMENUS: 'section_add_menus'
-    };
-
-    var sectionlist = Y.Node.all('.' + CSS.COURSECONTENT + ' ' + M.course.format.get_section_selector(Y));
-    // Swap menus.
-    sectionlist.item(node1).one('.' + CSS.SECTIONADDMENUS).swap(sectionlist.item(node2).one('.' + CSS.SECTIONADDMENUS));
-};
-
-/**
- * Process sections after ajax response
- *
- * @param {YUI} Y YUI3 instance
- * @param {sectionlist} sectionlist
- * @param {array} response ajax response
- * @param {string} sectionfrom first affected section
- * @param {string} sectionto last affected section
- */
-M.course.format.process_sections = function(Y, sectionlist, response, sectionfrom, sectionto) {
-    var CSS = {
-        SECTIONNAME: 'sectionname'
-    },
-    SELECTORS = {
-        SECTIONLEFTSIDE: '.left .section-handle .icon'
-    };
-
-    if (response.action == 'move') {
-        // If moving up swap around 'sectionfrom' and 'sectionto' so the that loop operates.
-        if (sectionfrom > sectionto) {
-            var temp = sectionto;
-            sectionto = sectionfrom;
-            sectionfrom = temp;
-        }
-
-        // Update titles and move icons in all affected sections.
-        var ele, str, stridx, newstr;
-
-        for (var i = sectionfrom; i <= sectionto; i++) {
-            // Update section title.
-            var content = Y.Node.create('<span>' + response.sectiontitles[i] + '</span>');
-            sectionlist.item(i).all('.' + CSS.SECTIONNAME).setHTML(content);
-            // Update move icon.
-            ele = sectionlist.item(i).one(SELECTORS.SECTIONLEFTSIDE);
-            str = ele.getAttribute('alt');
-            stridx = str.lastIndexOf(' ');
-            newstr = str.substr(0, stridx + 1) + i;
-            ele.setAttribute('alt', newstr);
-            ele.setAttribute('title', newstr); // For FireFox as 'alt' is not refreshed.
-        }
-    }
-};
+        ModalFactory.create({
+            type: ModalFactory.types.SAVE_CANCEL,
+            title: title.text(),
+            body: body.html()
+        }, trigger).done(function(modal) {
+            $('.grade-item-dialog').css('opacity', '1');
+            var select = $(modal.body).find('select');
+            var savebutton = $(modal.footer).find('.btn-primary');
+            $(savebutton).click(function() {
+                var gradeitemid = $(element).attr('id').match(/\d+/);
+                $('select[name=gradepass' + gradeitemid + ']').val($(select).val());
+                $('#grade-pass-form_' + gradeitemid).submit();
+            });
+        });
+    });
+});

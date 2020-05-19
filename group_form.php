@@ -15,25 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the forms to create and edit an instance of this module
+ * This file contains the form to filter table by group.
  *
  * @package   format_etask
- * @copyright 2013 Martin Drlik
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace format_etask\form;
+
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->libdir/formslib.php");
+
+use moodleform;
 
 /**
- * Grade settings form.
+ * Form to filter table by group.
  *
  * @package     format_etask
- * @copyright   2017 Martin Drlik <martin.drlik@email.cz>
+ * @copyright   2020, Martin Drlik <martin.drlik@email.cz>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class GradeTableForm extends moodleform
-{
+class group_form extends moodleform {
 
     /**
      * Called to define this moodle form.
@@ -41,21 +43,15 @@ class GradeTableForm extends moodleform
      * @throws coding_exception
      * @return void
      */
-    public function definition() {
-        $groups = $this->_customdata['groups'];
-        $selected = $this->_customdata['selectedGroup'];
-
+    public function definition(): void {
         $mform =& $this->_form; // Don't forget the underscore.
-        $mform->updateAttributes(['class' => 'inline-form groups']);
+        $mform->updateAttributes(['class' => 'inline-form group']);
 
         // Select element.
-        $select = $mform->addElement(
-            'select',
-            'eTaskFilterGroup',
-            get_string('group') . ':',
-            $groups,
-            ['onchange' => 'this.form.submit();']);
-        $select->setSelected($selected);
+        $mform
+            ->addElement('select', 'group', get_string('group') . ':', $this->_customdata['groups'],
+                ['onchange' => 'this.form.submit();'])
+            ->setSelected($this->_customdata['selected']);
         $mform->disable_form_change_checker();
     }
 }

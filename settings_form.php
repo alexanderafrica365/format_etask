@@ -15,25 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the forms to create and edit an instance of this module
+ * This file contains the form to edit settings.
  *
  * @package   format_etask
- * @copyright 2013 Martin Drlik
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace format_etask\form;
+
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->libdir/formslib.php");
+
+use moodleform;
 
 /**
- * Grade settings form.
+ * Form to edit settings.
  *
  * @package     format_etask
- * @copyright   2017 Martin Drlik <martin.drlik@email.cz>
+ * @copyright   2020, Martin Drlik <martin.drlik@email.cz>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class GradeSettingsForm extends moodleform
-{
+class settings_form extends moodleform {
 
     /**
      * Called to define this moodle form.
@@ -42,27 +44,18 @@ class GradeSettingsForm extends moodleform
      * @return void
      */
     public function definition() {
-        $gradeitem = $this->_customdata['gradeItem'];
+        array_push($this->_customdata['scale'], '-');
+        sort($this->_customdata['scale']);
 
         $mform =& $this->_form; // Don't forget the underscore.
-        $mform->updateAttributes(['id' => 'grade-pass-form' . $gradeitem->id, 'class' => 'inline-form grade-to-pass']);
-
-        $scale = $this->_customdata['scale'];
-        $scale[0] = '-';
-        ksort($scale);
-
-        $selected = round($gradeitem->gradepass, 0);
-
-        $gradepassname = 'gradePass' . $gradeitem->id;
+        $mform->updateAttributes(['id' => 'grade-pass-form_' . $this->_customdata['grade_item']->id,
+            'class' => 'inline-form settings']);
 
         // Select element.
-        $select = $mform->addElement(
-            'select',
-            $gradepassname,
-            get_string('gradepass', 'grades') . ':',
-            $scale
-        );
-        $select->setSelected($selected);
+        $mform
+            ->addElement('select', 'gradepass' . $this->_customdata['grade_item']->id, get_string('gradepass', 'grades') . ':',
+                $this->_customdata['scale'])
+            ->setSelected(round($this->_customdata['grade_item']->gradepass, 0));
         $mform->disable_form_change_checker();
     }
 }

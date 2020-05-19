@@ -4,10 +4,6 @@
 
 ![eTask_mdl_36](https://bitbucket.org/repo/obeE8n/images/829736702-eTask_mdl_36.png)
 
-## Changelog
-
-- New activity type `forum` is supported. Duedate for this activity is configured in eTask topics format.
-
 ## Installation
 
 1. Download files as a ZIP archive,
@@ -21,7 +17,7 @@
 
 ### Activity completion
 
-Activity completion is enabled by default in Moodle 3.8. You can manage `Activity completion` in each of the course activity.
+Activity completion is enabled by default in Moodle 3.9. You can manage `Activity completion` in each of the course activity.
 
 ### Plugin settings
 

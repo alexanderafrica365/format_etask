@@ -1,0 +1,80 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_etask/popover
+
+    This template renders the eTask popover.
+
+    Example context (json):
+    {
+        "completed": 60,
+        "passed": 50,
+        "duedate": "Friday, 8 May 2020, 2:37 pm",
+        "gradetopass": "80",
+        "type": "success",
+        "progressbarsallowed": false
+    }
+}}
+
+<div class="popover-container text-nowrap">
+    <div class="rowx d-flex flex-nowrap">
+        <div class="mr-3 {{^progressbarsallowed}}text-secondary{{/progressbarsallowed}}">
+            <div class="progress-bar-completed pb-1">
+                <div class="progress bg-white border">
+                    <div class="progress-bar bar {{^progressbarsallowed}}bg-secondary{{/progressbarsallowed}}" role="progressbar" aria-valuenow="{{completed}}" style="width: {{completed}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="small">
+                    <div class="d-flex justify-content-between">
+                        <div>{{#str}}activitycompleted, format_etask{{/str}}</div>
+                        <div>{{completed}} %</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-bar-passed">
+                <div class="progress bg-white border">
+                    <div class="progress-bar bar  {{^progressbarsallowed}}bg-secondary{{/progressbarsallowed}}" role="progressbar" aria-valuenow="{{passed}}" style="width: {{passed}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="small">
+                    <div class="d-flex justify-content-between">
+                        <div>{{#str}}activitypassed, format_etask{{/str}}</div>
+                        <div>{{passed}} %</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-fill">
+            <div class="pb-1">
+                <div class="duedate">
+                    <a href="#">{{duedate}}</a>
+                </div>
+                <div class="small">
+                    {{#str}}duedate, assign{{/str}}
+                </div>
+            </div>
+
+            <div>
+                <div class="grade-to-pass">
+                    <span class="badge badge-pill badge-{{type}} d-table border-top border-{{type}}">{{gradetopass}}</span>
+                </div>
+                <div class="small">
+                    {{#str}}gradepass, grades{{/str}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

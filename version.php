@@ -18,14 +18,14 @@
  * Version details.
  *
  * @package    format_etask
- * @copyright  2018 Martin Drlik <martin.drlik@email.cz>
+ * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019111701;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2019051100;        // Requires this Moodle version.
+$plugin->version   = 2020050800;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2019111200;        // Requires this Moodle version.
 $plugin->component = 'format_etask';    // Full name of the plugin (used for diagnostics).
-$plugin->release = '3.8 (Moodle 3.8)';
+$plugin->release = '2.4 (Moodle 3.9)';
 $plugin->maturity = MATURITY_STABLE;
