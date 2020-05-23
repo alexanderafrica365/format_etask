@@ -24,9 +24,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
+
+use format_etask\dataprovider\course_settings;
 
 // Horrible backwards compatible parameter aliasing.
 if ($topic = optional_param('topic', 0, PARAM_INT)) {
@@ -51,18 +52,24 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_etask');
 
-// The eTask topics course format START.
-$courseconfig = course_get_format($course)->get_etask_config($course);
-
+// Start eTask topics course format.
 if (has_capability('format/etask:teacher', $context) || has_capability('format/etask:noneditingteacher', $context)
       || has_capability('format/etask:student', $context)) {
+    require_once($CFG->dirroot . '/course/format/etask/classes/dataprovider/course_settings.php');
     require_once($CFG->dirroot . '/course/format/etask/settings_form.php');
     require_once($CFG->dirroot . '/course/format/etask/group_form.php');
     require_once($CFG->dirroot . '/grade/lib.php');
 
+    // Crete course settings data provider instance.
+    $coursesettings = new course_settings($PAGE, $course);
+    // Set course settings to the renderer.
+    $renderer->set_course_settings($coursesettings);
+    // Rendered grade table.
+    $gradetable = $renderer->render_grade_table($context, $course);
+
     // The position above the sections.
-    if ($courseconfig['placement'] === format_etask::PLACEMENT_ABOVE) {
-        $renderer->render_grade_table($context, $course);
+    if ($coursesettings->is_above_placement()) {
+        $gradetable;
     }
 
     // Sections.
@@ -73,8 +80,8 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
     }
 
     // The position below the sections.
-    if ($courseconfig['placement'] === format_etask::PLACEMENT_BELOW) {
-        $renderer->render_grade_table($context, $course);
+    if (!$coursesettings->is_above_placement()) {
+        $gradetable;
     }
 } else {
     // Sections.
@@ -84,7 +91,7 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 }
-// The eTask topics course format END.
+// End eTask topics course format <---.
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/topics/format.js');

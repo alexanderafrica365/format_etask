@@ -25,9 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/format/topics/renderer.php');
-require_once($CFG->dirroot.'/course/format/etask/classes/output/footer.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/dataprovider/course_settings.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
 
+use format_etask\dataprovider\course_settings;
 use format_etask\form\group_form;
 use format_etask\form\settings_form;
 use format_etask\output\footer;
@@ -41,8 +43,10 @@ use format_etask\output\popover;
  */
 class format_etask_renderer extends format_topics_renderer {
 
-    /** @var array */
-    private $config;
+    /**
+     * @var course_settings
+     */
+    private $coursesettings;
 
     /**
      * Constructor method, calls the parent constructor.
@@ -52,11 +56,15 @@ class format_etask_renderer extends format_topics_renderer {
      */
     public function __construct(moodle_page $page, $target) {
         parent::__construct($page, $target);
+    }
 
-        // Since format_etask_renderer::section_edit_controls() only displays the 'Highlight' control
-        // when editing mode is on we need to be sure that the link 'Turn editing mode on' is available for a user
-        // who does not have any other managing capability.
-        $page->set_other_editing_capability('moodle/course:setcurrentsection');
+    /**
+     * Set course settings.
+     *
+     * @param course_settings $coursesettings
+     */
+    public function set_course_settings(course_settings $coursesettings): void {
+        $this->coursesettings = $coursesettings;
     }
 
     /**
@@ -95,13 +103,11 @@ class format_etask_renderer extends format_topics_renderer {
         $itemtitleshort = strtoupper(substr($gradeitem->itemmodule, 0, 1)) . $itemnum;
         $gradesettings = $this->render_grade_settings($gradeitem, $this->page->context);
 
-        // Calculate progress bar data count if allowed in config.
+        // Calculate progress bar data count if allowed in settings.
         $progresscompleted = 0;
         $progresspassed = 0;
-        // Calculate progress bars config.
-        if ($this->config['progressbars'] === true
-            || has_capability('format/etask:teacher', $this->page->context)
-            || has_capability('format/etask:noneditingteacher', $this->page->context)) {
+        // Calculate progress bars settings.
+        if ($this->coursesettings->is_show_progress_bars()) {
             // Init progress bars data.
             $progressbardatainit = [
                 'passed' => 0,
@@ -137,7 +143,7 @@ class format_etask_renderer extends format_topics_renderer {
         $badgetype = $gradetopass ? 'success' : 'secondary';
 
         $popover = new popover($progresscompleted, $progresspassed, $duedatevalue, $gradetopassvalue, $badgetype,
-            $this->config['progressbars']);
+            $this->coursesettings->is_show_progress_bars());
 
         // Prepare activity short link.
         if (has_capability('format/etask:teacher', $this->page->context)) {
@@ -256,7 +262,7 @@ class format_etask_renderer extends format_topics_renderer {
         return $this->render(
             new footer(
                 $formrender,
-                $this->paging_bar($studentscount, $page, $this->config['studentsperpage'], $action)
+                $this->paging_bar($studentscount, $page, $this->coursesettings->get_students_per_page(), $action)
             )
         );
     }
@@ -335,8 +341,6 @@ class format_etask_renderer extends format_topics_renderer {
             -->
             </style>'; // @todo remove it after moving styles to style.css
 
-        $this->config = course_get_format($this->page->course)->get_etask_config($course);
-
         // Grade pass save message data.
         $gradeitemid = optional_param('gradeitemid', 0, PARAM_INT);
         if (isset($gradeitemid) && !empty($gradeitemid)) {
@@ -403,8 +407,8 @@ class format_etask_renderer extends format_topics_renderer {
                     }
                 }
 
-                // Sorting activities by config.
-                switch ($this->config['activitiessorting']) {
+                // Sorting activities by course settings.
+                switch ($this->coursesettings->get_activities_sorting()) {
                     case format_etask::ACTIVITIES_SORTING_OLDEST:
                         ksort($gradeitems);
                         break;
@@ -430,10 +434,7 @@ class format_etask_renderer extends format_topics_renderer {
         $privateview = false;
         $privateviewuserid = 0;
         // If private view is active, students can view only own grades.
-        if ($this->config['privateview'] === true
-            && has_capability('format/etask:student', $context)
-            && !has_capability('format/etask:teacher', $context)
-            && !has_capability('format/etask:noneditingteacher', $context)) {
+        if ($this->coursesettings->is_private_view()) {
             $privateview = true;
             $privateviewuserid = $USER->id;
             $studentscount = 1;
@@ -510,13 +511,14 @@ class format_etask_renderer extends format_topics_renderer {
         }
 
         // Slice of students by paging after geting progres bar data.
-        $SESSION->eTask['page'] = $studentscount <= $SESSION->eTask['page'] * $this->config['studentsperpage']
+        $studentsperpage = $this->coursesettings->get_students_per_page();
+        $SESSION->eTask['page'] = $studentscount <= $SESSION->eTask['page'] * $studentsperpage
             ? 0
             : $SESSION->eTask['page'];
         $data = array_slice(
             $data,
-            $SESSION->eTask['page'] * $this->config['studentsperpage'],
-            $this->config['studentsperpage'],
+            $SESSION->eTask['page'] * $studentsperpage,
+            $studentsperpage,
             true
         );
 
@@ -533,7 +535,7 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetablefooter = $this->render_grade_table_footer($allcoursegroups, $studentscount, $selectedgroup);
         echo html_writer::div(
             html_writer::table($gradetable) . $gradetablefooter,
-            'etask-grade-table ' . $this->config['placement']
+            'etask-grade-table ' . $this->coursesettings->get_placement()
         );
     }
 }
