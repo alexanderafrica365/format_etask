@@ -26,8 +26,8 @@ namespace format_etask\dataprovider;
 
 defined('MOODLE_INTERNAL') || die();
 
+use context;
 use format_etask;
-use moodle_page;
 use stdClass;
 
 /**
@@ -40,9 +40,9 @@ use stdClass;
 class course_settings {
 
     /**
-     * @var moodle_page
+     * @var context
      */
-    private $page;
+    private $context;
 
     /**
      * @var stdClass|null
@@ -52,10 +52,10 @@ class course_settings {
     /**
      * Course settings constructor.
      *
-     * @param moodle_page $page
+     * @param context $context
      */
-    public function __construct(moodle_page $page, ?stdClass $course) {
-        $this->page = $page;
+    public function __construct(context $context, ?stdClass $course) {
+        $this->context = $context;
         $this->course = $course;
     }
 
@@ -69,8 +69,8 @@ class course_settings {
             return true;
         }
 
-        if (has_capability('format/etask:teacher', $this->page->context)
-                || has_capability('format/etask:noneditingteacher', $this->page->context)) {
+        if (has_capability('format/etask:teacher', $this->context)
+                || has_capability('format/etask:noneditingteacher', $this->context)) {
             return false;
         }
 
@@ -87,8 +87,8 @@ class course_settings {
             return true;
         }
 
-        return $this->course->progressbars || has_capability('format/etask:teacher', $this->page->context)
-            || has_capability('format/etask:noneditingteacher', $this->page->context);
+        return $this->course->progressbars || has_capability('format/etask:teacher', $this->context)
+            || has_capability('format/etask:noneditingteacher', $this->context);
     }
 
     /**
@@ -122,7 +122,7 @@ class course_settings {
      *
      * @return bool
      */
-    public function is_above_placement(): bool {
+    public function is_placement_above(): bool {
         if (!$this->course) {
             return true;
         }

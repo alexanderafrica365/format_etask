@@ -152,6 +152,7 @@ class format_etask_renderer extends format_topics_renderer {
                 'sr' => $sectionreturn,
                 'update' => $cmid
             ]), $ico . ' ' . $itemtitleshort, [
+                'class' => 'd-inline-block p-2',
                 'data-toggle' => 'popover',
                 'title' => $gradeitem->itemname,
                 'data-content' => $this->render($popover)
@@ -160,6 +161,7 @@ class format_etask_renderer extends format_topics_renderer {
             $itemtitleshortlink = html_writer::link(new moodle_url('/mod/' . $gradeitem->itemmodule . '/view.php', [
                 'id' => $cmid
             ]), $ico . ' ' . $itemtitleshort, [
+                'class' => 'd-inline-block p-2',
                 'data-toggle' => 'popover',
                 'title' => get_string('pluginname', $gradeitem->itemmodule) . ': ' . $gradeitem->itemname,
                 'data-content' => $this->render($popover)
@@ -309,7 +311,7 @@ class format_etask_renderer extends format_topics_renderer {
             }
 
             $gradelink = html_writer::link(new moodle_url('/grade/edit/tree/grade.php', $gradelinkparams), $gradevalue, [
-                'class' => 'grade-item-body',
+                'class' => 'd-block stretched-link',
                 'title' => fullname($user) . ': ' . $gradeitem->itemname
             ]);
         } else {
@@ -337,7 +339,7 @@ class format_etask_renderer extends format_topics_renderer {
         echo '
             <style type="text/css" media="screen" title="Graphic layout" scoped>
             <!--
-                @import "' . $CFG->wwwroot . '/course/format/etask/format_etask.css?v=' . get_config('format_etask', 'version') . '";
+                @import "' . $CFG->wwwroot . '/course/format/etask/format_etask.css?v=8' . get_config('format_etask', 'version') . '";
             -->
             </style>'; // @todo remove it after moving styles to style.css
 
@@ -457,7 +459,7 @@ class format_etask_renderer extends format_topics_renderer {
                 $cell = new html_table_cell();
                 $cell->text = $this->render_user($user);
                 $cell->attributes = [
-                    'class' => 'user-header'
+                    'class' => 'text-nowrap pr-2'
                 ];
                 $bodycells[] = $cell;
             }
@@ -479,7 +481,7 @@ class format_etask_renderer extends format_topics_renderer {
                     $cell = new html_table_cell();
                     $cell->text = $grade['text'];
                     $cell->attributes = [
-                        'class' => 'grade-item-grade text-center ' . $grade['status'],
+                        'class' => 'position-relative text-center ' . $grade['status'],
                         'title' => $user->firstname . ' ' . $user->lastname . ': ' . $gradeitem->itemname
                     ];
                     $bodycells[] = $cell;
@@ -505,7 +507,7 @@ class format_etask_renderer extends format_topics_renderer {
                 $cmid,
                 $completionexpected[$cmid]);
             $cell->attributes = [
-                'class' => 'grade-item-header center '
+                'class' => 'text-ecenter text-nowrap'
             ];
             $headcells[] = $cell;
         }
@@ -533,9 +535,13 @@ class format_etask_renderer extends format_topics_renderer {
 
         // Grade table footer: groups filter, pagination and legend.
         $gradetablefooter = $this->render_grade_table_footer($allcoursegroups, $studentscount, $selectedgroup);
+        $css = 'border-bottom mb-3 pb-3';
+        if (!$this->coursesettings->is_placement_above()) {
+            $css = 'border-top mt-4 pt-4';
+        }
         echo html_writer::div(
             html_writer::table($gradetable) . $gradetablefooter,
-            'etask-grade-table ' . $this->coursesettings->get_placement()
+            'etask-grade-table border-secondary ' . $css
         );
     }
 }

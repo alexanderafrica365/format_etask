@@ -61,15 +61,13 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
     require_once($CFG->dirroot . '/grade/lib.php');
 
     // Crete course settings data provider instance.
-    $coursesettings = new course_settings($PAGE, $course);
+    $coursesettings = new course_settings($context, $course);
     // Set course settings to the renderer.
     $renderer->set_course_settings($coursesettings);
-    // Rendered grade table.
-    $gradetable = $renderer->render_grade_table($context, $course);
 
     // The position above the sections.
-    if ($coursesettings->is_above_placement()) {
-        $gradetable;
+    if ($coursesettings->is_placement_above()) {
+        $renderer->render_grade_table($context, $course);
     }
 
     // Sections.
@@ -80,8 +78,8 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
     }
 
     // The position below the sections.
-    if (!$coursesettings->is_above_placement()) {
-        $gradetable;
+    if (!$coursesettings->is_placement_above()) {
+        $renderer->render_grade_table($context, $course);
     }
 } else {
     // Sections.

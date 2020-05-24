@@ -393,22 +393,6 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Returns eTask config.
-     *
-     * @param stdClass $course
-     * @return array
-     */
-    public function get_etask_config(stdClass $course): array {
-        return [
-            'privateview' => (bool) $course->privateview ?? true,
-            'progressbars' => (bool) $course->progressbars ?? true,
-            'studentsperpage' => (int) $course->studentsperpage ?? self::STUDENTS_PER_PAGE_DEFAULT,
-            'activitiessorting' => $course->activitiessorting ?? self::ACTIVITIES_SORTING_LATEST,
-            'placement' => $course->placement ?? self::PLACEMENT_ABOVE,
-        ];
-    }
-
-    /**
      * Sort grade items by sections.
      *
      * @param array $gradeitems

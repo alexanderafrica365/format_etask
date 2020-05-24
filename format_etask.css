@@ -1,7 +1,5 @@
 /* Popover. */
 body.format-etask .popover {
-    /*max-width: none;
-    width: 430px;*/
     max-width: 457px;
 }
 body.format-etask h3.popover-header {
@@ -27,44 +25,15 @@ body.format-etask .progress-bar-completed .progress-bar.bar {
     background-color: #ffc107;
 }
 /* Section line. */
-body.format-etask .etask-grade-table.above {
-    border-bottom: 1px solid #dee2e6;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-}
-body.format-etask .etask-grade-table.below {
-    border-top: 1px solid #dee2e6;
-    padding-top: 1rem;
-    margin-top: 1rem;
+body.format-etask .border-secondary {
+    border-color: #dee2e6 !important;
 }
 /* Grade table. */
-body.format-etask .etask-grade-table th.grade-item-header {
-    min-width: 50px;
-    height: 35px;
-    padding: 8px 5px;
-    white-space: nowrap;
-}
-body.format-etask .etask-grade-table td.user-header {
-    min-width: 130px;
-    padding-right: 5px;
-    white-space: nowrap;
-    height: 37px;
-}
-body.format-etask .etask-grade-table table .text-center {
-    text-align: center;
-}
-body.format-etask .etask-grade-table td a.grade-item-body {
-    display: block;
-    width: 100%;
-}
 body.format-etask .etask-grade-table .pointer {
     cursor: pointer;
 }
 body.format-etask .etask-grade-table .grade-item-dialog {
     opacity: 0.5;
-}
-body.format-etask .grade-item-dialog i.icon {
-    margin: 0 0 0 3px;
 }
 /* Grade table activity colors. */
 body.format-etask .etask-grade-table .completed {
