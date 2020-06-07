@@ -41,7 +41,7 @@ You can edit course format settings by `Edit settings` in the course. There are 
 
 #### eTask progress bars 
 
-**Motivates your students** even more with **progress bars Completed and Passed** placed in the activity popover. Students can see progress of completed activities as well as passed activities. Private view is back in a play! No private data like grades of the other students -- motivational progress bars only. Progress bars are **calculated by default**. Because of the activity popover consistency, progress bars are visible all the time -- if progress bars are not allowed, they are not calculated but still visible with zero values.
+**Motivates your students** even more with **progress bars Completed and Passed** placed in the activity popover. Students can see progress of completed activities as well as passed activities. Private view is back in a play! No private data like grades of the other students -- motivational progress bars only. Progress bars are **shown by default**. Because of the activity popover consistency, progress bars are visible all the time -- if progress bars are not allowed, they are not calculated but still visible with zero values.
 
 #### eTask students per page
 
@@ -65,7 +65,7 @@ Provides grading table of many activity types such as `assign`, `quiz`, `scorm`,
 
 ### Activity popover
 
-Shows **activity popover** with `due date` (expected completion date if due date is missing), `grade to pass` and optionally calculated `completed` and `passed` progress bars (see [course format settings](#markdown-header-course-format-settings) for [eTask progress bars](#markdown-header-etask-progress-bars)).
+Shows **activity popover** with `due date` (expected completion date if due date is missing), `grade to pass` and optionally showned `completed` and `passed` progress bars (see [course format settings](#markdown-header-course-format-settings) for [eTask progress bars](#markdown-header-etask-progress-bars)).
 
 ![eTask-popover_mdl_36](https://bitbucket.org/repo/obeE8n/images/3020990510-eTask-popover_mdl_362.png)
 

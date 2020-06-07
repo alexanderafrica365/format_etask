@@ -24,10 +24,11 @@
 
 namespace format_etask\output;
 
-defined('MOODLE_INTERNAL') || die();
-
+use coding_exception;
+use moodle_url;
 use renderable;
 use renderer_base;
+use single_select;
 use stdClass;
 use templatable;
 
@@ -40,21 +41,37 @@ use templatable;
  */
 class footer implements renderable, templatable {
 
-    /** @var string */
-    private $groups;
+    /** @var single_select|null */
+    private $select = null;
 
     /** @var string */
-    private $pagination;
+    private $pagingbar;
 
     /**
-     * The popover constructor.
+     * Footer constructor.
      *
-     * @param string $groups
-     * @param string $pagination
+     * @param array $groups
+     * @param int $selectedgroup
+     * @param ?string $pagingbar
+     * @throws coding_exception
      */
-    public function __construct(string $groups, string $pagination) {
-        $this->groups = $groups;
-        $this->pagination = $pagination;
+    public function __construct(string $pagingbar, bool $showgroupselect, array $groups, ?int $selectedgroup) {
+        global $COURSE;
+
+        if ($showgroupselect) {
+            $action = new moodle_url(
+                '/course/format/etask/update_settings.php',
+                [
+                    'course' => $COURSE->id,
+                ]
+            );
+
+            $select = new single_select($action, 'group', $groups, $selectedgroup, []);
+            $select->set_label(get_string('group'), ['class' => 'mb-0 d-none d-md-inline']);
+            $this->select = $select;
+        }
+
+        $this->pagingbar = $pagingbar;
     }
 
     /**
@@ -65,8 +82,8 @@ class footer implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output): stdClass {
         $data = new stdClass();
-        $data->groups = $this->groups;
-        $data->pagination = $this->pagination;
+        $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
+        $data->pagingbar = $this->pagingbar;
 
         return $data;
     }

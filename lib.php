@@ -167,8 +167,8 @@ class format_etask extends format_topics {
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('progressbars_donotcalculate', 'format_etask'),
-                            1 => new lang_string('progressbars_calculate', 'format_etask'),
+                            0 => new lang_string('progressbars_donotshow', 'format_etask'),
+                            1 => new lang_string('progressbars_show', 'format_etask'),
                         ],
                     ],
                 ],
@@ -235,90 +235,50 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Array of scale values.
-     *
-     * @param int $scaleid
-     * @return array
-     */
-    public function get_scale(int $scaleid): array {
-        global $DB;
-
-        $scale = $DB->get_field('scale', 'scale', [
-            'id' => $scaleid
-        ], IGNORE_MISSING);
-
-        return make_menu_from_list($scale);
-    }
-
-    /**
      * Return due date of grade item.
      *
      * @param grade_item $gradeitem
-     * @param string $completionexpected
-     * @return string
+     * @param int $completionexpected
+     *
+     * @return int|null
      */
-    public function get_due_date(grade_item $gradeitem, string $completionexpected): ?string {
+    public function get_due_date(grade_item $gradeitem, int $completionexpected): ?int {
         global $DB;
 
-        $timestamp = null;
+        $time = null;
         $gradedatefields = $this->get_grade_date_fields();
 
         if (isset($gradedatefields[$gradeitem->itemmodule])) {
-            $timestamp = $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
+            $time = (int) $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
                 'id' => $gradeitem->iteminstance
             ], IGNORE_MISSING);
         }
 
-        $duedate = null;
-        if ($timestamp) {
-            $duedate = userdate($timestamp);
-        } else if ($completionexpected) {
-            $duedate = userdate($completionexpected);
+        if ($time > 0) {
+            return $time;
         }
 
-        return $duedate;
+        return $completionexpected > 0 ? $completionexpected : null;
     }
 
     /**
-     * Set gradepass value for grade item.
+     * Update gradepass of grade item.
      *
-     * @param context $context
      * @param int $gradeitemid
-     * @return void
+     * @param int $gradepass
+     * @return bool
      */
-    public function update_grade_pass(context $context, int $gradeitemid): void {
+    public function update_grade_pass(int $gradeitemid, int $gradepass): bool {
         global $DB;
 
-        if (data_submitted() && confirm_sesskey() && has_capability('format/etask:teacher', $context)) {
-            $gradepassvalue = required_param('gradepass' . $gradeitemid, PARAM_INT);
+        $gradeitem = (new grade_item())->fetch([
+            'id' => $gradeitemid
+        ]);
+        $gradeitem->id = $gradeitemid;
+        $gradeitem->gradepass = $gradepass;
+        $gradeitem->timemodified = time();
 
-            $gradeitemobj = new grade_item();
-            $gradeitem = $gradeitemobj->fetch([
-                'id' => $gradeitemid
-            ]);
-            $gradeitem->id = $gradeitemid;
-            $gradeitem->gradepass = $gradepassvalue;
-
-            if (!empty($gradeitem->scaleid)) {
-                $scale = $this->get_scale($gradeitem->scaleid);
-                $gradepass = isset($scale[$gradepassvalue]) ? $scale[$gradepassvalue] : '-';
-            } else {
-                $gradepass = $gradepassvalue;
-            }
-
-            if ($DB->update_record('grade_items', $gradeitem)) {
-                notification::success(
-                    get_string('gradesavingsuccess', 'format_etask', [
-                        'itemName' => $gradeitem->itemname,
-                        'gradePass' => $gradepass
-                    ])
-                );
-            } else {
-                notification::error(
-                    get_string('gradesavingerror', 'format_etask', $gradeitem->itemname)
-                );
-            }
-        }
+        return $DB->update_record('grade_items', $gradeitem);
     }
 
     /**
@@ -489,11 +449,60 @@ class format_etask extends format_topics {
         $items = explode(',', $config);
         foreach ($items as $item) {
             if (!empty($item)) {
-                list($module, $duedate) = explode(':', $item);
+                [$module, $duedate] = explode(':', $item);
                 $gradedatefields[trim($module)] = trim($duedate);
             }
         }
         return $gradedatefields;
+    }
+
+    //---------------------------------------------------------------------------------
+
+    /**
+     * @return int[]
+     */
+    public function get_progress_values(bool $showprogressbars, array $progressbardata, int $studentscount): array {
+        if (!$showprogressbars) {
+            return [null, null];
+        }
+
+        // Init progress bars data.
+        $progressbardatainit = [
+            'passed' => 0,
+            'completed' => 0,
+            'failed' => 0
+        ];
+
+        $progressbardatacount = array_merge($progressbardatainit, array_count_values($progressbardata));
+        $progresscompleted = round(100 * (
+                array_sum([
+                    $progressbardatacount['completed'],
+                    $progressbardatacount['passed'], $progressbardatacount['failed']
+                ]) / $studentscount));
+        $progresspassed = round(100 * ($progressbardatacount['passed'] / $studentscount));
+
+        return [$progresscompleted, $progresspassed];
+    }
+
+    public function get_scale_text_value(grade_item $gradeitem, float $grade): string {
+        $scale = $gradeitem->load_scale();
+
+        return $scale->get_nearest_item($grade);
+    }
+
+    public function set_pagination_page(): void {
+        global $SESSION;
+
+        $SESSION->etask['page'] = $SESSION->etask['page'] ?? 0;
+        if ($page = optional_param('page', null, PARAM_INT) !== null) {
+            $SESSION->etask['page'] = $page;
+        }
+
+//        if (!isset($SESSION->etask['page']) && !isset($page)) {
+//            $SESSION->etask['page'] = 0;
+//        } else if (isset($SESSION->etask['page']) && isset($page)) {
+//            $SESSION->etask['page'] = $page;
+//        } // @todo remove
     }
 }
 

@@ -56,8 +56,6 @@ $renderer = $PAGE->get_renderer('format_etask');
 if (has_capability('format/etask:teacher', $context) || has_capability('format/etask:noneditingteacher', $context)
       || has_capability('format/etask:student', $context)) {
     require_once($CFG->dirroot . '/course/format/etask/classes/dataprovider/course_settings.php');
-    require_once($CFG->dirroot . '/course/format/etask/settings_form.php');
-    require_once($CFG->dirroot . '/course/format/etask/group_form.php');
     require_once($CFG->dirroot . '/grade/lib.php');
 
     // Crete course settings data provider instance.
@@ -93,4 +91,4 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/topics/format.js');
-$PAGE->requires->js('/course/format/etask/format.js?v=' . get_config('format_etask', 'version')); // @todo remove
+$PAGE->requires->js('/course/format/etask/format.js?v=a56' . get_config('format_etask', 'version')); // @todo remove

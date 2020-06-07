@@ -1,1 +1,6 @@
-- odebrán typ aktivity z titulku popoveru
+- odstraněn odkaz z hlavičky aktivity (směřující na eidtaci/detail aktivity); nyní jde o prvek, který při najetí myší zobrazuje popover (na mobilních zařízeník po kliknutí na hlavičku aktivity)
+- potřebná známka, datum dokončení a progress bary se nezobrazují, pokud nejsou zadány nebo nejou povoleny
+- odkaz na editaci/detail aktivity je až v popoveru
+- nastavení potřebné známky je z popoveru a ukládá se při změně hodnoty
+- zabezpečěné zpracování pro odesílaná data v nastavení
+- lepší responzivní design pro patičku

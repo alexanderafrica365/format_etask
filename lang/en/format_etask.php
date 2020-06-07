@@ -38,36 +38,40 @@ $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 $string['privacy:metadata'] = 'The eTask topics format plugin does not store any personal data.';
 // Course format settings strings.
-$string['privateview'] = 'eTask private view';
+$string['privateview'] = 'Private view';
 $string['privateview_help'] = 'This settings determines whether all the students can see each other\'s grades in the eTask grading table or not.';
 $string['privateview_no'] = 'Each student can see the grades of the other students in the course/group';
 $string['privateview_yes'] = 'Logged in student can see own grades only';
-$string['progressbars'] = 'eTask progress bars';
-$string['progressbars_help'] = 'This settings determines whether progress bars Completed and Passed are calculated in the eTask grading table activity popover or not.';
-$string['progressbars_donotcalculate'] = 'Do not calculate progress bars Completed and Passed';
-$string['progressbars_calculate'] = 'Calculate progress bars Completed and Passed';
-$string['studentsperpage'] = 'eTask students per page';
+$string['progressbars'] = 'Progress bars';
+$string['progressbars_help'] = 'This settings determines whether progress bars Completed and Passed are shown in the eTask grading table activity popover or not.';
+$string['progressbars_donotshow'] = 'Do not show progress bars Completed and Passed';
+$string['progressbars_show'] = 'Show progress bars Completed and Passed';
+$string['studentsperpage'] = 'Students per page';
 $string['studentsperpage_help'] = 'This settings determines the number of students per page in the eTask grading table.';
-$string['activitiessorting'] = 'eTask activities sorting';
+$string['activitiessorting'] = 'Activities sorting';
 $string['activitiessorting_help'] = 'This settings determines whether activities of eTask grading table are sorted by the latest, by the oldest or as they are in the course.';
 $string['activitiessorting_latest'] = 'Sort the activities by the latest';
 $string['activitiessorting_oldest'] = 'Sort the activities by the oldest';
 $string['activitiessorting_inherit'] = 'Sort the activities as they are in the course';
-$string['placement'] = 'eTask placement';
+$string['placement'] = 'Placement';
 $string['placement_help'] = 'This settings determines placement of the eTask grading table above or below the course topics.';
 $string['placement_above'] = 'Place the grading table above the course topics';
 $string['placement_below'] = 'Place the grading table below the course topics';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registered due date modules';
 $string['registeredduedatemodules_help'] = 'Specifies in which module\'s database field the due date value is stored.';
-// The eTask grading table strings.
-$string['gradesavingsuccess'] = 'Grade to pass for <strong>{$a->itemName}</strong> was successfully updated to value <strong>{$a->gradePass}</strong>.';
-$string['gradesavingerror'] = 'Error in saving grade to pass for <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
+// Legend strings.
 $string['legend'] = 'Legend';
 $string['activitycompleted'] = 'Completed';
 $string['activitypassed'] = 'Passed';
 $string['activityfailed'] = 'Failed';
+// Popover strings.
+$string['timemodified'] = 'Last modified on {$a}';
+// Flash messages.
+$string['gradepasschanged'] = 'Grade to pass for activity <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
+$string['gradepassremoved'] = 'Grade to pass for activity <strong>{$a}</strong> has been successfully removed.';
+$string['gradepassunablesave'] = 'Unable to change grade to pass for activity <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
+// Permissions in course.
 $string['etask:teacher'] = 'Full management';
 $string['etask:noneditingteacher'] = 'Read only (all the data)';
 $string['etask:student'] = 'Read only (data in the context of a private view)';
-$string['notset'] = 'not set';

@@ -21,24 +21,22 @@
 
     Example context (json):
     {
-        "groups": "<form><select><option>...</option></select></form>",
-        "pagination": "<nav><ul><li>...</li></ul></nav>"
+        "select": "<form><select><option>...</option></select></form>",
+        "pagingbar": "<nav><ul><li>...</li></ul></nav>"
     }
 }}
 
-<div class="row grade-table-footer">
-    <div class="col-md-4">
-        {{{groups}}}
+<div class="d-flex justify-content-md-between justify-content-center flex-wrap">
+    <div class="mt-1 mr-2">
+        {{{select}}}
     </div>
-    <div class="col-md-4">
-        {{{pagination}}}
+    <div class="mr-2">
+        {{{pagingbar}}}
     </div>
-    <div class="col-md-4">
-        <div class="legend">
-            {{#str}}legend, format_etask{{/str}}:
-            <span class="badge badge-warning completed">{{#str}}activitycompleted, format_etask{{/str}}</span>
-            <span class="badge badge-success passed">{{#str}}activitypassed, format_etask{{/str}}</span>
-            <span class="badge badge-danger failed">{{#str}}activityfailed, format_etask{{/str}}</span>
-        </div>
+    <div class="mt-2">
+        <span class="mr-1 d-none d-md-inline">{{#str}}legend, format_etask{{/str}}</span>
+        <span class="badge badge-warning completed p-2">{{#str}}activitycompleted, format_etask{{/str}}</span>
+        <span class="badge badge-success passed p-2">{{#str}}activitypassed, format_etask{{/str}}</span>
+        <span class="badge badge-danger failed p-2">{{#str}}activityfailed, format_etask{{/str}}</span>
     </div>
 </div>

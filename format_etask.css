@@ -1,23 +1,16 @@
 /* Popover. */
-body.format-etask .popover {
-    max-width: 457px;
-}
-body.format-etask h3.popover-header {
-    text-align: justify;
+body.format-etask .popover.etask-popover {
+    /*max-width: 457px;*/
+    min-width: 340px;
+    max-width: 340px;
 }
 body.format-etask .badge.badge-success {
     background-color: #28a745;
 }
-body.format-etask .border-success {
-    border-color: #28a745 !important;
-}
-body.format-etask .duedate, body.format-etask .grade-to-pass {
-    line-height: initial;
+body.format-etask .popover.etask-popover .popover-body {
+    padding: 0;
 }
 /* Progress bars. */
-body.format-etask .progress-bar-passed, body.format-etask .progress-bar-completed {
-    width: 150px;
-}
 body.format-etask .progress-bar-passed .progress-bar.bar {
     background-color: #28a745;
 }
@@ -57,34 +50,4 @@ body.format-etask .etask-grade-table .passed a {
 body.format-etask .etask-grade-table .failed a {
     color: #fff;
 }
-/* Legend. */
-body.format-etask .etask-grade-table .legend {
-    line-height: 2.5em;
-    text-align: right;
-    padding-bottom: 20px;
-}
-body.format-etask .etask-grade-table .legend span {
-    padding: 8px;
-    margin-left: 10px;
-}
-/* Hack of mform. */
-body.format-etask .inline-form .form-group {
-    margin-left: 0;
-}
-body.format-etask .inline-form .form-group .col-md-3,
-body.format-etask .inline-form .form-group .col-md-9 {
-    padding-left: 0;
-}
-body.format-etask .inline-form .form-group .col-md-3 {
-    margin-top: 5px;
-}
-/* Pagination. */
-body.format-etask .etask-grade-table nav ul {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    margin-top: 0;
-}
-body.format-etask .grade-table-footer {
-    margin-top: 13px;
-}
+

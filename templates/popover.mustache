@@ -21,60 +21,83 @@
 
     Example context (json):
     {
+        "itemname": "Understanding class definitions",
+        "timemodified": 1590760235,
         "completed": 60,
         "passed": 50,
-        "duedate": "Friday, 8 May 2020, 2:37 pm",
+        "duedate": 1590760235,
         "gradetopass": "80",
-        "type": "success",
-        "progressbarsallowed": false
+        "showprogressbars": false,
+        "itemmoduleicon": "<img ...>",
+        "settingsicon": "<img ...>",
+        "showsettings": true
     }
 }}
 
-<div class="popover-container text-nowrap">
-    <div class="rowx d-flex flex-nowrap">
-        <div class="mr-3 {{^progressbarsallowed}}text-secondary{{/progressbarsallowed}}">
-            <div class="progress-bar-completed pb-1">
-                <div class="progress bg-white border">
-                    <div class="progress-bar bar {{^progressbarsallowed}}bg-secondary{{/progressbarsallowed}}" role="progressbar" aria-valuenow="{{completed}}" style="width: {{completed}}%" aria-valuemin="0" aria-valuemax="100"></div>
+<div class="popover-container m-3">
+    <div class="mb-3 text-black-50">
+        {{#str}}timemodified, format_etask, {{#userdate}} {{timemodified}}, {{#str}} strftimedaydate, core_langconfig {{/str}} {{/userdate}}{{/str}}
+    </div>
+
+    <div class="d-flex mt-2 align-items-start">
+        {{{itemmoduleicon}}}
+        <div class="d-flex flex-column w-100">
+            <a href="#" class="text-decoration-none d-block mb-3">
+                <h6 class="d-inline font-weight-bold">{{itemname}}</h6>
+            </a>
+
+            {{#duedate}}
+                <div class="{{#gradetopass}}mb-1{{/gradetopass}}{{^gradetopass}}mb-3{{/gradetopass}}">
+                    <span class="text-black-50">{{#str}}duedate, assign{{/str}}</span> {{#userdate}} {{duedate}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}} {{/userdate}}
                 </div>
-                <div class="small">
-                    <div class="d-flex justify-content-between">
-                        <div>{{#str}}activitycompleted, format_etask{{/str}}</div>
-                        <div>{{completed}} %</div>
+            {{/duedate}}
+
+            {{#gradetopass}}
+                <div class="mb-3">
+                    <span class="text-black-50">{{#str}}gradepass, grades{{/str}}</span>
+                    <span class="badge badge-pill badge-success">{{gradetopass}}</span>
+                </div>
+            {{/gradetopass}}
+
+            {{#showprogressbars}}
+                <div class="progress-bar-completed pb-1">
+                    <div class="progress bg-white border">
+                        <div class="progress-bar bar" role="progressbar" aria-valuenow="{{completed}}" style="width: {{completed}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="small">
+                        <div class="d-flex justify-content-between">
+                            <div>{{#str}}activitycompleted, format_etask{{/str}}</div>
+                            <div>{{completed}} %</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="progress-bar-passed">
-                <div class="progress bg-white border">
-                    <div class="progress-bar bar  {{^progressbarsallowed}}bg-secondary{{/progressbarsallowed}}" role="progressbar" aria-valuenow="{{passed}}" style="width: {{passed}}%" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="small">
-                    <div class="d-flex justify-content-between">
-                        <div>{{#str}}activitypassed, format_etask{{/str}}</div>
-                        <div>{{passed}} %</div>
+                <div class="progress-bar-passed">
+                    <div class="progress bg-white border">
+                        <div class="progress-bar bar " role="progressbar" aria-valuenow="{{passed}}" style="width: {{passed}}%" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="small">
+                        <div class="d-flex justify-content-between">
+                            <div>{{#str}}activitypassed, format_etask{{/str}}</div>
+                            <div>{{passed}} %</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="flex-fill">
-            <div class="pb-1">
-                <div class="duedate">
-                    <a href="#">{{duedate}}</a>
-                </div>
-                <div class="small">
-                    {{#str}}duedate, assign{{/str}}
-                </div>
-            </div>
+            {{/showprogressbars}}
 
-            <div>
-                <div class="grade-to-pass">
-                    <span class="badge badge-pill badge-{{type}} d-table border-top border-{{type}}">{{gradetopass}}</span>
-                </div>
-                <div class="small">
-                    {{#str}}gradepass, grades{{/str}}
-                </div>
-            </div>
         </div>
     </div>
+
+    {{#showsettings}}
+        <div class="border-top border-secondary mr-n3 ml-n3 mt-3 pt-3">
+            <div class="d-flex mt-2 align-items-start pl-3">
+                {{{settingsicon}}}
+                <div class="d-flex flex-column w-100">
+                    <h6 class="d-inline font-weight-bold">Settings</h6>
+                    {{{select}}}
+                </div>
+            </div>
+        </div>
+    {{/showsettings}}
+
 </div>

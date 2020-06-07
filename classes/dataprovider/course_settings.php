@@ -26,6 +26,7 @@ namespace format_etask\dataprovider;
 
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use context;
 use format_etask;
 use stdClass;
@@ -82,7 +83,7 @@ class course_settings {
      *
      * @return bool
      */
-    public function is_show_progress_bars(): bool {
+    public function show_progress_bars(): bool {
         if (!$this->course) {
             return true;
         }
@@ -141,5 +142,30 @@ class course_settings {
         }
 
         return $this->course->placement ?? format_etask::PLACEMENT_ABOVE;
+    }
+
+    /**
+     * True for show group select.
+     *
+     * @param string[] $groups
+     *
+     * @return bool
+     * @throws coding_exception
+     */
+    public function show_group_select(array $groups): bool {
+        if (count($groups) <= 1) {
+            return false;
+        }
+
+        return has_capability('format/etask:teacher', $this->context)
+            || has_capability('format/etask:noneditingteacher', $this->context);
+    }
+
+    /**
+     * @return bool
+     * @throws coding_exception
+     */
+    public function show_settings(): bool {
+        return has_capability('format/etask:teacher', $this->context);
     }
 }
