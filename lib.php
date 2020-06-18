@@ -28,6 +28,7 @@ require_once($CFG->dirroot. '/course/format/topics/lib.php');
 
 use core\notification;
 use core\output\inplace_editable;
+use format_etask\dataprovider\course_settings;
 
 /**
  * Main class for the eTask topics course format.
@@ -97,11 +98,11 @@ class format_etask extends format_topics {
                     'default' => $courseconfig->coursedisplay,
                     'type' => PARAM_INT,
                 ],
-                'privateview' => [
+                'studentprivacy' => [
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
-                'progressbars' => [
+                'activityprogressbars' => [
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
@@ -148,27 +149,27 @@ class format_etask extends format_topics {
             ];
             // The eTask settings.
             $etasksettings = [
-                'privateview' => [
-                    'label' => new lang_string('privateview', 'format_etask'),
-                    'help' => 'privateview',
+                'studentprivacy' => [
+                    'label' => new lang_string('studentprivacy', 'format_etask'),
+                    'help' => 'studentprivacy',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('privateview_no', 'format_etask'),
-                            1 => new lang_string('privateview_yes', 'format_etask'),
+                            0 => new lang_string('studentprivacy_no', 'format_etask'),
+                            1 => new lang_string('studentprivacy_yes', 'format_etask'),
                         ]
                     ],
                 ],
-                'progressbars' => [
-                    'label' => new lang_string('progressbars', 'format_etask'),
-                    'help' => 'progressbars',
+                'activityprogressbars' => [
+                    'label' => new lang_string('activityprogressbars', 'format_etask'),
+                    'help' => 'activityprogressbars',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('progressbars_donotshow', 'format_etask'),
-                            1 => new lang_string('progressbars_show', 'format_etask'),
+                            0 => new lang_string('activityprogressbars_no', 'format_etask'),
+                            1 => new lang_string('activityprogressbars_yes', 'format_etask'),
                         ],
                     ],
                 ],
@@ -312,32 +313,6 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Get allowed course students.
-     *
-     * @param context_course $context
-     * @param stdClass $course
-     * @param int $selectedgroup
-     * @return array
-     */
-    public function get_students(context_course $context, stdClass $course, int $selectedgroup = null): array {
-        global $USER;
-
-        $users = get_enrolled_users($context);
-        // Get logged in user groups membership.
-        $loggedinusergroups = current(groups_get_user_groups($course->id, $USER->id));
-        // In the grading table show only users with role 'student'.
-        $students = [];
-        foreach ($users as $user) {
-            $isalloweduser = $this->is_allowed_user($context, $course, $user, $selectedgroup, $loggedinusergroups);
-            if ($isalloweduser === true) {
-                $students[$user->id] = $user;
-            }
-        }
-
-        return $students;
-    }
-
-    /**
      * Course groups.
      *
      * @param int $courseid
@@ -395,50 +370,6 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Is user allowed in grade table view.
-     *
-     * @param context_course $context
-     * @param stdClass $course
-     * @param stdClass $user
-     * @param int $selectedgroup
-     * @param array $loggedinusergroups
-     * @return bool
-     */
-    private function is_allowed_user(
-        context_course $context,
-        stdClass $course,
-        stdClass $user,
-        int $selectedgroup = null,
-        array $loggedinusergroups = null): bool {
-        $isalloweduser = false;
-        // Default state of allowed user group (no groups mode).
-        $allowedusergroup = true;
-        // Get enroled user groups membership.
-        $usergroups = current(groups_get_user_groups($course->id, $user->id));
-        if (!empty($usergroups)) {
-            // Filter users by filter or show students from logged in user group.
-            if (!empty($selectedgroup)) {
-                // Check if user is in allowed group.
-                if (in_array($selectedgroup, $usergroups) === false) {
-                    $allowedusergroup = false;
-                }
-            } else {
-                // Check if user is in allowed group.
-                foreach ($usergroups as $usergroup) {
-                    if (in_array($usergroup, $loggedinusergroups) === false) {
-                        $allowedusergroup = false;
-                    }
-                }
-            }
-        }
-
-        if ($allowedusergroup === true && has_capability('format/etask:student', $context, $user, false)) {
-            $isalloweduser = true;
-        }
-        return $isalloweduser;
-    }
-
-    /**
      * Get grade date fields array from config text.
      *
      * @return array
@@ -455,8 +386,6 @@ class format_etask extends format_topics {
         }
         return $gradedatefields;
     }
-
-    //---------------------------------------------------------------------------------
 
     /**
      * @return int[]
@@ -484,25 +413,78 @@ class format_etask extends format_topics {
         return [$progresscompleted, $progresspassed];
     }
 
+    //-------------------------------- DONE ----------------------------------------
+
+    /**
+     * Get current group id from session/course groups/user groups.
+     *
+     * @param stdClass $course
+     * @param int $userid
+     *
+     * @return int
+     * @throws coding_exception
+     */
+    public function get_current_group_id(stdClass $course, int $userid): int {
+        global $SESSION;
+        global $PAGE;
+
+        // Init current groupid.
+        $currentgroupid = 0;
+
+        if (has_capability('moodle/site:accessallgroups', $PAGE->context)) {
+            /** @var int[] $groupids */
+            $groupids = array_keys(groups_get_all_groups($course->id, 0, 0, 'g.id', false));
+        } else {
+            /** @var int[] $groupids */
+            $groupids = current(groups_get_user_groups($course->id, $userid));
+        }
+
+        if (isset($SESSION->format_etask['currentgroup']) && in_array($SESSION->format_etask['currentgroup'], $groupids)) {
+            // Groupid is in the session and this session is valid with the coursegroups.
+            $currentgroupid = $SESSION->format_etask['currentgroup'];
+        } else if (count($groupids) > 0){
+            // Groupid is not in the session or is not valid with the coursegroups.
+            $currentgroupid = $SESSION->format_etask['currentgroup'] = current($groupids);
+        }
+
+        return (int) $currentgroupid;
+    }
+
+    /**
+     * Get current page from session or query parameter.
+     *
+     * @return int
+     * @throws coding_exception
+     */
+    public function get_current_page(int $studentscount, int $studentsperpage): int {
+        global $SESSION;
+
+        $currentpage = optional_param('page', null, PARAM_INT);
+        if ($currentpage !== null) {
+            $SESSION->format_etask['currentpage'] = $currentpage;
+        }
+
+        // Use "<=" because pages are numbered from 0.
+        if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage'] * $studentsperpage) {
+            // Set current page to last page.
+            $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
+        }
+
+        return (int) $SESSION->format_etask['currentpage'] ?? 0;
+    }
+
+    /**
+     * Get scale text value.
+     *
+     * @param grade_item $gradeitem
+     * @param float $grade
+     *
+     * @return string
+     */
     public function get_scale_text_value(grade_item $gradeitem, float $grade): string {
         $scale = $gradeitem->load_scale();
 
         return $scale->get_nearest_item($grade);
-    }
-
-    public function set_pagination_page(): void {
-        global $SESSION;
-
-        $SESSION->etask['page'] = $SESSION->etask['page'] ?? 0;
-        if ($page = optional_param('page', null, PARAM_INT) !== null) {
-            $SESSION->etask['page'] = $page;
-        }
-
-//        if (!isset($SESSION->etask['page']) && !isset($page)) {
-//            $SESSION->etask['page'] = 0;
-//        } else if (isset($SESSION->etask['page']) && isset($page)) {
-//            $SESSION->etask['page'] = $page;
-//        } // @todo remove
     }
 }
 

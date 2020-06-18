@@ -53,10 +53,10 @@ course_create_sections_if_missing($course, 0);
 $renderer = $PAGE->get_renderer('format_etask');
 
 // Start eTask topics course format.
-if (has_capability('format/etask:teacher', $context) || has_capability('format/etask:noneditingteacher', $context)
-      || has_capability('format/etask:student', $context)) {
-    require_once($CFG->dirroot . '/course/format/etask/classes/dataprovider/course_settings.php');
-    require_once($CFG->dirroot . '/grade/lib.php');
+//var_dump(has_capability('format/etask:view', $context));exit;
+if (has_capability('moodle/course:viewparticipants', $context)) {
+//    require_once($CFG->dirroot . '/course/format/etask/classes/dataprovider/course_settings.php');
+//    require_once($CFG->dirroot . '/grade/lib.php');
 
     // Crete course settings data provider instance.
     $coursesettings = new course_settings($context, $course);
@@ -64,7 +64,7 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
     $renderer->set_course_settings($coursesettings);
 
     // The position above the sections.
-    if ($coursesettings->is_placement_above()) {
+    if ($coursesettings->get_placement() === format_etask::PLACEMENT_ABOVE) {
         $renderer->render_grade_table($context, $course);
     }
 
@@ -76,7 +76,7 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
     }
 
     // The position below the sections.
-    if (!$coursesettings->is_placement_above()) {
+    if ($coursesettings->get_placement() === format_etask::PLACEMENT_BELOW) {
         $renderer->render_grade_table($context, $course);
     }
 } else {
@@ -91,4 +91,4 @@ if (has_capability('format/etask:teacher', $context) || has_capability('format/e
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/topics/format.js');
-$PAGE->requires->js('/course/format/etask/format.js?v=a56' . get_config('format_etask', 'version')); // @todo remove
+$PAGE->requires->js('/course/format/etask/format.js?v=' . get_config('format_etask', 'version'));

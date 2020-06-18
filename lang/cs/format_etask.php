@@ -38,40 +38,38 @@ $string['hidefromothers'] = 'Skrýt téma';
 $string['showfromothers'] = 'Zobrazit téma';
 $string['privacy:metadata'] = 'Modul Formát eTask tématické uspořádání neukládá žádné osobní údaje.';
 // Course format settings strings.
-$string['privateview'] = 'Soukromé zobrazení';
-$string['privateview_help'] = 'Toto nastavení určuje, zda mohou všichni studenti vidět své známky navzájem v tabulce hodnocení eTask nebo ne.';
-$string['privateview_no'] = 'Každý student může vidět známky ostatních studentů kurzu/skupiny';
-$string['privateview_yes'] = 'Přihlášený student může vidět pouze své vlastní známky';
-$string['progressbars'] = 'Progress bary';
-$string['progressbars_help'] = 'Toto nastavení určuje, zda se počítají progress bary Dokončeno a Splněno v nápovědě aktivity tabulky hodnocení eTask nebo ne.';
-$string['progressbars_donotshow'] = 'Nezobrazovat progress bary Dokončeno a Splněno';
-$string['progressbars_show'] = 'Zobrazit progress bary Dokončeno a Splněno';
+$string['studentprivacy'] = 'Soukromí studenta';
+$string['studentprivacy_help'] = 'Toto nastavení určuje, zda může student v tabulce hodnocení vidět hodnocení ostatních nebo ne.';
+$string['studentprivacy_no'] = 'Student může v tabulce hodnocení vidět hodnocení ostatních';
+$string['studentprivacy_yes'] = 'Student může v tabulce hodnocení vidět pouze své hodnocení';
+$string['activityprogressbars'] = 'Přehled plnění aktivity';
+$string['activityprogressbars_help'] = 'Toto nastavení určuje, zda se má studentovi zobrazit přehled plnění aktivity v tabulce hodnocení.';
+$string['activityprogressbars_no'] = 'Skrýt studentovi přehled plnění aktivity v tabulce hodnocení';
+$string['activityprogressbars_yes'] = 'Zobrazit studentovi přehled plnění aktivity v tabulce hodnocení';
 $string['studentsperpage'] = 'Počet studentů na stránce';
-$string['studentsperpage_help'] = 'Toto nastavení určuje počet studentů na stránce v tabulce hodnocení eTask.';
+$string['studentsperpage_help'] = 'Toto nastavení určuje počet studentů na stránce v tabulce hodnocení.';
 $string['activitiessorting'] = 'Řazení aktivit';
-$string['activitiessorting_help'] = 'Toto nastavení určuje, zda jsou aktivity hodnotící tabulky eTask seřazeny od nejnovějších, od nejstarších nebo tak, jak jsou v kurzu.';
-$string['activitiessorting_latest'] = 'Řadit aktivity od nejnovějších';
-$string['activitiessorting_oldest'] = 'Řadit aktivity od nejstarších';
-$string['activitiessorting_inherit'] = 'Řadit aktivity tak, jak jsou v kurzu';
+$string['activitiessorting_help'] = 'Toto nastavení určuje, zda jsou aktivity v tabulce hodnocení seřazeny od nejnovějších, nejstarších nebo tak, jak jsou v kurzu.';
+$string['activitiessorting_latest'] = 'Řadit aktivity v tabulce hodnocení od nejnovějších';
+$string['activitiessorting_oldest'] = 'Řadit aktivity v tabulce hodnocení od nejstarších';
+$string['activitiessorting_inherit'] = 'Řadit aktivity v tabulce hodnocení tak, jak jsou v kurzu';
 $string['placement'] = 'Umístění';
-$string['placement_help'] = 'Toto nastavení určuje umístění tabulky hodnocení eTask nad nebo pod tématy kurzu.';
-$string['placement_above'] = 'Umístit hodnotící tabulku nad témata kurzu';
-$string['placement_below'] = 'Umístit hodnotící tabulku pod témata kurzu';
+$string['placement_help'] = 'Toto nastavení určuje umístění tabulky hodnocení nad nebo pod tématy kurzu.';
+$string['placement_above'] = 'Umístit tabulku hodnocení nad tématy kurzu';
+$string['placement_below'] = 'Umístit tabulku hodnocení pod tématy kurzu';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registrované moduly s datumem odevzdání';
-$string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota datuu odevzání.';
+$string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota datumu odevzání.';
 // Legend strings.
 $string['legend'] = 'Legenda';
 $string['activitycompleted'] = 'Dokončeno';
 $string['activitypassed'] = 'Splněno';
 $string['activityfailed'] = 'Nesplněno';
 // Popover strings.
+$string['choose'] = 'Vyberte ...';
+$string['showmore'] = 'Zobrazit více ...';
 $string['timemodified'] = 'Poslední úprava {$a}';
 // Flash messages.
-$string['gradepasschanged'] = 'Potřebná známka u&nbsp;aktivity <strong>{$a->itemname}</strong> byla úspěšně změněna na <strong>{$a->gradepass}</strong>.';
-$string['gradepassremoved'] = 'Potřebná známka u&nbsp;aktivity <strong>{$a}</strong> byla úšpěšně odstraněna.';
-$string['gradepassunablesave'] = 'Potřebnou známku u&nbsp;aktivity <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
-// Permissions in course.
-$string['etask:teacher'] = 'Plná správa';
-$string['etask:noneditingteacher'] = 'Jen pro čtení (všechna data)';
-$string['etask:student'] = 'Jen pro čtení (data v kontextu soukromého zobrazení)';
+$string['gradepasschanged'] = 'Potřebné hodnocení u&nbsp;aktivity <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
+$string['gradepassremoved'] = 'Potřebné hodnocení u&nbsp;aktivity <strong>{$a}</strong> bylo úšpěšně odstraněno.';
+$string['gradepassunablesave'] = 'Potřebné hodnocení u&nbsp;aktivity <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';

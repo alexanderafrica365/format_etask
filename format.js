@@ -23,7 +23,7 @@ require(['jquery'], function($) {
                 $('.popover').on('mouseleave', function () {
                     $('[data-toggle="etask-popover"]').popover('hide');
                 });
-            }, 500);
+            }, 300);
         }).on('mouseleave', function () {
             var _this = this;
             setTimeout(function () {

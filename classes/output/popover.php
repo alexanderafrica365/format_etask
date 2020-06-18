@@ -81,8 +81,9 @@ class popover implements renderable, templatable {
      * @param int $cmid
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-                string $gradetopass, bool $showprogressbars, bool $showsettings, int $cmid) {
+                string $gradetopass, bool $showprogressbars, int $cmid) {
         global $COURSE;
+        global $PAGE;
 
         $this->itemname = $gradeitem->itemname;
         $this->timemodified = $gradeitem->timemodified;
@@ -92,7 +93,7 @@ class popover implements renderable, templatable {
         $this->gradetopass = $gradetopass;
         $this->showprogressbars = $showprogressbars;
         $this->itemmodule = $gradeitem->itemmodule;
-        $this->showsettings = $showsettings;
+        $this->showsettings = has_capability('moodle/course:manageactivities', $PAGE->context);
 
         if ($this->showsettings) {
             $action = new moodle_url(
@@ -105,7 +106,8 @@ class popover implements renderable, templatable {
                 ]
             );
 
-            $select = new single_select($action, 'gradepass', $this->get_options($gradeitem), round($gradeitem->gradepass, 0));
+            $select = new single_select($action, 'gradepass', $this->get_options($gradeitem), round($gradeitem->gradepass, 0),
+                [get_string('choose', 'format_etask')]);
             $select->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
             $select->attributes = ['onchange' => 'this.form.submit()'];
 

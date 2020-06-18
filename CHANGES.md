@@ -4,3 +4,5 @@
 - nastavení potřebné známky je z popoveru a ukládá se při změně hodnoty
 - zabezpečěné zpracování pro odesílaná data v nastavení
 - lepší responzivní design pro patičku
+- použití existujících oprávnění
+- získání enrolled studentů včetně oprávnění, bez inaktivních

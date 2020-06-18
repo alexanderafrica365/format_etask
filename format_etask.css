@@ -1,6 +1,5 @@
 /* Popover. */
 body.format-etask .popover.etask-popover {
-    /*max-width: 457px;*/
     min-width: 340px;
     max-width: 340px;
 }
@@ -16,17 +15,6 @@ body.format-etask .progress-bar-passed .progress-bar.bar {
 }
 body.format-etask .progress-bar-completed .progress-bar.bar {
     background-color: #ffc107;
-}
-/* Section line. */
-body.format-etask .border-secondary {
-    border-color: #dee2e6 !important;
-}
-/* Grade table. */
-body.format-etask .etask-grade-table .pointer {
-    cursor: pointer;
-}
-body.format-etask .etask-grade-table .grade-item-dialog {
-    opacity: 0.5;
 }
 /* Grade table activity colors. */
 body.format-etask .etask-grade-table .completed {
@@ -50,4 +38,3 @@ body.format-etask .etask-grade-table .passed a {
 body.format-etask .etask-grade-table .failed a {
     color: #fff;
 }
-

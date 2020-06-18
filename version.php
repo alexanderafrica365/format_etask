@@ -24,8 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020050800;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2019111200;        // Requires this Moodle version.
-$plugin->component = 'format_etask';    // Full name of the plugin (used for diagnostics).
-$plugin->release = '2.4 (Moodle 3.9)';
+$plugin->version   = 2020061606;
+$plugin->requires  = 2019111200;
+$plugin->supported = [38, 39];
+$plugin->component = 'format_etask';
 $plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.4';

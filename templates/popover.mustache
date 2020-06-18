@@ -89,12 +89,15 @@
     </div>
 
     {{#showsettings}}
-        <div class="border-top border-secondary mr-n3 ml-n3 mt-3 pt-3">
+        <div class="border-top mr-n3 ml-n3 mt-3 pt-3">
             <div class="d-flex mt-2 align-items-start pl-3">
                 {{{settingsicon}}}
                 <div class="d-flex flex-column w-100">
                     <h6 class="d-inline font-weight-bold">Settings</h6>
                     {{{select}}}
+                    <div class="position-relative">
+                        <a href="#" class="stretched-link">{{#str}}showmore, format_etask{{/str}}</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -63,8 +63,8 @@ if ($gradepass !== null && confirm_sesskey()) {
     }
 
      redirect(course_get_url($course), $message, null, $messagetype);
-} else if ($group !== null) {
-    $SESSION->etask['group'] = $group;
+} else if ($group > 0) {
+    $SESSION->format_etask['currentgroup'] = $group;
 
     redirect(course_get_url($course));
 }

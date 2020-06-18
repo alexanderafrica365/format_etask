@@ -89,7 +89,7 @@ class format_etask_renderer extends format_topics_renderer {
             int $cmid, int $completionexpected): string {
 
         // Get progress values.
-        [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values($this->coursesettings->show_progress_bars(),
+        [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values($this->coursesettings->show_activity_progress_bars(),
             $progressbardata, $studentscount);
 
         // Prepare module icon.
@@ -105,18 +105,15 @@ class format_etask_renderer extends format_topics_renderer {
         }
 
         // Create popover from template.
-        $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $this->coursesettings->show_progress_bars(),
-            $this->coursesettings->show_settings(), $cmid);
+        $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $this->coursesettings->show_activity_progress_bars(), $cmid);
 
         // Return grade item head link with popover.
-        return html_writer::div(
-            html_writer::link('#', implode('', [$ico, strtoupper(substr($gradeitem->itemmodule, 0, 1)), $itemnum]),
-                [
-                    'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
-                    'data-toggle' => 'etask-popover',
-                    'data-content' => $this->render($popover),
-                ]
-            )
+        return html_writer::link('javascript:void(null)', implode('', [$ico, strtoupper(substr($gradeitem->itemmodule, 0, 1)), $itemnum]),
+            [
+                'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
+                'data-toggle' => 'etask-popover',
+                'data-content' => $this->render($popover),
+            ]
         );
     }
 
@@ -128,14 +125,12 @@ class format_etask_renderer extends format_topics_renderer {
      * @param int $selectedgroup
      * @return string
      */
-    private function render_grade_table_footer(array $groups, int $studentscount, int $selectedgroup = null): string {
-        global $SESSION;
-
-        $pagingbar = $this->paging_bar($studentscount, $SESSION->etask['page'] ?? 0,
-            $this->coursesettings->get_students_per_page(), $this->page->url);
+    private function render_grade_table_footer(array $groups, int $studentscount, int $currentgroupid): string {
+        $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $this->coursesettings->get_students_per_page());
+        $pagingbar = $this->paging_bar($studentscount, $currentpage, $this->coursesettings->get_students_per_page(), $this->page->url);
 
         return $this->render(
-            new footer($pagingbar, $this->coursesettings->show_group_select($groups), $groups, $selectedgroup)
+            new footer($pagingbar, $groups, $currentgroupid)
         );
     }
 
@@ -165,7 +160,7 @@ class format_etask_renderer extends format_topics_renderer {
             $gradevalue = '&ndash;';
         }
 
-        if (has_capability('format/etask:teacher', $this->page->context)) {
+        if (has_capability('moodle/grade:edit', $this->page->context)) {
             $gradelinkparams = [
                 'courseid' => $this->page->course->id,
                 'id' => $usergrade->id,
@@ -205,46 +200,25 @@ class format_etask_renderer extends format_topics_renderer {
         global $USER;
         global $SESSION;
 
-        course_get_format($this->page->course)->set_pagination_page(); // @todo call only if pagingbar is available by permissions
+        //course_get_format($this->page->course)->set_pagination_page(); // @todo call only if pagingbar is available by permissions
 
         echo '
             <style type="text/css" media="screen" title="Graphic layout" scoped>
             <!--
-                @import "' . $CFG->wwwroot . '/course/format/etask/format_etask.css?v=29' . get_config('format_etask', 'version') . '";
+                @import "' . $CFG->wwwroot . '/course/format/etask/format_etask.css?v=30' . get_config('format_etask', 'version') . '";
             -->
             </style>'; // @todo remove it after moving styles to style.css
 
-        // Pagination page into session.
-        $page = optional_param('page', null, PARAM_INT);
-        if (!isset($SESSION->etask['page']) && !isset($page)) {
-            $SESSION->etask['page'] = 0;
-        } else if (isset($SESSION->etask['page']) && isset($page)) {
-            $SESSION->etask['page'] = $page;
-        }
-
         // Get all course groups and selected group to the group filter form.
-        $allcoursegroups = course_get_format($this->page->course)->get_course_groups((int)$course->id);
+        $allcoursegroups = course_get_format($course->id)->get_course_groups((int) $course->id);
         $allusergroups = current(groups_get_user_groups($course->id, $USER->id));
-        $selectedgroup = null;
-        if (has_capability('format/etask:teacher', $context)
-            || has_capability('format/etask:noneditingteacher', $context)) {
-            if (!empty($SESSION->etask['group'])) {
-                $selectedgroup = $SESSION->etask['group'];
-            } else if (!empty($allusergroups)) {
-                $selectedgroup = current($allusergroups);
-            } else {
-                $selectedgroup = key($allcoursegroups);
-            }
-        } else {
-            $selectedgroup = key($allcoursegroups);
-        }
 
         // Get mod info and prepare mod items.
         $modinfo = get_fast_modinfo($course);
         $moditems = course_get_format($this->page->course)->get_mod_items($modinfo);
 
         // Get all allowed course students.
-        $students = course_get_format($this->page->course)->get_students($context, $course, $selectedgroup);
+        $students = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', course_get_format($this->page->course)->get_current_group_id($course, $USER->id), 'u.*', null, 0, 0, true);
         // Students count for pagination.
         $studentscount = count($students);
         // Init grade items and students grades.
@@ -293,7 +267,7 @@ class format_etask_renderer extends format_topics_renderer {
         $privateview = false;
         $privateviewuserid = 0;
         // If private view is active, students can view only own grades.
-        if ($this->coursesettings->is_private_view()) {
+        if ($this->coursesettings->is_student_privacy()) {
             $privateview = true;
             $privateviewuserid = $USER->id;
             $studentscount = 1;
@@ -330,6 +304,7 @@ class format_etask_renderer extends format_topics_renderer {
 
             foreach ($gradeitems as $gradeitem) {
                 $activitycompletionstate = $activitycompletionstates[$moditems[$gradeitem->itemmodule][$gradeitem->iteminstance]];
+                // @todo make list [text, status]
                 $grade = $this->render_activity_body(
                     $usersgrades[$gradeitem->id][$user->id], $gradeitem, $activitycompletionstate, $user
                 );
@@ -370,14 +345,11 @@ class format_etask_renderer extends format_topics_renderer {
         }
 
         // Slice of students by paging after geting progres bar data.
-        $studentsperpage = $this->coursesettings->get_students_per_page();
-        $SESSION->etask['page'] = $studentscount <= $SESSION->etask['page'] * $studentsperpage
-            ? 0
-            : $SESSION->etask['page'];
+        $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $this->coursesettings->get_students_per_page());
         $data = array_slice(
             $data,
-            $SESSION->etask['page'] * $studentsperpage,
-            $studentsperpage,
+            $currentpage * $this->coursesettings->get_students_per_page(),
+            $this->coursesettings->get_students_per_page(),
             true
         );
 
@@ -391,14 +363,14 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetable->data = $data;
 
         // Grade table footer: groups filter, pagination and legend.
-        $gradetablefooter = $this->render_grade_table_footer($allcoursegroups, $studentscount, $selectedgroup);
+        $gradetablefooter = $this->render_grade_table_footer($allcoursegroups, $studentscount, course_get_format($this->page->course)->get_current_group_id($course, $USER->id));
         $css = 'border-bottom mb-3 pb-3';
-        if (!$this->coursesettings->is_placement_above()) {
+        if ($this->coursesettings->get_placement() === format_etask::PLACEMENT_BELOW) {
             $css = 'border-top mt-4 pt-4';
         }
         echo html_writer::div(
             html_writer::table($gradetable) . $gradetablefooter,
-            'etask-grade-table border-secondary ' . $css
+            'etask-grade-table ' . $css
         );
     }
 }

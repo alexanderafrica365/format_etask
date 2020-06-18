@@ -26,7 +26,6 @@ namespace format_etask\dataprovider;
 
 defined('MOODLE_INTERNAL') || die();
 
-use coding_exception;
 use context;
 use format_etask;
 use stdClass;
@@ -61,111 +60,55 @@ class course_settings {
     }
 
     /**
-     * True for private view.
+     * If true, student privacy is required.
      *
      * @return bool
      */
-    public function is_private_view(): bool {
-        if (!$this->course) {
-            return true;
-        }
-
-        if (has_capability('format/etask:teacher', $this->context)
-                || has_capability('format/etask:noneditingteacher', $this->context)) {
+    public function is_student_privacy(): bool {
+        if (has_capability('moodle/grade:viewall', $this->context)) {
             return false;
         }
 
-        return $this->course->privateview;
+        return (bool) $this->course->studentprivacy;
     }
 
     /**
-     * True for show progress bars.
+     * If true, activity progress bars can be shown.
      *
      * @return bool
      */
-    public function show_progress_bars(): bool {
-        if (!$this->course) {
+    public function show_activity_progress_bars(): bool {
+        if (has_capability('moodle/grade:viewall', $this->context)) {
             return true;
         }
 
-        return $this->course->progressbars || has_capability('format/etask:teacher', $this->context)
-            || has_capability('format/etask:noneditingteacher', $this->context);
+        return (bool) $this->course->activityprogressbars;
     }
 
     /**
-     * Students per page.
+     * Get students per page.
      *
      * @return int
      */
     public function get_students_per_page(): int {
-        if (!$this->course) {
-            return format_etask::STUDENTS_PER_PAGE_DEFAULT;
-        }
-
         return $this->course->studentsperpage ?? format_etask::STUDENTS_PER_PAGE_DEFAULT;
     }
 
     /**
-     * Activities sorting.
+     * Get activities sorting.
      *
      * @return string
      */
     public function get_activities_sorting(): string {
-        if (!$this->course) {
-            return format_etask::ACTIVITIES_SORTING_LATEST;
-        }
-
         return $this->course->activitiessorting ?? format_etask::ACTIVITIES_SORTING_LATEST;
     }
 
     /**
-     * True for above placement.
-     *
-     * @return bool
-     */
-    public function is_placement_above(): bool {
-        if (!$this->course) {
-            return true;
-        }
-
-        return $this->course->placement === format_etask::PLACEMENT_ABOVE;
-    }
-
-    /**
-     * Placement.
+     * Get grading table placement.
      *
      * @return string
      */
     public function get_placement(): string {
-        if (!$this->course) {
-            format_etask::PLACEMENT_ABOVE;
-        }
-
         return $this->course->placement ?? format_etask::PLACEMENT_ABOVE;
-    }
-
-    /**
-     * True for show group select.
-     *
-     * @param string[] $groups
-     *
-     * @return bool
-     * @throws coding_exception
-     */
-    public function show_group_select(array $groups): bool {
-        if (count($groups) <= 1) {
-            return false;
-        }
-
-        return has_capability('format/etask:teacher', $this->context)
-            || has_capability('format/etask:noneditingteacher', $this->context);
-    }
-
-    /**
-     * @return bool
-     * @throws coding_exception
-     */
-    public function show_settings(): bool {
-        return has_capability('format/etask:teacher', $this->context);
     }
 }
