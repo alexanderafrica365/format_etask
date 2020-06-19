@@ -53,18 +53,10 @@ course_create_sections_if_missing($course, 0);
 $renderer = $PAGE->get_renderer('format_etask');
 
 // Start eTask topics course format.
-//var_dump(has_capability('format/etask:view', $context));exit;
 if (has_capability('moodle/course:viewparticipants', $context)) {
-//    require_once($CFG->dirroot . '/course/format/etask/classes/dataprovider/course_settings.php');
-//    require_once($CFG->dirroot . '/grade/lib.php');
-
-    // Crete course settings data provider instance.
-    $coursesettings = new course_settings($context, $course);
-    // Set course settings to the renderer.
-    $renderer->set_course_settings($coursesettings);
 
     // The position above the sections.
-    if ($coursesettings->get_placement() === format_etask::PLACEMENT_ABOVE) {
+    if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
         $renderer->render_grade_table($context, $course);
     }
 
@@ -76,7 +68,7 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
     }
 
     // The position below the sections.
-    if ($coursesettings->get_placement() === format_etask::PLACEMENT_BELOW) {
+    if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_BELOW) {
         $renderer->render_grade_table($context, $course);
     }
 } else {

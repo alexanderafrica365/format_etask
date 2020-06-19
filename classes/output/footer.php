@@ -50,15 +50,17 @@ class footer implements renderable, templatable {
     /**
      * Footer constructor.
      *
+     * @param string $pagingbar
      * @param array $groups
-     * @param int $selectedgroup
-     * @param ?string $pagingbar
+     * @param int|null $selectedgroup
+     *
+     * @throws \moodle_exception
      * @throws coding_exception
      */
-    public function __construct(string $pagingbar, /*bool $showgroupselect,*/ array $groups, ?int $selectedgroup) {
+    public function __construct(string $pagingbar, array $groups, ?int $selectedgroup) {
         global $COURSE;
 
-        //if ($showgroupselect) {
+        if (count($groups)) {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
@@ -69,7 +71,7 @@ class footer implements renderable, templatable {
             $select = new single_select($action, 'group', $groups, $selectedgroup, []);
             $select->set_label(get_string('group'), ['class' => 'mb-0 d-none d-md-inline']);
             $this->select = $select;
-        //}
+        }
 
         $this->pagingbar = $pagingbar;
     }
