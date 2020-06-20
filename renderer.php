@@ -26,7 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/format/topics/renderer.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
-require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
 
 use format_etask\dataprovider\course_settings;
 use format_etask\form\group_form;
@@ -130,7 +129,7 @@ class format_etask_renderer extends format_topics_renderer {
     private function render_activity_body(grade_grade $usergrade, grade_item $gradeitem, bool $activitycompletionstate,
             stdClass $user): array {
         $finalgrade = round($usergrade->finalgrade, 0);
-        $status = course_get_format($this->page->course)->get_grade_item_status($gradeitem, $finalgrade, $activitycompletionstate);
+        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $finalgrade, $activitycompletionstate);
         if (empty($usergrade->rawscaleid) && $finalgrade > 0.0) {
             $gradevalue = $finalgrade;
         } else if (!empty($usergrade->rawscaleid) && $finalgrade > 0.0) {
@@ -183,7 +182,8 @@ class format_etask_renderer extends format_topics_renderer {
         global $CFG;
         global $USER;
         global $SESSION;
-        
+        global $PAGE;
+
         echo '
             <style type="text/css" media="screen" title="Graphic layout" scoped>
             <!--
@@ -200,17 +200,14 @@ class format_etask_renderer extends format_topics_renderer {
             $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
         // Students count for pagination.
         $studentscount = count($students);
+
         // Init grade items and students grades.
         $gradeitems = [];
         $usersgrades = [];
         // Collect students grades for all grade items.
         if (!empty($students)) {
             $gradeitems = grade_item::fetch_all(['courseid' => $course->id, 'itemtype' => 'mod', 'hidden' => 0]);
-            if ($gradeitems === false) {
-                $gradeitems = [];
-            }
-
-            if (!empty($gradeitems)) {
+            if ($gradeitems) {
                 // Grade items num.
                 $gradeitemsnum = [];
                 foreach ($gradeitems as $gradeitem) {
@@ -275,7 +272,7 @@ class format_etask_renderer extends format_topics_renderer {
             }
 
             foreach ($modinfo->cms as $cm) {
-                $completionexpected[$cm->id] = (int) $cm->completionexpected;
+                $completionexpected[$cm->id] = (int) $cm->completionexpected; // @todo comment - it is like due date
                 $activitycompletionstates[$cm->id] = (bool) $completion->get_data(
                     $cm, true, $user->id, $modinfo
                 )->completionstate;

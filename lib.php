@@ -271,10 +271,10 @@ class format_etask extends format_topics {
      * @return string
      */
     public function get_grade_item_status(
-        grade_item $gradeitem,
+        int $gradepass,
         float $grade,
         bool $activitycompletionstate): string {
-        $gradepass = (int) $gradeitem->gradepass;
+
         if (empty($grade) && $activitycompletionstate === true) {
             // Activity no have grade value and have completed status or is marked as completed.
             $status = self::STATUS_COMPLETED;

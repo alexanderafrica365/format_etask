@@ -17,7 +17,7 @@
 {{!
     @template format_etask/popover
 
-    This template renders the eTask popover.
+    This template renders the popover.
 
     Example context (json):
     {
@@ -31,6 +31,8 @@
         "itemmoduleicon": "<img ...>",
         "settingsicon": "<img ...>",
         "showsettings": true
+        "editurl": "/course/mod.php?update=...",
+        "viewurl": "/course/mod.php?show=..."
     }
 }}
 
@@ -42,7 +44,7 @@
     <div class="d-flex mt-2 align-items-start">
         {{{itemmoduleicon}}}
         <div class="d-flex flex-column w-100">
-            <a href="#" class="text-decoration-none d-block mb-3">
+            <a href="{{{viewurl}}}" class="text-decoration-none d-block mb-3">
                 <h6 class="d-inline font-weight-bold">{{itemname}}</h6>
             </a>
 
@@ -96,7 +98,7 @@
                     <h6 class="d-inline font-weight-bold">Settings</h6>
                     {{{select}}}
                     <div class="position-relative">
-                        <a href="#" class="stretched-link">{{#str}}showmore, format_etask{{/str}}</a>
+                        <a href="{{{editurl}}}" class="stretched-link">{{#str}}showmore, format_etask{{/str}}</a>
                     </div>
                 </div>
             </div>

@@ -68,6 +68,12 @@ class popover implements renderable, templatable {
     /** @var bool */
     private $showsettings;
 
+    /** @var string */
+    private $viewurl;
+
+    /** @var string */
+    private $editurl;
+
     /**
      * The popover constructor.
      *
@@ -94,6 +100,9 @@ class popover implements renderable, templatable {
         $this->showprogressbars = $showprogressbars;
         $this->itemmodule = $gradeitem->itemmodule;
         $this->showsettings = has_capability('moodle/course:manageactivities', $PAGE->context);
+        $this->viewurl = new moodle_url('/mod/' . $gradeitem->itemmodule . '/view.php', [
+            'id' => $cmid
+        ]);
 
         if ($this->showsettings) {
             $action = new moodle_url(
@@ -112,30 +121,15 @@ class popover implements renderable, templatable {
             $select->attributes = ['onchange' => 'this.form.submit()'];
 
             $this->select = $select;
-        }
 
-//        $sesskey = sesskey();
-//        $sectionreturn = optional_param('sr', 0, PARAM_INT);
-        // Prepare activity short link.
-//        if (has_capability('format/etask:teacher', $this->page->context)) {
-//            $itemtitleshortlink = html_writer::link(new moodle_url('/course/mod.php', [
-//                'sesskey' => $sesskey,
-//                'sr' => $sectionreturn,
-//                'update' => $cmid
-//            ]), $ico . $itemtitleshort, [
-//                'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
-//                'data-toggle' => 'popover',
-//                'data-content' => $this->render($popover)
-//            ]);
-//        } else {
-//            $itemtitleshortlink = html_writer::link(new moodle_url('/mod/' . $gradeitem->itemmodule . '/view.php', [
-//                'id' => $cmid
-//            ]), $ico . ' ' . $itemtitleshort, [
-//                'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
-//                'data-toggle' => 'popover',
-//                'data-content' => $this->render($popover)
-//            ]);
-//        }
+            $sesskey = sesskey();
+            $sectionreturn = optional_param('sr', 0, PARAM_INT);
+            $this->editurl = new moodle_url('/course/mod.php', [
+                'sesskey' => $sesskey,
+                'sr' => $sectionreturn,
+                'update' => $cmid
+            ]);
+        }
     }
 
     /**
@@ -159,10 +153,19 @@ class popover implements renderable, templatable {
         $data->settingsicon = $output->pix_icon('t/edit', get_string('edit'), 'core', ['class' => 'icon itemicon']);
         $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
         $data->showsettings = $this->showsettings;
+        $data->viewurl = $this->viewurl;
+        $data->editurl = $this->editurl;
 
         return $data;
     }
 
+    /**
+     * Return gradepass options for select.
+     *
+     * @param grade_item $gradeitem
+     *
+     * @return array
+     */
     private function get_options(grade_item $gradeitem): array {
         if ($scale = $gradeitem->load_scale()) {
             return make_menu_from_list($scale->scale);
