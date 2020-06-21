@@ -6,3 +6,4 @@
 - lepší responzivní design pro patičku
 - použití existujících oprávnění
 - získání enrolled studentů včetně oprávnění, bez inaktivních
+- podpora formátování gradevalue, např B- (80%)

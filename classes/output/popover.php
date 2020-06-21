@@ -56,6 +56,9 @@ class popover implements renderable, templatable {
     /** @var string */
     private $gradetopass;
 
+    /** @var string */
+    private $grademax;
+
     /** @var bool */
     private $showprogressbars;
 
@@ -81,13 +84,13 @@ class popover implements renderable, templatable {
      * @param int $completed
      * @param int $passed
      * @param int|null $duedate
-     * @param string $gradetopass
+     * @param string $gradepass
      * @param bool $showprogressbars
      * @param bool $showsettings
      * @param int $cmid
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-                string $gradetopass, bool $showprogressbars, int $cmid) {
+                string $gradepass, string $grademax, bool $showprogressbars, int $cmid) {
         global $COURSE;
         global $PAGE;
 
@@ -96,7 +99,8 @@ class popover implements renderable, templatable {
         $this->completed = $completed;
         $this->passed = $passed;
         $this->duedate = $duedate;
-        $this->gradetopass = $gradetopass;
+        $this->gradepass = $gradepass;
+        $this->grademax = $grademax;
         $this->showprogressbars = $showprogressbars;
         $this->itemmodule = $gradeitem->itemmodule;
         $this->showsettings = has_capability('moodle/course:manageactivities', $PAGE->context);
@@ -145,7 +149,8 @@ class popover implements renderable, templatable {
         $data->completed = $this->completed;
         $data->passed = $this->passed;
         $data->duedate = $this->duedate;
-        $data->gradetopass = $this->gradetopass;
+        $data->gradepass = $this->gradepass;
+        $data->grademax = $this->grademax;
         $data->showprogressbars = $this->showprogressbars;
         $data->itemmoduleicon = html_writer::img($output->image_url('icon', $this->itemmodule), '', [
             'class' => 'icon itemicon'

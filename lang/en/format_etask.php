@@ -69,6 +69,7 @@ $string['activityfailed'] = 'Failed';
 $string['choose'] = 'Choose ...';
 $string['showmore'] = 'Show more...';
 $string['timemodified'] = 'Last modified on {$a}';
+$string['max'] = 'max.';
 // Flash messages.
 $string['gradepasschanged'] = 'Grade to pass for activity <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Grade to pass for activity <strong>{$a}</strong> has been successfully removed.';

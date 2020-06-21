@@ -69,6 +69,7 @@ $string['activityfailed'] = 'Nesplněno';
 $string['choose'] = 'Vyberte ...';
 $string['showmore'] = 'Zobrazit více ...';
 $string['timemodified'] = 'Poslední úprava {$a}';
+$string['max'] = 'max.';
 // Flash messages.
 $string['gradepasschanged'] = 'Potřebné hodnocení u&nbsp;aktivity <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Potřebné hodnocení u&nbsp;aktivity <strong>{$a}</strong> bylo úšpěšně odstraněno.';

@@ -26,7 +26,7 @@
         "completed": 60,
         "passed": 50,
         "duedate": 1590760235,
-        "gradetopass": "80",
+        "gradepass": "80",
         "showprogressbars": false,
         "itemmoduleicon": "<img ...>",
         "settingsicon": "<img ...>",
@@ -49,17 +49,18 @@
             </a>
 
             {{#duedate}}
-                <div class="{{#gradetopass}}mb-1{{/gradetopass}}{{^gradetopass}}mb-3{{/gradetopass}}">
+                <div class="{{#gradepass}}mb-1{{/gradepass}}{{^gradepass}}mb-3{{/gradepass}}">
                     <span class="text-black-50">{{#str}}duedate, assign{{/str}}</span> {{#userdate}} {{duedate}}, {{#str}} strftimedaydatetime, core_langconfig {{/str}} {{/userdate}}
                 </div>
             {{/duedate}}
 
-            {{#gradetopass}}
+            {{#gradepass}}
                 <div class="mb-3">
                     <span class="text-black-50">{{#str}}gradepass, grades{{/str}}</span>
-                    <span class="badge badge-pill badge-success">{{gradetopass}}</span>
+                    <span class="badge badge-pill badge-success">{{gradepass}}</span>
+                    <span class="text-black-50"> / {{#str}}max, format_etask{{/str}} <span class="badge badge-pill badge-light">{{grademax}}</span></span>
                 </div>
-            {{/gradetopass}}
+            {{/gradepass}}
 
             {{#showprogressbars}}
                 <div class="progress-bar-completed pb-1">

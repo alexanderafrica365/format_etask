@@ -489,20 +489,6 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return scale text value.
-     *
-     * @param grade_item $gradeitem
-     * @param float $grade
-     *
-     * @return string
-     */
-    public function get_scale_text_value(grade_item $gradeitem, float $grade): string {
-        $scale = $gradeitem->load_scale();
-
-        return $scale->get_nearest_item($grade);
-    }
-
-    /**
      * Update gradepass of grade item.
      *
      * @param int $gradeitemid

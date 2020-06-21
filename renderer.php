@@ -79,13 +79,11 @@ class format_etask_renderer extends format_topics_renderer {
 
         // Get duedate timestamp and gradepass string.
         $duedate = course_get_format($this->page->course)->get_due_date($gradeitem, $completionexpected);
-        $gradepass = round($gradeitem->gradepass, 0);
-        if ($gradeitem->scaleid && $gradepass > 0) {
-            $gradepass = course_get_format($this->page->course)->get_scale_text_value($gradeitem, $gradepass);
-        }
+        $gradepass = grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0);
+        $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);
 
         // Create popover from template.
-        $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, course_get_format(
+        $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $grademax, course_get_format(
             $this->page->course)->show_activity_progress_bars(), $cmid);
 
         // Return grade item head link with popover.
@@ -128,19 +126,14 @@ class format_etask_renderer extends format_topics_renderer {
      */
     private function render_activity_body(grade_grade $usergrade, grade_item $gradeitem, bool $activitycompletionstate,
             stdClass $user): array {
-        $finalgrade = round($usergrade->finalgrade, 0);
-        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $finalgrade, $activitycompletionstate);
-        if (empty($usergrade->rawscaleid) && $finalgrade > 0.0) {
-            $gradevalue = $finalgrade;
-        } else if (!empty($usergrade->rawscaleid) && $finalgrade > 0.0) {
-            $gradevalue = course_get_format($this->page->course)->get_scale_text_value($gradeitem, $finalgrade);
-        } else if ($status === format_etask::STATUS_COMPLETED) {
+        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $activitycompletionstate);
+        $gradevalue = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
+        if ($status === format_etask::STATUS_COMPLETED) {
+            // @todo render it in the template
             $gradevalue = html_writer::tag('i', '', [
                 'class' => 'fa fa-check-square-o',
                 'area-hidden' => 'true'
             ]);
-        } else {
-            $gradevalue = '&ndash;';
         }
 
         if (has_capability('moodle/grade:edit', $this->page->context)) {
@@ -206,11 +199,12 @@ class format_etask_renderer extends format_topics_renderer {
         $usersgrades = [];
         // Collect students grades for all grade items.
         if (!empty($students)) {
-            $gradeitems = grade_item::fetch_all(['courseid' => $course->id, 'itemtype' => 'mod', 'hidden' => 0]);
+            $gradeitems = grade_item::fetch_all(['courseid' => $course->id, 'itemtype' => 'mod', 'hidden' => false]);
             if ($gradeitems) {
                 // Grade items num.
                 $gradeitemsnum = [];
                 foreach ($gradeitems as $gradeitem) {
+                    //@todo this foreach is doubled, but we need prepare item num before ordering
                     if (!isset($initnum[$gradeitem->itemmodule])) {
                         $initnum[$gradeitem->itemmodule] = 0;
                     }
@@ -234,6 +228,7 @@ class format_etask_renderer extends format_topics_renderer {
                         break;
                 }
 
+                // @todo this foreach is 3x in the code
                 foreach ($gradeitems as $gradeitem) {
                     $usersgrades[$gradeitem->id] = grade_grade::fetch_users_grades($gradeitem, array_keys($students), true);
                 }
@@ -256,6 +251,7 @@ class format_etask_renderer extends format_topics_renderer {
         $progressbardata = [];
         // Move logged in student at the first position in the grade table.
         if (isset($students[$USER->id]) && $privateview === false) {
+            // @todo use array pop/shift?
             $loggedinstudent = isset($students[$USER->id]) ? $students[$USER->id] : null;
             unset($students[$USER->id]);
             array_unshift($students , $loggedinstudent);
