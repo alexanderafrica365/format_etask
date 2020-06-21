@@ -97,25 +97,6 @@ class format_etask_renderer extends format_topics_renderer {
     }
 
     /**
-     * Create grade table form.
-     *
-     * @param array $groups
-     * @param int $studentscount
-     * @param int $selectedgroup
-     * @return string
-     */
-    private function render_grade_table_footer(array $groups, int $studentscount, int $currentgroupid): string {
-        $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, course_get_format(
-            $this->page->course)->get_students_per_page());
-        $pagingbar = $this->paging_bar($studentscount, $currentpage, course_get_format(
-            $this->page->course)->get_students_per_page(), $this->page->url);
-
-        return $this->render(
-            new footer($pagingbar, $groups, $currentgroupid)
-        );
-    }
-
-    /**
      * Html representation of activity body.
      *
      * @param grade_grade $usergrade
@@ -285,7 +266,7 @@ class format_etask_renderer extends format_topics_renderer {
                     $cell = new html_table_cell();
                     $cell->text = $grade['text'];
                     $cell->attributes = [
-                        'class' => 'position-relative text-center ' . $grade['status'],
+                        'class' => 'position-relative text-center text-nowrap p-2 ' . $grade['status'],
                         'title' => $user->firstname . ' ' . $user->lastname . ': ' . $gradeitem->itemname
                     ];
                     $bodycells[] = $cell;
@@ -311,7 +292,7 @@ class format_etask_renderer extends format_topics_renderer {
                 $cmid,
                 $completionexpected[$cmid]);
             $cell->attributes = [
-                'class' => 'text-ecenter text-nowrap'
+                'class' => 'text-center text-nowrap'
             ];
             $headcells[] = $cell;
         }
@@ -336,8 +317,8 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetable->data = $data;
 
         // Grade table footer: groups filter, pagination and legend.
-        $gradetablefooter = $this->render_grade_table_footer(course_get_format($course->id)->get_groups(), $studentscount,
-            course_get_format($this->page->course)->get_current_group_id());
+        $gradetablefooter = $this->render(new footer($studentscount, course_get_format($course->id)->get_groups(),
+            course_get_format($this->page->course)->get_current_group_id()));
         $css = 'border-bottom mb-3 pb-3';
         if (course_get_format($this->page->course)->get_placement() === format_etask::PLACEMENT_BELOW) {
             $css = 'border-top mt-4 pt-4';

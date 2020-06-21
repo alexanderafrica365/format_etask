@@ -50,15 +50,20 @@ class footer implements renderable, templatable {
     /**
      * Footer constructor.
      *
-     * @param string $pagingbar
+     * @param int $studentscount
      * @param array $groups
      * @param int|null $selectedgroup
      *
      * @throws \moodle_exception
      * @throws coding_exception
      */
-    public function __construct(string $pagingbar, array $groups, ?int $selectedgroup) {
-        global $COURSE;
+    public function __construct(int $studentscount, array $groups, ?int $selectedgroup) {
+        global $COURSE, $OUTPUT, $PAGE;
+
+        $currentpage = course_get_format($PAGE->course)->get_current_page($studentscount, course_get_format(
+            $PAGE->course)->get_students_per_page());
+        $this->pagingbar = $OUTPUT->paging_bar($studentscount, $currentpage, course_get_format(
+            $PAGE->course)->get_students_per_page(), $PAGE->url);
 
         if (count($groups)) {
             $action = new moodle_url(
@@ -72,8 +77,6 @@ class footer implements renderable, templatable {
             $select->set_label(get_string('group'), ['class' => 'mb-0 d-none d-md-inline']);
             $this->select = $select;
         }
-
-        $this->pagingbar = $pagingbar;
     }
 
     /**
