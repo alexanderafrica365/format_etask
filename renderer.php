@@ -70,7 +70,7 @@ class format_etask_renderer extends format_topics_renderer {
 
         // Get progress values.
         [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values(course_get_format(
-            $this->page->course)->show_activity_progress_bars(), $progressbardata, $studentscount);
+            $this->page->course)->show_grade_item_progress_bars(), $progressbardata, $studentscount);
 
         // Prepare module icon.
         $ico = html_writer::img($this->output->image_url('icon', $gradeitem->itemmodule), '', [
@@ -84,7 +84,7 @@ class format_etask_renderer extends format_topics_renderer {
 
         // Create popover from template.
         $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $grademax, course_get_format(
-            $this->page->course)->show_activity_progress_bars(), $cmid);
+            $this->page->course)->show_grade_item_progress_bars(), $cmid);
 
         // Return grade item head link with popover.
         return html_writer::link('javascript:void(null)', implode('', [$ico, strtoupper(substr($gradeitem->itemmodule, 0, 1)),
@@ -173,7 +173,7 @@ class format_etask_renderer extends format_topics_renderer {
         $students = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', course_get_format(
             $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
         // Students count for pagination.
-        $studentscount = count($students);
+        $studentscount = course_get_format($this->page->course)->is_student_privacy() ? 1 : count($students);
 
         // Init grade items and students grades.
         $gradeitems = [];
@@ -195,19 +195,8 @@ class format_etask_renderer extends format_topics_renderer {
                     }
                 }
 
-                // Sorting activities by course settings.
-                switch (course_get_format($this->page->course)->get_activities_sorting()) {
-                    case format_etask::ACTIVITIES_SORTING_OLDEST:
-                        ksort($gradeitems);
-                        break;
-                    case format_etask::ACTIVITIES_SORTING_INHERIT:
-                        $gradeitems = course_get_format($this->page->course)->sort_grade_items_by_sections($gradeitems, $moditems,
-                            $modinfo->sections);
-                        break;
-                    default:
-                        krsort($gradeitems);
-                        break;
-                }
+                // Sort grade items by course setting.
+                $gradeitems = course_get_format($this->page->course)->sort_gradeitems($gradeitems, $modinfo, $moditems);
 
                 // @todo this foreach is 3x in the code
                 foreach ($gradeitems as $gradeitem) {
@@ -222,11 +211,10 @@ class format_etask_renderer extends format_topics_renderer {
         if (course_get_format($this->page->course)->is_student_privacy()) {
             $privateview = true;
             $privateviewuserid = $USER->id;
-            $studentscount = 1;
         }
 
         $completion = new completion_info($this->page->course);
-        $activitycompletionstates = [];
+        $activitycompletionstates = []; //@todo rename to gradeitemcompletionstates
         $completionexpected = [];
         $data = [];
         $progressbardata = [];
@@ -273,6 +261,7 @@ class format_etask_renderer extends format_topics_renderer {
                 }
             }
 
+            //@todo this condition is 3x in this file
             if ($privateview === false || ($privateview === true && $user->id === $privateviewuserid)) {
                 $row = new html_table_row($bodycells);
                 $data[] = $row;

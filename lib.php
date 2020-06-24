@@ -57,13 +57,13 @@ class format_etask extends format_topics {
     public const STUDENTS_PER_PAGE_DEFAULT = 10;
 
     /** @var string */
-    public const ACTIVITIES_SORTING_LATEST = 'latest';
+    public const GRADEITEMS_SORTING_LATEST = 'latest';
 
     /** @var string */
-    public const ACTIVITIES_SORTING_OLDEST = 'oldest';
+    public const GRADEITEMS_SORTING_OLDEST = 'oldest';
 
     /** @var string */
-    public const ACTIVITIES_SORTING_INHERIT = 'inherit';
+    public const GRADEITEMS_SORTING_INHERIT = 'inherit';
 
     /** @var string */
     public const PLACEMENT_ABOVE = 'above';
@@ -102,7 +102,7 @@ class format_etask extends format_topics {
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
-                'activityprogressbars' => [
+                'gradeitemprogressbars' => [
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
@@ -110,8 +110,8 @@ class format_etask extends format_topics {
                     'default' => self::STUDENTS_PER_PAGE_DEFAULT,
                     'type' => PARAM_INT,
                 ],
-                'activitiessorting' => [
-                    'default' => self::ACTIVITIES_SORTING_LATEST,
+                'gradeitemssorting' => [
+                    'default' => self::GRADEITEMS_SORTING_LATEST,
                     'type' => PARAM_ALPHA,
                 ],
                 'placement' => [
@@ -147,7 +147,7 @@ class format_etask extends format_topics {
                     'help_component' => 'moodle',
                 ],
             ];
-            // The eTask settings.
+            // The eTask topics course format settings.
             $etasksettings = [
                 'studentprivacy' => [
                     'label' => new lang_string('studentprivacy', 'format_etask'),
@@ -161,15 +161,15 @@ class format_etask extends format_topics {
                         ]
                     ],
                 ],
-                'activityprogressbars' => [
-                    'label' => new lang_string('activityprogressbars', 'format_etask'),
-                    'help' => 'activityprogressbars',
+                'gradeitemprogressbars' => [
+                    'label' => new lang_string('gradeitemprogressbars', 'format_etask'),
+                    'help' => 'gradeitemprogressbars',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('activityprogressbars_no', 'format_etask'),
-                            1 => new lang_string('activityprogressbars_yes', 'format_etask'),
+                            0 => new lang_string('gradeitemprogressbars_no', 'format_etask'),
+                            1 => new lang_string('gradeitemprogressbars_yes', 'format_etask'),
                         ],
                     ],
                 ],
@@ -179,21 +179,21 @@ class format_etask extends format_topics {
                     'help_component' => 'format_etask',
                     'element_type' => 'text',
                 ],
-                'activitiessorting' => [
-                    'label' => new lang_string('activitiessorting', 'format_etask'),
-                    'help' => 'activitiessorting',
+                'gradeitemssorting' => [
+                    'label' => new lang_string('gradeitemssorting', 'format_etask'),
+                    'help' => 'gradeitemssorting',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            self::ACTIVITIES_SORTING_LATEST => new lang_string(
-                                'activitiessorting_latest', 'format_etask'
+                            self::GRADEITEMS_SORTING_LATEST => new lang_string(
+                                'gradeitemssorting_latest', 'format_etask'
                             ),
-                            self::ACTIVITIES_SORTING_OLDEST => new lang_string(
-                                'activitiessorting_oldest', 'format_etask'
+                            self::GRADEITEMS_SORTING_OLDEST => new lang_string(
+                                'gradeitemssorting_oldest', 'format_etask'
                             ),
-                            self::ACTIVITIES_SORTING_INHERIT => new lang_string(
-                                'activitiessorting_inherit', 'format_etask'
+                            self::GRADEITEMS_SORTING_INHERIT => new lang_string(
+                                'gradeitemssorting_inherit', 'format_etask'
                             ),
                         ],
                     ],
@@ -378,18 +378,18 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return true if activity progress bars can be shown.
+     * Return true if grade item progress bars can be shown.
      *
      * @return bool
      */
-    public function show_activity_progress_bars(): bool {
+    public function show_grade_item_progress_bars(): bool {
         global $PAGE;
 
         if (has_capability('moodle/grade:viewall', $PAGE->context)) {
             return true;
         }
 
-        return (bool) $this->course->activityprogressbars;
+        return (bool) $this->course->gradeitemprogressbars;
     }
 
     /**
@@ -402,12 +402,12 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return activities sorting.
+     * Return grade items sorting.
      *
      * @return string
      */
-    public function get_activities_sorting(): string {
-        return $this->course->activitiessorting ?? self::ACTIVITIES_SORTING_LATEST;
+    public function get_grade_items_sorting(): string {
+        return $this->course->gradeitemssorting ?? self::GRADEITEMS_SORTING_LATEST;
     }
 
     /**
@@ -505,6 +505,31 @@ class format_etask extends format_topics {
         $gradeitem->timemodified = time();
 
         return $DB->update_record('grade_items', $gradeitem);
+    }
+
+    /**
+     * Sort grade items by course setting.
+     *
+     * @param array $gradeitems
+     * @param course_modinfo $modinfo
+     * @param array $moditems
+     *
+     * @return array
+     */
+    public function sort_gradeitems(array $gradeitems, course_modinfo $modinfo, array $moditems): array {
+        switch ($this->get_grade_items_sorting()) {
+            case self::GRADEITEMS_SORTING_OLDEST:
+                ksort($gradeitems);
+                break;
+            case self::GRADEITEMS_SORTING_INHERIT:
+                $gradeitems = $this->sort_grade_items_by_sections($gradeitems, $moditems, $modinfo->sections);
+                break;
+            default:
+                krsort($gradeitems);
+                break;
+        }
+
+        return $gradeitems;
     }
 
     /**
