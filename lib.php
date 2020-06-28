@@ -275,6 +275,10 @@ class format_etask extends format_topics {
         float $grade,
         bool $activitycompletionstate): string {
 
+//        switch (true) {
+//            case !$grade;
+//        }
+
         if (empty($grade) && $activitycompletionstate === true) {
             // Activity no have grade value and have completed status or is marked as completed.
             $status = self::STATUS_COMPLETED;

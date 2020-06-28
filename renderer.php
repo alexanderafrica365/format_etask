@@ -48,6 +48,7 @@ class format_etask_renderer extends format_topics_renderer {
      * @return string
      */
     private function render_user(stdClass $user): string {
+        //@todo move this method to separated output class (see footer/popover)
         return $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
             'visibletoscreenreaders' => false]);
     }
@@ -146,17 +147,14 @@ class format_etask_renderer extends format_topics_renderer {
     }
 
     /**
-     * Render grade table.
+     * Print grading table.
      *
      * @param context_course $context
      * @param stdClass $course
      * @return void
      */
-    public function render_grade_table(context_course $context, stdClass $course) {
-        global $CFG;
-        global $USER;
-        global $SESSION;
-        global $PAGE;
+    public function print_grading_table(context_course $context, stdClass $course) {
+        global $CFG, $USER;
 
         echo '
             <style type="text/css" media="screen" title="Graphic layout" scoped>

@@ -57,7 +57,7 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
 
     // The position above the sections.
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
-        $renderer->render_grade_table($context, $course);
+        $renderer->print_grading_table($context, $course);
     }
 
     // Sections.
@@ -69,7 +69,7 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
 
     // The position below the sections.
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_BELOW) {
-        $renderer->render_grade_table($context, $course);
+        $renderer->print_grading_table($context, $course);
     }
 } else {
     // Sections.

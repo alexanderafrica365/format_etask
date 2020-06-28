@@ -27,9 +27,11 @@
         "passed": 50,
         "duedate": 1590760235,
         "gradepass": "80",
+        "grademax": "100",
         "showprogressbars": false,
         "itemmoduleicon": "<img ...>",
         "settingsicon": "<img ...>",
+        "select": "<form><select><option>...</option></select></form>",
         "showsettings": true
         "editurl": "/course/mod.php?update=...",
         "viewurl": "/course/mod.php?show=..."
@@ -56,9 +58,9 @@
 
             {{#gradepass}}
                 <div class="mb-3">
-                    <span class="text-black-50">{{#str}}gradepass, grades{{/str}}</span>
-                    <span class="badge badge-pill badge-success">{{gradepass}}</span>
-                    <span class="text-black-50"> / {{#str}}max, format_etask{{/str}} <span class="badge badge-pill badge-light">{{grademax}}</span></span>
+                    <span class="text-black-50">{{#str}}gradepass, grades{{/str}}
+                        <span class="badge badge-pill badge-success">{{gradepass}}</span> / {{#str}}max, format_etask{{/str}} <span class="badge badge-pill badge-light">{{grademax}}</span>
+                    </span>
                 </div>
             {{/gradepass}}
 

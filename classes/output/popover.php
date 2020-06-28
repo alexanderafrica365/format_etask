@@ -54,7 +54,7 @@ class popover implements renderable, templatable {
     private $duedate;
 
     /** @var string */
-    private $gradetopass;
+    private $gradepass;
 
     /** @var string */
     private $grademax;
@@ -85,14 +85,13 @@ class popover implements renderable, templatable {
      * @param int $passed
      * @param int|null $duedate
      * @param string $gradepass
+     * @param string $grademax
      * @param bool $showprogressbars
-     * @param bool $showsettings
      * @param int $cmid
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
                 string $gradepass, string $grademax, bool $showprogressbars, int $cmid) {
-        global $COURSE;
-        global $PAGE;
+        global $COURSE, $PAGE;
 
         $this->itemname = $gradeitem->itemname;
         $this->timemodified = $gradeitem->timemodified;
