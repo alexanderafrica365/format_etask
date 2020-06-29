@@ -58,18 +58,19 @@ $string['placement_help'] = 'Toto nastavení určuje umístění tabulky hodnoce
 $string['placement_above'] = 'Umístit tabulku hodnocení nad tématy kurzu';
 $string['placement_below'] = 'Umístit tabulku hodnocení pod tématy kurzu';
 // Plugin settings strings.
-$string['registeredduedatemodules'] = 'Registrované moduly s datumem odevzdání';
-$string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota datumu odevzání.';
+$string['registeredduedatemodules'] = 'Registrované moduly s datem odevzdání';
+$string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota data odevzdání.';
 // Legend strings.
 $string['legend'] = 'Legenda';
 $string['gradeitemcompleted'] = 'Dokončeno';
 $string['gradeitempassed'] = 'Splněno';
 $string['gradeitemfailed'] = 'Nesplněno';
 // Popover strings.
-$string['choose'] = 'Vyberte ...';
-$string['showmore'] = 'Zobrazit více ...';
 $string['timemodified'] = 'Poslední úprava {$a}';
 $string['max'] = 'max.';
+$string['progresspercentage'] = '{$a} % <span class="text-black-50"> studentů</span>';
+$string['choose'] = 'Vyberte ...';
+$string['showmore'] = 'Zobrazit více ...';
 // Flash messages.
 $string['gradepasschanged'] = 'Potřebné hodnocení u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Potřebné hodnocení u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';

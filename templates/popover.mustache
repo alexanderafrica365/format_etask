@@ -72,7 +72,7 @@
                     <div class="small">
                         <div class="d-flex justify-content-between">
                             <div>{{#str}}gradeitemcompleted, format_etask{{/str}}</div>
-                            <div>{{completed}} %</div>
+                            <div>{{#str}}progresspercentage, format_etask, {{completed}} {{/str}}</div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="small">
                         <div class="d-flex justify-content-between">
                             <div>{{#str}}gradeitempassed, format_etask{{/str}}</div>
-                            <div>{{passed}} %</div>
+                            <div>{{#str}}progresspercentage, format_etask, {{passed}} {{/str}}</div>
                         </div>
                     </div>
                 </div>

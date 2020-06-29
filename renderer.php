@@ -203,21 +203,13 @@ class format_etask_renderer extends format_topics_renderer {
             }
         }
 
-        $privateview = false;
-        $privateviewuserid = 0;
-        // If private view is active, students can view only own grades.
-        if (course_get_format($this->page->course)->is_student_privacy()) {
-            $privateview = true;
-            $privateviewuserid = $USER->id;
-        }
-
         $completion = new completion_info($this->page->course);
         $activitycompletionstates = []; //@todo rename to gradeitemcompletionstates
         $completionexpected = [];
         $data = [];
         $progressbardata = [];
         // Move logged in student at the first position in the grade table.
-        if (isset($students[$USER->id]) && $privateview === false) {
+        if (isset($students[$USER->id]) && !course_get_format($this->page->course)->is_student_privacy()) {
             // @todo use array pop/shift?
             $loggedinstudent = isset($students[$USER->id]) ? $students[$USER->id] : null;
             unset($students[$USER->id]);
@@ -225,7 +217,7 @@ class format_etask_renderer extends format_topics_renderer {
         }
         foreach ($students as $user) {
             $bodycells = [];
-            if ($privateview === false || ($privateview === true && $user->id === $privateviewuserid)) {
+            if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
                 $cell = new html_table_cell();
                 $cell->text = $this->render_user($user);
                 $cell->attributes = [
@@ -248,7 +240,7 @@ class format_etask_renderer extends format_topics_renderer {
                     $usersgrades[$gradeitem->id][$user->id], $gradeitem, $activitycompletionstate, $user
                 );
                 $progressbardata[$gradeitem->id][] = $grade['status'];
-                if ($privateview === false || ($privateview === true && $user->id === $privateviewuserid)) {
+                if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
                     $cell = new html_table_cell();
                     $cell->text = $grade['text'];
                     $cell->attributes = [
@@ -260,7 +252,7 @@ class format_etask_renderer extends format_topics_renderer {
             }
 
             //@todo this condition is 3x in this file
-            if ($privateview === false || ($privateview === true && $user->id === $privateviewuserid)) {
+            if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
                 $row = new html_table_row($bodycells);
                 $data[] = $row;
             }

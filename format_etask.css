@@ -1,7 +1,7 @@
 /* Popover. */
 body.format-etask .popover.etask-popover {
-    min-width: 340px;
-    max-width: 340px;
+    min-width: 380px;
+    max-width: 380px;
 }
 body.format-etask .badge.badge-success {
     background-color: #28a745;

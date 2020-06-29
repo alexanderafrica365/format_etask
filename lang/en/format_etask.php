@@ -66,10 +66,11 @@ $string['gradeitemcompleted'] = 'Completed';
 $string['gradeitempassed'] = 'Passed';
 $string['gradeitemfailed'] = 'Failed';
 // Popover strings.
-$string['choose'] = 'Choose ...';
-$string['showmore'] = 'Show more...';
 $string['timemodified'] = 'Last modified on {$a}';
 $string['max'] = 'max.';
+$string['progresspercentage'] = '{$a} % <span class="text-black-50">of students</span>';
+$string['choose'] = 'Choose ...';
+$string['showmore'] = 'Show more...';
 // Flash messages.
 $string['gradepasschanged'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Grade to pass for grade item <strong>{$a}</strong> has been successfully removed.';
