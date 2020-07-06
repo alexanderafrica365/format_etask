@@ -60,14 +60,12 @@ class format_etask_renderer extends format_topics_renderer {
      * @param int $itemnum
      * @param int $studentscount
      * @param array $progressbardata
-     * @param int $cmid
-     * @param int $completionexpected
+     *
      * @return string
      * @throws coding_exception
      * @throws moodle_exception
      */
-    private function render_activities_head(grade_item $gradeitem, int $itemnum, int $studentscount, array $progressbardata,
-            int $cmid, int $completionexpected): string {
+    private function render_activities_head(grade_item $gradeitem, int $itemnum, int $studentscount, array $progressbardata): string {
 
         // Get progress values.
         [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values(course_get_format(
@@ -79,13 +77,13 @@ class format_etask_renderer extends format_topics_renderer {
         ]);
 
         // Get duedate timestamp and gradepass string.
-        $duedate = course_get_format($this->page->course)->get_due_date($gradeitem, $completionexpected);
+        $duedate = course_get_format($this->page->course)->get_due_date($gradeitem);
         $gradepass = grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0);
         $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);
 
         // Create popover from template.
         $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $grademax, course_get_format(
-            $this->page->course)->show_grade_item_progress_bars(), $cmid);
+            $this->page->course)->show_grade_item_progress_bars());
 
         // Return grade item head link with popover.
         return html_writer::link('javascript:void(null)', implode('', [$ico, strtoupper(substr($gradeitem->itemmodule, 0, 1)),
@@ -100,15 +98,21 @@ class format_etask_renderer extends format_topics_renderer {
     /**
      * Html representation of activity body.
      *
-     * @param grade_grade $usergrade
      * @param grade_item $gradeitem
-     * @param bool $activitycompletionstate
      * @param stdClass $user
      * @return array
      */
-    private function render_activity_body(grade_grade $usergrade, grade_item $gradeitem, bool $activitycompletionstate,
-            stdClass $user): array {
-        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $activitycompletionstate);
+    private function render_activity_body(grade_item $gradeitem, stdClass $user): array {
+        global $COURSE;
+
+        $completion = new completion_info($COURSE);
+        $gradeitemcompletionstate = $completion->get_data(
+            get_fast_modinfo($COURSE->id, $user->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance],
+            false,
+            $user->id
+        )->completionstate;
+        $usergrade = $gradeitem->get_grade($user->id);
+        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $gradeitemcompletionstate);
         $gradevalue = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
         if ($status === format_etask::STATUS_COMPLETED) {
             // @todo render it in the template
@@ -163,10 +167,6 @@ class format_etask_renderer extends format_topics_renderer {
             -->
             </style>'; // @todo remove it after moving styles to style.css
 
-        // Get mod info and prepare mod items.
-        $modinfo = get_fast_modinfo($course);
-        $moditems = course_get_format($this->page->course)->get_mod_items($modinfo);
-
         // Get all allowed course students.
         $students = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', course_get_format(
             $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
@@ -175,45 +175,37 @@ class format_etask_renderer extends format_topics_renderer {
 
         // Init grade items and students grades.
         $gradeitems = [];
-        $usersgrades = [];
         // Collect students grades for all grade items.
         if (!empty($students)) {
             $gradeitems = grade_item::fetch_all(['courseid' => $course->id, 'itemtype' => 'mod', 'hidden' => false]);
             if ($gradeitems) {
                 // Grade items num.
                 $gradeitemsnum = [];
+                $items = [];
                 foreach ($gradeitems as $gradeitem) {
-                    //@todo this foreach is doubled, but we need prepare item num before ordering
-                    if (!isset($initnum[$gradeitem->itemmodule])) {
-                        $initnum[$gradeitem->itemmodule] = 0;
-                    }
+                    //@todo place it somewhere to remove deletion in progress items!
+//                    $deletioninprogress = (bool) get_fast_modinfo($course->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->deletioninprogress;
+//                    if ($deletioninprogress) {
+//                        continue;
+//                    }
 
-                    if (!isset($gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance])) {
-                        $gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance] = ++$initnum[$gradeitem->itemmodule];
-                    }
+                    //@todo this foreach is doubled, but we need prepare item num before ordering
+                    $initnum[$gradeitem->itemmodule] = $initnum[$gradeitem->itemmodule] ?? 0;
+                    $gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance] = ++$initnum[$gradeitem->itemmodule];
                 }
 
                 // Sort grade items by course setting.
-                $gradeitems = course_get_format($this->page->course)->sort_gradeitems($gradeitems, $modinfo, $moditems);
-
-                // @todo this foreach is 3x in the code
-                foreach ($gradeitems as $gradeitem) {
-                    $usersgrades[$gradeitem->id] = grade_grade::fetch_users_grades($gradeitem, array_keys($students), true);
-                }
+                $gradeitems = course_get_format($this->page->course)->sort_gradeitems($gradeitems);
             }
         }
 
-        $completion = new completion_info($this->page->course);
-        $activitycompletionstates = []; //@todo rename to gradeitemcompletionstates
-        $completionexpected = [];
         $data = [];
         $progressbardata = [];
         // Move logged in student at the first position in the grade table.
         if (isset($students[$USER->id]) && !course_get_format($this->page->course)->is_student_privacy()) {
-            // @todo use array pop/shift?
-            $loggedinstudent = isset($students[$USER->id]) ? $students[$USER->id] : null;
+            $currentuser = $students[$USER->id];
             unset($students[$USER->id]);
-            array_unshift($students , $loggedinstudent);
+            array_unshift($students , $currentuser);
         }
         foreach ($students as $user) {
             $bodycells = [];
@@ -226,19 +218,9 @@ class format_etask_renderer extends format_topics_renderer {
                 $bodycells[] = $cell;
             }
 
-            foreach ($modinfo->cms as $cm) {
-                $completionexpected[$cm->id] = (int) $cm->completionexpected; // @todo comment - it is like due date
-                $activitycompletionstates[$cm->id] = (bool) $completion->get_data(
-                    $cm, true, $user->id, $modinfo
-                )->completionstate;
-            }
-
             foreach ($gradeitems as $gradeitem) {
-                $activitycompletionstate = $activitycompletionstates[$moditems[$gradeitem->itemmodule][$gradeitem->iteminstance]];
                 // @todo make list [text, status]
-                $grade = $this->render_activity_body(
-                    $usersgrades[$gradeitem->id][$user->id], $gradeitem, $activitycompletionstate, $user
-                );
+                $grade = $this->render_activity_body($gradeitem, $user);
                 $progressbardata[$gradeitem->id][] = $grade['status'];
                 if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
                     $cell = new html_table_cell();
@@ -261,15 +243,13 @@ class format_etask_renderer extends format_topics_renderer {
         $headcells = ['']; // First cell of the head is empty.
         // Render table cells.
         foreach ($gradeitems as $gradeitem) {
-            $cmid = (int) $moditems[$gradeitem->itemmodule][$gradeitem->iteminstance];
             $cell = new html_table_cell();
             $cell->text = $this->render_activities_head(
                 $gradeitem,
                 $gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance],
                 count($students),
-                $progressbardata[$gradeitem->id],
-                $cmid,
-                $completionexpected[$cmid]);
+                $progressbardata[$gradeitem->id]
+            );
             $cell->attributes = [
                 'class' => 'text-center text-nowrap'
             ];

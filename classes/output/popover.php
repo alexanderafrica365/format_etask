@@ -87,11 +87,12 @@ class popover implements renderable, templatable {
      * @param string $gradepass
      * @param string $grademax
      * @param bool $showprogressbars
-     * @param int $cmid
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-                string $gradepass, string $grademax, bool $showprogressbars, int $cmid) {
+                string $gradepass, string $grademax, bool $showprogressbars) {
         global $COURSE, $PAGE;
+
+        $cmid = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id;
 
         $this->itemname = $gradeitem->itemname;
         $this->timemodified = $gradeitem->timemodified;

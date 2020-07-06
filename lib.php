@@ -221,30 +221,14 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return module items.
-     *
-     * @param course_modinfo $modinfo
-     * @return array
-     */
-    public function get_mod_items(course_modinfo $modinfo): array {
-        $moditems = [];
-        foreach ($modinfo->cms as $cm) {
-            $moditems[$cm->modname][$cm->instance] = $cm->id;
-        }
-
-        return $moditems;
-    }
-
-    /**
      * Return due date of grade item.
      *
      * @param grade_item $gradeitem
-     * @param int $completionexpected
      *
      * @return int|null
      */
-    public function get_due_date(grade_item $gradeitem, int $completionexpected): ?int {
-        global $DB;
+    public function get_due_date(grade_item $gradeitem): ?int {
+        global $DB, $COURSE;
 
         $time = null;
         $gradedatefields = $this->get_due_date_fields();
@@ -258,6 +242,8 @@ class format_etask extends format_topics {
         if ($time > 0) {
             return $time;
         }
+
+        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->completionexpected;
 
         return $completionexpected > 0 ? $completionexpected : null;
     }
@@ -300,14 +286,16 @@ class format_etask extends format_topics {
      * Sort grade items by sections.
      *
      * @param array $gradeitems
-     * @param array $moditems
-     * @param array $sections
      * @return array
      */
-    public function sort_grade_items_by_sections(array $gradeitems, array $moditems, array $sections): array {
+    public function sort_grade_items_by_sections(array $gradeitems): array {
+        global $COURSE;
+
+        //@todo document it
         $sequence = [];
         $sorted = [];
         // Prepare sequence array. Sequence contains an array of grade items.
+        $sections = get_fast_modinfo($COURSE)->sections;
         foreach ($sections as $section) {
             foreach ($section as $order) {
                 $sequence[$order][] = $order;
@@ -316,7 +304,7 @@ class format_etask extends format_topics {
 
         // Prepare associative array of grade item instance and grade item ids for this instance.
         foreach ($gradeitems as $gradeitem) {
-            $gradeiteminstanceids[$moditems[$gradeitem->itemmodule][$gradeitem->iteminstance]][] = $gradeitem->id;
+            $gradeiteminstanceids[(int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id][] = $gradeitem->id;
         }
 
         // Replace sequence array with grade item instance ids. Sequence must contains grade item instances only.
@@ -515,18 +503,16 @@ class format_etask extends format_topics {
      * Sort grade items by course setting.
      *
      * @param array $gradeitems
-     * @param course_modinfo $modinfo
-     * @param array $moditems
      *
      * @return array
      */
-    public function sort_gradeitems(array $gradeitems, course_modinfo $modinfo, array $moditems): array {
+    public function sort_gradeitems(array $gradeitems): array {
         switch ($this->get_grade_items_sorting()) {
             case self::GRADEITEMS_SORTING_OLDEST:
                 ksort($gradeitems);
                 break;
             case self::GRADEITEMS_SORTING_INHERIT:
-                $gradeitems = $this->sort_grade_items_by_sections($gradeitems, $moditems, $modinfo->sections);
+                $gradeitems = $this->sort_grade_items_by_sections($gradeitems);
                 break;
             default:
                 krsort($gradeitems);

@@ -65,7 +65,7 @@ class footer implements renderable, templatable {
         $this->pagingbar = $OUTPUT->paging_bar($studentscount, $currentpage, course_get_format(
             $PAGE->course)->get_students_per_page(), $PAGE->url);
 
-        if (count($groups)) {
+        if (count($groups) > 1) {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
