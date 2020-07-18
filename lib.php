@@ -291,39 +291,25 @@ class format_etask extends format_topics {
     public function sort_grade_items_by_sections(array $gradeitems): array {
         global $COURSE;
 
-        //@todo document it
-        $sequence = [];
-        $sorted = [];
-        // Prepare sequence array. Sequence contains an array of grade items.
-        $sections = get_fast_modinfo($COURSE)->sections;
+        $sections = get_fast_modinfo($COURSE)->get_sections();
+        $cmids = [];
+        // Prepare order of cmids by sections.
         foreach ($sections as $section) {
-            foreach ($section as $order) {
-                $sequence[$order][] = $order;
-            }
+            $cmids = array_merge($cmids, $section);
         }
 
-        // Prepare associative array of grade item instance and grade item ids for this instance.
-        foreach ($gradeitems as $gradeitem) {
-            $gradeiteminstanceids[(int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id][] = $gradeitem->id;
-        }
+        // Sort grade items by cmids.
+        uasort($gradeitems, function($a, $b) use ($cmids, $COURSE) {
+            $cmida = get_fast_modinfo($COURSE->id)->instances[$a->itemmodule][$a->iteminstance]->id;
+            $cmidb = get_fast_modinfo($COURSE->id)->instances[$b->itemmodule][$b->iteminstance]->id;
 
-        // Replace sequence array with grade item instance ids. Sequence must contains grade item instances only.
-        $sequence = array_replace(array_intersect_key($sequence, $gradeiteminstanceids), $gradeiteminstanceids);
+            $cmpa = array_search($cmida, $cmids);
+            $cmpb = array_search($cmidb, $cmids);
 
-        // Prepare array of sorted grade item ids.
-        $sortedgradeitemids = [];
-        foreach ($sequence as $gradeiteminstance) {
-            foreach ($gradeiteminstance as $id) {
-                $sortedgradeitemids[] = $id;
-            }
-        }
+            return $cmpa > $cmpb;
+        });
 
-        // Sort grade items.
-        foreach ($sortedgradeitemids as $gradeitemid) {
-            $sorted[$gradeitemid] = $gradeitems[$gradeitemid];
-        }
-
-        return $sorted;
+        return $gradeitems;
     }
 
     /**
@@ -500,22 +486,57 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Sort grade items by course setting.
+     * Get sorted grade items.
      *
-     * @param array $gradeitems
-     *
-     * @return array
+     * @return array<string, grade_item>
      */
-    public function sort_gradeitems(array $gradeitems): array {
+    public function get_sorted_gradeitems(): ?array {
+        global $COURSE;
+
+        // Fetch all grade item instances.
+        $gradeiteminstances = grade_item::fetch_all(['courseid' => $COURSE->id, 'itemtype' => 'mod', 'hidden' => false]);
+        $gradeitems = [];
+
+        // If grade item instances return false, e.g. no grade items -> return empty array.
+        if (!$gradeiteminstances) {
+            return [];
+        }
+
+        /** @var grade_item $gradeiteminstance */
+        foreach ($gradeiteminstances as $gradeiteminstance) {
+            // If grade item has deletion in progress, continue.
+            $deletioninprogress = (bool) get_fast_modinfo($COURSE->id)->instances[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance]->deletioninprogress;
+            if ($deletioninprogress) {
+                continue;
+            }
+
+            // Initialize grade item number.
+            $initnum[$gradeiteminstance->itemmodule] = $initnum[$gradeiteminstance->itemmodule] ?? 0;
+
+            if ($gradeiteminstance->itemnumber > 0) {
+                $shortcut = sprintf('%s%d.%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)), $initnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
+            } else {
+                $shortcut = sprintf('%s%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)), ++$initnum[$gradeiteminstance->itemmodule]);
+            }
+
+            // Collect grade items with numbering.
+            $gradeitems[$shortcut] = $gradeiteminstance;
+        }
+
+        // Sort grade items by course setting.
         switch ($this->get_grade_items_sorting()) {
             case self::GRADEITEMS_SORTING_OLDEST:
-                ksort($gradeitems);
+                uasort($gradeitems, function($a, $b) {
+                    return $a->id > $b->id;
+                });
                 break;
             case self::GRADEITEMS_SORTING_INHERIT:
                 $gradeitems = $this->sort_grade_items_by_sections($gradeitems);
                 break;
             default:
-                krsort($gradeitems);
+                uasort($gradeitems, function($a, $b) {
+                    return $a->id < $b->id;
+                });
                 break;
         }
 

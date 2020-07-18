@@ -7,3 +7,5 @@
 - použití existujících oprávnění
 - získání enrolled studentů včetně oprávnění, bez inaktivních
 - podpora formátování gradevalue, např B- (80%)
+- vylepšené číslování aktivit (W1, W1.1)
+- optimalizace rychlosti

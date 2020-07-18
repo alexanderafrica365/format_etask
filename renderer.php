@@ -57,7 +57,7 @@ class format_etask_renderer extends format_topics_renderer {
      * HTML representation of activities head.
      *
      * @param grade_item $gradeitem
-     * @param int $itemnum
+     * @param string $shortcut
      * @param int $studentscount
      * @param array $progressbardata
      *
@@ -65,7 +65,7 @@ class format_etask_renderer extends format_topics_renderer {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    private function render_activities_head(grade_item $gradeitem, int $itemnum, int $studentscount, array $progressbardata): string {
+    private function render_activities_head(grade_item $gradeitem, string $shortcut, int $studentscount, array $progressbardata): string {
 
         // Get progress values.
         [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values(course_get_format(
@@ -86,8 +86,7 @@ class format_etask_renderer extends format_topics_renderer {
             $this->page->course)->show_grade_item_progress_bars());
 
         // Return grade item head link with popover.
-        return html_writer::link('javascript:void(null)', implode('', [$ico, strtoupper(substr($gradeitem->itemmodule, 0, 1)),
-            $itemnum]), [
+        return html_writer::link('javascript:void(null)', implode('', [$ico, $shortcut]), [
                 'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
                 'data-toggle' => 'etask-popover',
                 'data-content' => $this->render($popover),
@@ -172,32 +171,7 @@ class format_etask_renderer extends format_topics_renderer {
             $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
         // Students count for pagination.
         $studentscount = course_get_format($this->page->course)->is_student_privacy() ? 1 : count($students);
-
-        // Init grade items and students grades.
-        $gradeitems = [];
-        // Collect students grades for all grade items.
-        if (!empty($students)) {
-            $gradeitems = grade_item::fetch_all(['courseid' => $course->id, 'itemtype' => 'mod', 'hidden' => false]);
-            if ($gradeitems) {
-                // Grade items num.
-                $gradeitemsnum = [];
-                $items = [];
-                foreach ($gradeitems as $gradeitem) {
-                    //@todo place it somewhere to remove deletion in progress items!
-//                    $deletioninprogress = (bool) get_fast_modinfo($course->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->deletioninprogress;
-//                    if ($deletioninprogress) {
-//                        continue;
-//                    }
-
-                    //@todo this foreach is doubled, but we need prepare item num before ordering
-                    $initnum[$gradeitem->itemmodule] = $initnum[$gradeitem->itemmodule] ?? 0;
-                    $gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance] = ++$initnum[$gradeitem->itemmodule];
-                }
-
-                // Sort grade items by course setting.
-                $gradeitems = course_get_format($this->page->course)->sort_gradeitems($gradeitems);
-            }
-        }
+        $gradeitems = count($students) ? course_get_format($this->page->course)->get_sorted_gradeitems() : [];
 
         $data = [];
         $progressbardata = [];
@@ -242,11 +216,11 @@ class format_etask_renderer extends format_topics_renderer {
         // Table head.
         $headcells = ['']; // First cell of the head is empty.
         // Render table cells.
-        foreach ($gradeitems as $gradeitem) {
+        foreach ($gradeitems as $shortcut => $gradeitem) {
             $cell = new html_table_cell();
             $cell->text = $this->render_activities_head(
                 $gradeitem,
-                $gradeitemsnum[$gradeitem->itemmodule][$gradeitem->iteminstance],
+                $shortcut,
                 count($students),
                 $progressbardata[$gradeitem->id]
             );
