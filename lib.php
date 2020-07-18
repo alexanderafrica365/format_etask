@@ -80,7 +80,7 @@ class format_etask extends format_topics {
      * - privateview
      * - progressbars
      * - studentsperpage
-     * - activitiessorting
+     * - gradeitemssorting
      *
      * @param bool $foreditform
      * @return array of options
@@ -221,103 +221,17 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return due date of grade item.
+     * Get completed and passed percentage of grade item.
      *
-     * @param grade_item $gradeitem
+     * @param bool $showprogressbars
+     * @param array $progressbardata
+     * @param int $studentscount
      *
-     * @return int|null
-     */
-    public function get_due_date(grade_item $gradeitem): ?int {
-        global $DB, $COURSE;
-
-        $time = null;
-        $gradedatefields = $this->get_due_date_fields();
-
-        if (isset($gradedatefields[$gradeitem->itemmodule])) {
-            $time = (int) $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
-                'id' => $gradeitem->iteminstance
-            ], IGNORE_MISSING);
-        }
-
-        if ($time > 0) {
-            return $time;
-        }
-
-        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->completionexpected;
-
-        return $completionexpected > 0 ? $completionexpected : null;
-    }
-
-    /**
-     * Return grade stasus.
-     *
-     * @param grade_item $gradeitem
-     * @param float $grade
-     * @param bool $activitycompletionstate
-     * @return string
-     */
-    public function get_grade_item_status(
-        int $gradepass,
-        float $grade,
-        bool $activitycompletionstate): string {
-
-//        switch (true) {
-//            case !$grade;
-//        }
-
-        if (empty($grade) && $activitycompletionstate === true) {
-            // Activity no have grade value and have completed status or is marked as completed.
-            $status = self::STATUS_COMPLETED;
-        } else if (empty($grade) || empty($gradepass)) {
-            // Activity no have grade value and is not completed or grade to pass is not set.
-            $status = self::STATUS_NONE;
-        } else if ($grade >= $gradepass) {
-            // Activity grade value is higher then grade to pass.
-            $status = self::STATUS_PASSED;
-        } else if ($grade < $gradepass) {
-            // Activity grade value is lower then grade to pass.
-            $status = self::STATUS_FAILED;
-        }
-
-        return $status;
-    }
-
-    /**
-     * Sort grade items by sections.
-     *
-     * @param array $gradeitems
-     * @return array
-     */
-    public function sort_grade_items_by_sections(array $gradeitems): array {
-        global $COURSE;
-
-        $sections = get_fast_modinfo($COURSE)->get_sections();
-        $cmids = [];
-        // Prepare order of cmids by sections.
-        foreach ($sections as $section) {
-            $cmids = array_merge($cmids, $section);
-        }
-
-        // Sort grade items by cmids.
-        uasort($gradeitems, function($a, $b) use ($cmids, $COURSE) {
-            $cmida = get_fast_modinfo($COURSE->id)->instances[$a->itemmodule][$a->iteminstance]->id;
-            $cmidb = get_fast_modinfo($COURSE->id)->instances[$b->itemmodule][$b->iteminstance]->id;
-
-            $cmpa = array_search($cmida, $cmids);
-            $cmpb = array_search($cmidb, $cmids);
-
-            return $cmpa > $cmpb;
-        });
-
-        return $gradeitems;
-    }
-
-    /**
-     * @return int[]
+     * @return array<float, float>
      */
     public function get_progress_values(bool $showprogressbars, array $progressbardata, int $studentscount): array {
         if (!$showprogressbars) {
-            return [null, null];
+            return [0.0, 0.0];
         }
 
         // Init progress bars data.
@@ -449,7 +363,7 @@ class format_etask extends format_topics {
      * @throws coding_exception
      */
     public function get_current_page(int $studentscount, int $studentsperpage): int {
-        global $SESSION;
+        global $COURSE, $SESSION;
 
         $currentpage = optional_param('page', null, PARAM_INT);
         if ($currentpage !== null) {
@@ -458,12 +372,12 @@ class format_etask extends format_topics {
 
         // Use "<=" because pages are numbered from 0.
         if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage']
-            * $studentsperpage) {
+            * $studentsperpage && !course_get_format($COURSE)->is_student_privacy()) {
             // Set current page to last page.
             return (int) $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
         }
 
-        return isset($SESSION->format_etask['currentpage']) ? $SESSION->format_etask['currentpage'] : 0;
+        return isset($SESSION->format_etask['currentpage']) && $SESSION->format_etask['currentpage'] > 0 ? $SESSION->format_etask['currentpage'] : 0;
     }
 
     /**
@@ -539,6 +453,95 @@ class format_etask extends format_topics {
                 });
                 break;
         }
+
+        return $gradeitems;
+    }
+
+    /**
+     * Return due date of grade item.
+     *
+     * @param grade_item $gradeitem
+     *
+     * @return int|null
+     */
+    public function get_due_date(grade_item $gradeitem): ?int {
+        global $DB, $COURSE;
+
+        $time = null;
+        $gradedatefields = $this->get_due_date_fields();
+
+        if (isset($gradedatefields[$gradeitem->itemmodule])) {
+            $time = (int) $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
+                'id' => $gradeitem->iteminstance
+            ], IGNORE_MISSING);
+        }
+
+        if ($time > 0) {
+            return $time;
+        }
+
+        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->completionexpected;
+
+        return $completionexpected > 0 ? $completionexpected : null;
+    }
+
+    /**
+     * Return grade stasus.
+     *
+     * @param float $gradepass
+     * @param float $grade
+     * @param bool $activitycompletionstate
+     *
+     * @return string
+     */
+    public function get_grade_item_status(
+        float $gradepass,
+        float $grade,
+        bool $activitycompletionstate): string {
+
+        if ($grade === 0.0 && $activitycompletionstate === true) {
+            // Activity no have grade value and have completed status or is marked as completed.
+            $status = self::STATUS_COMPLETED;
+        } else if ($grade === 0.0 || $gradepass === 0.0) {
+            // Activity no have grade value and is not completed or grade to pass is not set.
+            $status = self::STATUS_NONE;
+        } else if ($grade >= $gradepass) {
+            // Activity grade value is higher then grade to pass.
+            $status = self::STATUS_PASSED;
+        } else {
+            // Activity grade value is lower then grade to pass ($grade < $gradepass).
+            $status = self::STATUS_FAILED;
+        }
+
+        return $status;
+    }
+
+    /**
+     * Sort grade items by sections.
+     *
+     * @param array $gradeitems
+     * @return array
+     */
+    private function sort_grade_items_by_sections(array $gradeitems): array {
+        global $COURSE;
+
+        $sections = get_fast_modinfo($COURSE)->get_sections();
+        $cmids = [];
+        // Prepare order of cmids by sections.
+        foreach ($sections as $section) {
+            $cmids = array_merge($cmids, $section);
+        }
+
+        // Sort grade items by cmids.
+        uasort($gradeitems, function($a, $b) use ($cmids, $COURSE) {
+            $cmida = get_fast_modinfo($COURSE->id)->instances[$a->itemmodule][$a->iteminstance]->id;
+            $cmidb = get_fast_modinfo($COURSE->id)->instances[$b->itemmodule][$b->iteminstance]->id;
+
+            $cmpa = array_search($cmida, $cmids);
+            $cmpb = array_search($cmidb, $cmids);
+
+            return $cmpa > $cmpb;
+        });
 
         return $gradeitems;
     }

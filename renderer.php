@@ -54,7 +54,7 @@ class format_etask_renderer extends format_topics_renderer {
     }
 
     /**
-     * HTML representation of activities head.
+     * HTML representation of grade item head.
      *
      * @param grade_item $gradeitem
      * @param string $shortcut
@@ -65,7 +65,7 @@ class format_etask_renderer extends format_topics_renderer {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    private function render_activities_head(grade_item $gradeitem, string $shortcut, int $studentscount, array $progressbardata): string {
+    private function render_gradeitem_head(grade_item $gradeitem, string $shortcut, int $studentscount, array $progressbardata): string {
 
         // Get progress values.
         [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values(course_get_format(
@@ -111,7 +111,7 @@ class format_etask_renderer extends format_topics_renderer {
             $user->id
         )->completionstate;
         $usergrade = $gradeitem->get_grade($user->id);
-        $status = course_get_format($this->page->course)->get_grade_item_status((int) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $gradeitemcompletionstate);
+        $status = course_get_format($this->page->course)->get_grade_item_status((float) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $gradeitemcompletionstate);
         $gradevalue = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
         if ($status === format_etask::STATUS_COMPLETED) {
             // @todo render it in the template
@@ -135,18 +135,15 @@ class format_etask_renderer extends format_topics_renderer {
                 $gradelinkparams['itemid'] = $gradeitem->id;
             }
 
-            $gradelink = html_writer::link(new moodle_url('/grade/edit/tree/grade.php', $gradelinkparams), $gradevalue, [
+            $grade = html_writer::link(new moodle_url('/grade/edit/tree/grade.php', $gradelinkparams), $gradevalue, [
                 'class' => 'd-block stretched-link',
                 'title' => fullname($user) . ': ' . $gradeitem->itemname
             ]);
         } else {
-            $gradelink = $gradevalue;
+            $grade = $gradevalue;
         }
 
-        return [
-            'text' => $gradelink,
-            'status' => $status
-        ];
+        return [$grade, $status];
     }
 
     /**
@@ -182,8 +179,10 @@ class format_etask_renderer extends format_topics_renderer {
             array_unshift($students , $currentuser);
         }
         foreach ($students as $user) {
+            // Collect table cells by student privacy. Either all or the current student.
+            $collectcell = !course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id);
             $bodycells = [];
-            if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
+            if ($collectcell) {
                 $cell = new html_table_cell();
                 $cell->text = $this->render_user($user);
                 $cell->attributes = [
@@ -193,22 +192,20 @@ class format_etask_renderer extends format_topics_renderer {
             }
 
             foreach ($gradeitems as $gradeitem) {
-                // @todo make list [text, status]
-                $grade = $this->render_activity_body($gradeitem, $user);
-                $progressbardata[$gradeitem->id][] = $grade['status'];
-                if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
+                [$grade, $status] = $this->render_activity_body($gradeitem, $user);
+                $progressbardata[$gradeitem->id][] = $status;
+                if ($collectcell) {
                     $cell = new html_table_cell();
-                    $cell->text = $grade['text'];
+                    $cell->text = $grade;
                     $cell->attributes = [
-                        'class' => 'position-relative text-center text-nowrap p-2 ' . $grade['status'],
+                        'class' => 'position-relative text-center text-nowrap p-2 ' . $status,
                         'title' => $user->firstname . ' ' . $user->lastname . ': ' . $gradeitem->itemname
                     ];
                     $bodycells[] = $cell;
                 }
             }
 
-            //@todo this condition is 3x in this file
-            if (!course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id)) {
+            if (count($bodycells) > 0) {
                 $row = new html_table_row($bodycells);
                 $data[] = $row;
             }
@@ -218,7 +215,7 @@ class format_etask_renderer extends format_topics_renderer {
         // Render table cells.
         foreach ($gradeitems as $shortcut => $gradeitem) {
             $cell = new html_table_cell();
-            $cell->text = $this->render_activities_head(
+            $cell->text = $this->render_gradeitem_head(
                 $gradeitem,
                 $shortcut,
                 count($students),
@@ -230,15 +227,17 @@ class format_etask_renderer extends format_topics_renderer {
             $headcells[] = $cell;
         }
 
-        // Slice of students by paging after geting progres bar data.
-        $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, course_get_format(
-            $this->page->course)->get_students_per_page());
-        $data = array_slice(
-            $data,
-            $currentpage * course_get_format($this->page->course)->get_students_per_page(),
-            course_get_format($this->page->course)->get_students_per_page(),
-            true
-        );
+        // Slice of students by paging after getting progress bar data.
+        $studentsperpage = course_get_format($this->page->course)->get_students_per_page();
+        if ($studentscount > $studentsperpage) {
+            $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $studentsperpage);
+            $data = array_slice(
+                $data,
+                $currentpage * course_get_format($this->page->course)->get_students_per_page(),
+                course_get_format($this->page->course)->get_students_per_page(),
+                true
+            );
+        }
 
         // Html table.
         $gradetable = new html_table();
