@@ -32,3 +32,26 @@
 .course-content ul.topics li.section .section_action_menu .menu-action-text {
     white-space: nowrap;
 }
+
+/* Popover. */
+body.format-etask .popover.etask-popover {
+    min-width: 380px;
+    max-width: 380px;
+}
+
+body.format-etask .popover.etask-popover .popover-body {
+    padding: 0;
+}
+
+/* Moodle to Bootstrap colors overrides. */
+body.format-etask td.bg-success, body.format-etask .badge.badge-success, body.format-etask .progress-bar-passed .progress-bar.bar {
+    background-color: #28a745 !important;
+}
+
+body.format-etask td.bg-warning, body.format-etask .badge.badge-warning, body.format-etask .progress-bar-completed .progress-bar.bar {
+    background-color: #ffc107 !important;
+}
+
+body.format-etask td.bg-danger, body.format-etask .badge.badge-danger {
+    background-color: #dc3545 !important;
+}

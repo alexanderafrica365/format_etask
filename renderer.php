@@ -24,14 +24,17 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/course/format/topics/renderer.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_body.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_head.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
+require_once($CFG->dirroot.'/course/format/topics/renderer.php');
 
 use format_etask\dataprovider\course_settings;
 use format_etask\form\group_form;
 use format_etask\form\settings_form;
 use format_etask\output\footer;
-use format_etask\output\popover;
+use format_etask\output\gradeitem_body;
+use format_etask\output\gradeitem_head;
 
 /**
  * Basic renderer for eTask topics format.
@@ -42,111 +45,6 @@ use format_etask\output\popover;
 class format_etask_renderer extends format_topics_renderer {
 
     /**
-     * HTML representation of user picture and name with link to the profile.
-     *
-     * @param stdClass $user
-     * @return string
-     */
-    private function render_user(stdClass $user): string {
-        //@todo move this method to separated output class (see footer/popover)
-        return $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
-            'visibletoscreenreaders' => false]);
-    }
-
-    /**
-     * HTML representation of grade item head.
-     *
-     * @param grade_item $gradeitem
-     * @param string $shortcut
-     * @param int $studentscount
-     * @param array $progressbardata
-     *
-     * @return string
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    private function render_gradeitem_head(grade_item $gradeitem, string $shortcut, int $studentscount, array $progressbardata): string {
-
-        // Get progress values.
-        [$progresscompleted, $progresspassed] = course_get_format($this->page->course)->get_progress_values(course_get_format(
-            $this->page->course)->show_grade_item_progress_bars(), $progressbardata, $studentscount);
-
-        // Prepare module icon.
-        $ico = html_writer::img($this->output->image_url('icon', $gradeitem->itemmodule), '', [
-            'class' => 'icon itemicon mr-1'
-        ]);
-
-        // Get duedate timestamp and gradepass string.
-        $duedate = course_get_format($this->page->course)->get_due_date($gradeitem);
-        $gradepass = grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0);
-        $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);
-
-        // Create popover from template.
-        $popover = new popover($gradeitem, $progresscompleted, $progresspassed, $duedate, $gradepass, $grademax, course_get_format(
-            $this->page->course)->show_grade_item_progress_bars());
-
-        // Return grade item head link with popover.
-        return html_writer::link('javascript:void(null)', implode('', [$ico, $shortcut]), [
-                'class' => 'd-inline-block p-2 dropdown-toggle font-weight-normal',
-                'data-toggle' => 'etask-popover',
-                'data-content' => $this->render($popover),
-            ]
-        );
-    }
-
-    /**
-     * Html representation of activity body.
-     *
-     * @param grade_item $gradeitem
-     * @param stdClass $user
-     * @return array
-     */
-    private function render_activity_body(grade_item $gradeitem, stdClass $user): array {
-        global $COURSE;
-
-        $completion = new completion_info($COURSE);
-        $gradeitemcompletionstate = $completion->get_data(
-            get_fast_modinfo($COURSE->id, $user->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance],
-            false,
-            $user->id
-        )->completionstate;
-        $usergrade = $gradeitem->get_grade($user->id);
-        $status = course_get_format($this->page->course)->get_grade_item_status((float) $gradeitem->gradepass, $usergrade->finalgrade ?? 0.0, $gradeitemcompletionstate);
-        $gradevalue = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
-        if ($status === format_etask::STATUS_COMPLETED) {
-            // @todo render it in the template
-            $gradevalue = html_writer::tag('i', '', [
-                'class' => 'fa fa-check-square-o',
-                'area-hidden' => 'true'
-            ]);
-        }
-
-        if (has_capability('moodle/grade:edit', $this->page->context)) {
-            $gradelinkparams = [
-                'courseid' => $this->page->course->id,
-                'id' => $usergrade->id,
-                'gpr_type' => 'report',
-                'gpr_plugin' => 'grader',
-                'gpr_courseid' => $this->page->course->id
-            ];
-
-            if (empty($usergrade->id)) {
-                $gradelinkparams['userid'] = $user->id;
-                $gradelinkparams['itemid'] = $gradeitem->id;
-            }
-
-            $grade = html_writer::link(new moodle_url('/grade/edit/tree/grade.php', $gradelinkparams), $gradevalue, [
-                'class' => 'd-block stretched-link',
-                'title' => fullname($user) . ': ' . $gradeitem->itemname
-            ]);
-        } else {
-            $grade = $gradevalue;
-        }
-
-        return [$grade, $status];
-    }
-
-    /**
      * Print grading table.
      *
      * @param context_course $context
@@ -154,24 +52,20 @@ class format_etask_renderer extends format_topics_renderer {
      * @return void
      */
     public function print_grading_table(context_course $context, stdClass $course) {
-        global $CFG, $USER;
-
-        echo '
-            <style type="text/css" media="screen" title="Graphic layout" scoped>
-            <!--
-                @import "' . $CFG->wwwroot . '/course/format/etask/format_etask.css?v=30' . get_config('format_etask', 'version') . '";
-            -->
-            </style>'; // @todo remove it after moving styles to style.css
+        global $USER;
 
         // Get all allowed course students.
         $students = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', course_get_format(
             $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
-        // Students count for pagination.
+        // Get students count for pagination.
         $studentscount = course_get_format($this->page->course)->is_student_privacy() ? 1 : count($students);
+        // Get sorted grade items.
         $gradeitems = count($students) ? course_get_format($this->page->course)->get_sorted_gradeitems() : [];
 
+        /** @var html_table_row[] $data */
         $data = [];
-        $progressbardata = [];
+        /** @var array<int, string[]> $gradeitemsstatuses */
+        $gradeitemsstatuses = [];
         // Move logged in student at the first position in the grade table.
         if (isset($students[$USER->id]) && !course_get_format($this->page->course)->is_student_privacy()) {
             $currentuser = $students[$USER->id];
@@ -179,27 +73,29 @@ class format_etask_renderer extends format_topics_renderer {
             array_unshift($students , $currentuser);
         }
         foreach ($students as $user) {
-            // Collect table cells by student privacy. Either all or the current student.
+            // Collect table cells by student privacy. Either all or the current student only.
             $collectcell = !course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id);
             $bodycells = [];
             if ($collectcell) {
                 $cell = new html_table_cell();
-                $cell->text = $this->render_user($user);
+                $cell->text = $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
+                    'visibletoscreenreaders' => false]);
                 $cell->attributes = [
                     'class' => 'text-nowrap pr-2'
                 ];
                 $bodycells[] = $cell;
             }
 
+            /** @var grade_item $gradeitem */
             foreach ($gradeitems as $gradeitem) {
-                [$grade, $status] = $this->render_activity_body($gradeitem, $user);
-                $progressbardata[$gradeitem->id][] = $status;
+                $status = course_get_format($this->page->course)->get_grade_item_status($gradeitem, $user);
+                $gradeitemsstatuses[$gradeitem->id][] = $status;
                 if ($collectcell) {
                     $cell = new html_table_cell();
-                    $cell->text = $grade;
+                    $cell->text = $this->render(new gradeitem_body($gradeitem, $user, $status));
                     $cell->attributes = [
-                        'class' => 'position-relative text-center text-nowrap p-2 ' . $status,
-                        'title' => $user->firstname . ' ' . $user->lastname . ': ' . $gradeitem->itemname
+                        'class' => 'position-relative text-center text-nowrap p-2 ' . course_get_format($this->page->course)->transform_status_to_css($status),
+                        'title' => fullname($user) . ', ' . $gradeitem->itemname
                     ];
                     $bodycells[] = $cell;
                 }
@@ -215,12 +111,8 @@ class format_etask_renderer extends format_topics_renderer {
         // Render table cells.
         foreach ($gradeitems as $shortcut => $gradeitem) {
             $cell = new html_table_cell();
-            $cell->text = $this->render_gradeitem_head(
-                $gradeitem,
-                $shortcut,
-                count($students),
-                $progressbardata[$gradeitem->id]
-            );
+            $cell->text = $this->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id],
+                count($students)));
             $cell->attributes = [
                 'class' => 'text-center text-nowrap'
             ];
@@ -231,12 +123,7 @@ class format_etask_renderer extends format_topics_renderer {
         $studentsperpage = course_get_format($this->page->course)->get_students_per_page();
         if ($studentscount > $studentsperpage) {
             $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $studentsperpage);
-            $data = array_slice(
-                $data,
-                $currentpage * course_get_format($this->page->course)->get_students_per_page(),
-                course_get_format($this->page->course)->get_students_per_page(),
-                true
-            );
+            $data = array_slice($data, $currentpage * $studentsperpage, $studentsperpage, true);
         }
 
         // Html table.

@@ -39,9 +39,9 @@ $string['showfromothers'] = 'Zobrazit téma';
 $string['privacy:metadata'] = 'Modul Formát eTask tématické uspořádání neukládá žádné osobní údaje.';
 // Course format settings strings.
 $string['studentprivacy'] = 'Soukromí studenta';
-$string['studentprivacy_help'] = 'Toto nastavení určuje, zda může student v tabulce hodnocení vidět hodnocení ostatních nebo ne.';
-$string['studentprivacy_no'] = 'Student může v tabulce hodnocení vidět hodnocení ostatních';
-$string['studentprivacy_yes'] = 'Student může v tabulce hodnocení vidět pouze své hodnocení';
+$string['studentprivacy_help'] = 'Toto nastavení určuje, zda může student v tabulce hodnocení vidět známky ostatních nebo ne.';
+$string['studentprivacy_no'] = 'Student může v tabulce hodnocení vidět známky ostatních';
+$string['studentprivacy_yes'] = 'Student může v tabulce hodnocení vidět pouze své známky';
 $string['gradeitemprogressbars'] = 'Plnění hodnocené položky';
 $string['gradeitemprogressbars_help'] = 'Toto nastavení určuje, zda se má studentovi zobrazit plnění hodnocené položky v tabulce hodnocení.';
 $string['gradeitemprogressbars_no'] = 'Skrýt studentovi plnění hodnocené položky v tabulce hodnocení';
@@ -72,6 +72,6 @@ $string['progresspercentage'] = '{$a} % <span class="text-black-50"> studentů</
 $string['choose'] = 'Vyberte ...';
 $string['showmore'] = 'Zobrazit více ...';
 // Flash messages.
-$string['gradepasschanged'] = 'Potřebné hodnocení u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
-$string['gradepassremoved'] = 'Potřebné hodnocení u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';
-$string['gradepassunablesave'] = 'Potřebné hodnocení u&nbsp;hodnocené položky <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
+$string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
+$string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';
+$string['gradepassunablesave'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';

@@ -15,31 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains main class for eTask topics course format.
+ * This file contains the main class for the eTask topics course format.
  *
- * @since     Moodle 2.0
  * @package   format_etask
- * @copyright 2009 Sam Hemelryk
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot. '/course/format/topics/lib.php');
 
-use core\notification;
 use core\output\inplace_editable;
 use format_etask\dataprovider\course_settings;
 
 /**
- * Main class for the eTask topics course format.
+ * The main class for the eTask topics course format.
  *
  * @package    format_etask
- * @copyright  2012 Marina Glancy
+ * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_etask extends format_topics {
-
-    // @todo change constants to private (if possible) after lib migration
 
     /** @var string */
     public const STATUS_COMPLETED = 'completed';
@@ -75,12 +71,13 @@ class format_etask extends format_topics {
      * Definitions of the additional options that this course format uses for course.
      *
      * eTask topics format uses the following options:
-     * - coursedisplay
      * - hiddensections
-     * - privateview
-     * - progressbars
+     * - coursedisplay
+     * - studentprivacy
+     * - gradeitemprogressbars
      * - studentsperpage
      * - gradeitemssorting
+     * - placement
      *
      * @param bool $foreditform
      * @return array of options
@@ -221,38 +218,37 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Get completed and passed percentage of grade item.
+     * Return the grade item completed/passed progress in percent.
      *
-     * @param bool $showprogressbars
-     * @param array $progressbardata
+     * @param string[] $gradeitemstatuses
      * @param int $studentscount
      *
      * @return array<float, float>
      */
-    public function get_progress_values(bool $showprogressbars, array $progressbardata, int $studentscount): array {
-        if (!$showprogressbars) {
+    public function get_progress_values(array $gradeitemstatuses, int $studentscount): array {
+        global $COURSE;
+
+        // If progress bars are not allowed, return zero values.
+        if (!course_get_format($COURSE)->show_grade_item_progress_bars()) {
             return [0.0, 0.0];
         }
 
         // Init progress bars data.
         $progressbardatainit = [
-            'passed' => 0,
-            'completed' => 0,
-            'failed' => 0
+            'passed' => 0.0,
+            'completed' => 0.0,
+            'failed' => 0.0
         ];
 
-        $progressbardatacount = array_merge($progressbardatainit, array_count_values($progressbardata));
-        $progresscompleted = round(100 * (
-                array_sum([
-                    $progressbardatacount['completed'],
-                    $progressbardatacount['passed'], $progressbardatacount['failed']
-                ]) / $studentscount));
+        // Merge initial values with the count of each status.
+        $progressbardatacount = array_merge($progressbardatainit, array_count_values($gradeitemstatuses));
+        // Calculate % of completed/passed progress.
+        $progresscompleted = round(100 * (array_sum([$progressbardatacount['completed'], $progressbardatacount['passed'],
+            $progressbardatacount['failed']]) / $studentscount));
         $progresspassed = round(100 * ($progressbardatacount['passed'] / $studentscount));
 
         return [$progresscompleted, $progresspassed];
     }
-
-    //-------------------------------- DONE ----------------------------------------
 
     /**
      * Return true if student privacy is required.
@@ -262,6 +258,7 @@ class format_etask extends format_topics {
     public function is_student_privacy(): bool {
         global $PAGE;
 
+        // If the capability to view all the grades, return false, i.e. do not take care of student privacy.
         if (has_capability('moodle/grade:viewall', $PAGE->context)) {
             return false;
         }
@@ -270,13 +267,14 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return true if grade item progress bars can be shown.
+     * Return true if the grade item progress bars can be shown.
      *
      * @return bool
      */
     public function show_grade_item_progress_bars(): bool {
         global $PAGE;
 
+        // If the capability to view all the grades, return true, i.e. show the progress bars.
         if (has_capability('moodle/grade:viewall', $PAGE->context)) {
             return true;
         }
@@ -294,7 +292,7 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return grade items sorting.
+     * Return the grade items sorting type.
      *
      * @return string
      */
@@ -303,7 +301,7 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return grading table placement.
+     * Return the grading table placement.
      *
      * @return string
      */
@@ -312,7 +310,7 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return array of groups (id => name). If user has not capability to access all groups, only groups for specific user are
+     * Return array of groups (ID => name). If the user has no capability to access all groups, only groups for a specific user are
      * returned.
      *
      * @return array<int, string>
@@ -321,9 +319,12 @@ class format_etask extends format_topics {
     public function get_groups(): array {
         global $PAGE, $USER;
 
+        // If the capability to access all groups, set the user ID to 0.
         $userid = has_capability('moodle/site:accessallgroups', $PAGE->context) ? 0 : $USER->id;
+        // Get all groups by the user ID. If the user ID is 0, all groups are returned.
         $groups = groups_get_all_groups($PAGE->course->id, $userid, 0, 'g.id, g.name', false);
 
+        // Transform groups to an array of group ID => group name.
         foreach ($groups as $id => $group) {
             /** @var array<int, string> $transformedgroups */
             $transformedgroups[$id] = $group->name;
@@ -333,31 +334,37 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return current group id. If user has not capability to access all groups, only groups for specific user are returned.
+     * Return current group ID. If the user has no capability to access all groups, only groups for a specific user are returned.
      *
      * @return int
      * @throws coding_exception
      */
     public function get_current_group_id(): int {
-        global $SESSION, $PAGE, $USER;
+        global $PAGE, $SESSION, $USER;
 
+        // If the capability to access all groups, set the user ID to 0.
         $userid = has_capability('moodle/site:accessallgroups', $PAGE->context) ? 0 : $USER->id;
         /** @var array<int, int> $groupids */
         $groupids = array_keys(groups_get_all_groups($PAGE->course->id, $userid, 0, 'g.id', false));
 
+        // Set current group ID to 0 due to undefined variable notice.
+        $currentgroupid = 0;
         if (isset($SESSION->format_etask['currentgroup']) && in_array($SESSION->format_etask['currentgroup'], $groupids)) {
-            // Groupid is in the session and this session is valid with the groupids.
-            $currentgroupid = $SESSION->format_etask['currentgroup'];
+            // Group ID is in the session and this session is valid with the group IDs.
+            $currentgroupid = (int) $SESSION->format_etask['currentgroup'];
         } else if (count($groupids) > 0) {
-            // Groupid is not in the session or is not valid with the groupids.
-            $currentgroupid = $SESSION->format_etask['currentgroup'] = current($groupids);
+            // Group ID is not in the session or is not valid with the group IDs, i.e. use the first group ID from the group IDs.
+            $currentgroupid = (int) $SESSION->format_etask['currentgroup'] = current($groupids);
         }
 
-        return (int) $currentgroupid ?? 0;
+        return $currentgroupid;
     }
 
     /**
-     * Return current pagination page.
+     * Return the current pagination page.
+     *
+     * @param int $studentscount
+     * @param int $studentsperpage
      *
      * @return int
      * @throws coding_exception
@@ -365,72 +372,62 @@ class format_etask extends format_topics {
     public function get_current_page(int $studentscount, int $studentsperpage): int {
         global $COURSE, $SESSION;
 
+        // Try to get a page from URL parameter.
         $currentpage = optional_param('page', null, PARAM_INT);
         if ($currentpage !== null) {
+            // If the page exists in the URL parameter, set it to the session and use it.
             return (int) $SESSION->format_etask['currentpage'] = $currentpage;
         }
 
-        // Use "<=" because pages are numbered from 0.
+        // If the current page is out of bound, set it to the last page. Use "<=" comparison because the pages are numbered from 0.
         if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage']
             * $studentsperpage && !course_get_format($COURSE)->is_student_privacy()) {
-            // Set current page to last page.
+
             return (int) $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
         }
 
-        return isset($SESSION->format_etask['currentpage']) && $SESSION->format_etask['currentpage'] > 0 ? $SESSION->format_etask['currentpage'] : 0;
+        // Return valid current page, i.e. does not allow a negative current page.
+        return isset($SESSION->format_etask['currentpage']) && $SESSION->format_etask['currentpage'] > 0 ?
+            $SESSION->format_etask['currentpage'] : 0;
     }
 
     /**
-     * Update gradepass of grade item.
-     *
-     * @param int $gradeitemid
-     * @param int $gradepass
-     *
-     * @return bool
-     */
-    public function update_grade_pass(int $gradeitemid, int $gradepass): bool {
-        global $DB;
-
-        $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
-        $gradeitem->id = $gradeitemid;
-        $gradeitem->gradepass = $gradepass;
-        $gradeitem->timemodified = time();
-
-        return $DB->update_record('grade_items', $gradeitem);
-    }
-
-    /**
-     * Get sorted grade items.
+     * Return sorted grade items.
      *
      * @return array<string, grade_item>
      */
     public function get_sorted_gradeitems(): ?array {
         global $COURSE;
 
-        // Fetch all grade item instances.
+        // Fetch all the grade item instances.
         $gradeiteminstances = grade_item::fetch_all(['courseid' => $COURSE->id, 'itemtype' => 'mod', 'hidden' => false]);
+        /** @var array<string, grade_item> $gradeitems */
         $gradeitems = [];
 
-        // If grade item instances return false, e.g. no grade items -> return empty array.
-        if (!$gradeiteminstances) {
+        // If no grade items, return an empty array.
+        if (count($gradeiteminstances) === 0) {
             return [];
         }
 
         /** @var grade_item $gradeiteminstance */
         foreach ($gradeiteminstances as $gradeiteminstance) {
-            // If grade item has deletion in progress, continue.
-            $deletioninprogress = (bool) get_fast_modinfo($COURSE->id)->instances[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance]->deletioninprogress;
-            if ($deletioninprogress) {
+            // If deletion is in progress for a grade item, continue silently.
+            if ((bool) get_fast_modinfo($COURSE->id)->instances[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance]
+                ->deletioninprogress === true) {
                 continue;
             }
 
-            // Initialize grade item number.
+            // Initialize the grade item number.
             $initnum[$gradeiteminstance->itemmodule] = $initnum[$gradeiteminstance->itemmodule] ?? 0;
 
+            // If the item number exists, do not increment number and include this item number after the dot. E.g. the workshop has
+            // assessment and submission parts, i.e. shortcut is W1 and W1.1.
             if ($gradeiteminstance->itemnumber > 0) {
-                $shortcut = sprintf('%s%d.%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)), $initnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
+                $shortcut = sprintf('%s%d.%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
+                    $initnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
             } else {
-                $shortcut = sprintf('%s%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)), ++$initnum[$gradeiteminstance->itemmodule]);
+                $shortcut = sprintf('%s%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
+                    ++$initnum[$gradeiteminstance->itemmodule]);
             }
 
             // Collect grade items with numbering.
@@ -454,52 +451,62 @@ class format_etask extends format_topics {
                 break;
         }
 
+        // Return sorted grade items with shortcuts as a key.
         return $gradeitems;
     }
 
     /**
-     * Return due date of grade item.
+     * Return the due date of the grade item.
      *
      * @param grade_item $gradeitem
      *
      * @return int|null
      */
     public function get_due_date(grade_item $gradeitem): ?int {
-        global $DB, $COURSE;
+        global $COURSE, $DB;
 
-        $time = null;
-        $gradedatefields = $this->get_due_date_fields();
+        /** @var array<string, string> $duedatefields */
+        $duedatefields = $this->get_due_date_fields();
 
-        if (isset($gradedatefields[$gradeitem->itemmodule])) {
-            $time = (int) $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
+        // If due date fields exist for the item module, try to return timestamp from the database.
+        if (isset($duedatefields[$gradeitem->itemmodule])) {
+            $time = (int) $DB->get_field($gradeitem->itemmodule, $duedatefields[$gradeitem->itemmodule], [
                 'id' => $gradeitem->iteminstance
             ], IGNORE_MISSING);
+
+            if ($time > 0) {
+                return $time;
+            }
         }
 
-        if ($time > 0) {
-            return $time;
-        }
-
-        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->completionexpected;
+        // If the due date field does not exist for the item module, try to return the expected completion timestamp from the item
+        // module instance.
+        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]
+            ->completionexpected;
 
         return $completionexpected > 0 ? $completionexpected : null;
     }
 
     /**
-     * Return grade stasus.
+     * Return the grade item status.
      *
-     * @param float $gradepass
-     * @param float $grade
-     * @param bool $activitycompletionstate
+     * @param grade_item $gradeitem
+     * @param stdClass $user
      *
      * @return string
      */
-    public function get_grade_item_status(
-        float $gradepass,
-        float $grade,
-        bool $activitycompletionstate): string {
+    public function get_grade_item_status(grade_item $gradeitem, stdClass $user): string {
+        global $PAGE;
 
-        if ($grade === 0.0 && $activitycompletionstate === true) {
+        // Get the grade item completion state, i.e. true for the completed grade item.
+        $completionstate = (bool) (new completion_info($PAGE->course))->get_data(get_fast_modinfo($PAGE->course->id, $user->id)
+            ->instances[$gradeitem->itemmodule][$gradeitem->iteminstance], false, $user->id)->completionstate;
+        $gradepass = (float) $gradeitem->gradepass;
+        $grade = $gradeitem->get_grade($user->id)->finalgrade ?? 0.0;
+
+        $status = self::STATUS_NONE;
+        // Switch the grade item statuses by the defined criteria.
+        if ($grade === 0.0 && $completionstate === true) {
             // Activity no have grade value and have completed status or is marked as completed.
             $status = self::STATUS_COMPLETED;
         } else if ($grade === 0.0 || $gradepass === 0.0) {
@@ -508,8 +515,8 @@ class format_etask extends format_topics {
         } else if ($grade >= $gradepass) {
             // Activity grade value is higher then grade to pass.
             $status = self::STATUS_PASSED;
-        } else {
-            // Activity grade value is lower then grade to pass ($grade < $gradepass).
+        } else if ($grade < $gradepass) {
+            // Activity grade value is lower then grade to pass.
             $status = self::STATUS_FAILED;
         }
 
@@ -517,17 +524,46 @@ class format_etask extends format_topics {
     }
 
     /**
+     * Transform grade item status to the CSS attributes.
+     *
+     * @param string $status
+     *
+     * @return string
+     */
+    public function transform_status_to_css(string $status): string {
+        switch ($status) {
+            case self::STATUS_COMPLETED:
+                $css = 'text-white bg-warning';
+                break;
+            case self::STATUS_PASSED:
+                $css = 'text-white bg-success';
+                break;
+            case self::STATUS_FAILED:
+                $css = 'text-white bg-danger';
+                break;
+            default:
+                $css = '';
+        }
+
+        return $css;
+    }
+
+    /**
      * Sort grade items by sections.
      *
-     * @param array $gradeitems
+     * @param grade_item[] $gradeitems
+     *
      * @return array
      */
     private function sort_grade_items_by_sections(array $gradeitems): array {
         global $COURSE;
 
+        // Get an array of sections with course-module IDs.
         $sections = get_fast_modinfo($COURSE)->get_sections();
+        /** @var string[] $cmids */
         $cmids = [];
-        // Prepare order of cmids by sections.
+
+        // Prepare ordered cmids by sections.
         foreach ($sections as $section) {
             $cmids = array_merge($cmids, $section);
         }
@@ -549,17 +585,18 @@ class format_etask extends format_topics {
     /**
      * Return registered due date modules.
      *
-     * @return array
+     * @return array<string, string>
      */
     private function get_due_date_fields(): array {
         /** @var array<int, string> $registeredduedatemodules */
         $registeredduedatemodules = explode(',', get_config('format_etask', 'registered_due_date_modules'));
 
         $duedatefields = [];
+        // Prepare an array of due date fields, i.e. module => due date database field.
         foreach ($registeredduedatemodules as $registeredduedatemodules) {
-            if ($registeredduedatemodules) {
-                [$module, $duedate] = explode(':', $registeredduedatemodules);
-                $duedatefields[trim($module)] = trim($duedate);
+            if (strpos($registeredduedatemodules, ':') === true) {
+                [$module, $duedatefield] = explode(':', $registeredduedatemodules);
+                $duedatefields[trim($module)] = trim($duedatefield);
             }
         }
         return $duedatefields;
@@ -572,6 +609,7 @@ class format_etask extends format_topics {
  * @param string $itemtype
  * @param int $itemid
  * @param mixed $newvalue
+ *
  * @return inplace_editable
  */
 function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_editable {

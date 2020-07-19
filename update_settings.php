@@ -22,14 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 require("../../../config.php");
 require_once("../../lib.php");
 require_once("../../../lib/grade/grade_item.php");
 require_once("../../../lib/grade/constants.php");
 
+use core\notification;
+
 $gradepass     = optional_param('gradepass', null, PARAM_INT);
-$group         = optional_param('group', '', PARAM_INT);
+$group         = optional_param('group', null, PARAM_INT);
 $course        = required_param('course', PARAM_INT);
 
 require_login();
@@ -46,11 +47,15 @@ if ($gradepass !== null && confirm_sesskey()) {
     $modcontext = context_module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
-    $saved = course_get_format($PAGE->course)->update_grade_pass($gradeitemid, $gradepass);
+    // Fetch the grade item by ID and set the grade to pass and time of modification.
+    $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
+    $gradeitem->gradepass = $gradepass;
+    $gradeitem->timemodified = time();
+    $saved = $DB->update_record('grade_items', $gradeitem);
 
     $message = get_string('gradepassunablesave', 'format_etask', $itemname);
-    $messagetype = \core\notification::ERROR;
-    if ($saved) {
+    $messagetype = notification::ERROR;
+    if ($saved === true) {
         if ($gradepass > 0) {
             $message = get_string('gradepasschanged', 'format_etask', [
                 'itemname' => $itemname,
@@ -59,7 +64,7 @@ if ($gradepass !== null && confirm_sesskey()) {
         } else {
             $message = get_string('gradepassremoved', 'format_etask', $itemname);
         }
-        $messagetype = \core\notification::SUCCESS;
+        $messagetype = notification::SUCCESS;
     }
 
      redirect(course_get_url($course), $message, null, $messagetype);

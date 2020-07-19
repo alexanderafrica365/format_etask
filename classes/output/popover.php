@@ -86,10 +86,10 @@ class popover implements renderable, templatable {
      * @param int|null $duedate
      * @param string $gradepass
      * @param string $grademax
-     * @param bool $showprogressbars
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-                string $gradepass, string $grademax, bool $showprogressbars) {
+        string $gradepass, string $grademax) {
+
         global $COURSE, $PAGE;
 
         $cmid = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id;
@@ -101,7 +101,7 @@ class popover implements renderable, templatable {
         $this->duedate = $duedate;
         $this->gradepass = $gradepass;
         $this->grademax = $grademax;
-        $this->showprogressbars = $showprogressbars;
+        $this->showprogressbars = course_get_format($COURSE)->show_grade_item_progress_bars();
         $this->itemmodule = $gradeitem->itemmodule;
         $this->showsettings = has_capability('moodle/course:manageactivities', $PAGE->context);
         $this->viewurl = new moodle_url('/mod/' . $gradeitem->itemmodule . '/view.php', [
