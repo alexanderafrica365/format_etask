@@ -88,7 +88,7 @@ class gradeitem_popover implements renderable, templatable {
      * @param string $grademax
      */
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-        string $gradepass, string $grademax) {
+        ?string $gradepass, string $grademax) {
 
         global $COURSE, $PAGE;
 
@@ -108,7 +108,7 @@ class gradeitem_popover implements renderable, templatable {
             'id' => $cmid
         ]);
 
-        if ($this->showsettings) {
+        if ($this->showsettings === true) {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
@@ -160,6 +160,7 @@ class gradeitem_popover implements renderable, templatable {
         $data->showsettings = $this->showsettings;
         $data->viewurl = $this->viewurl;
         $data->editurl = $this->editurl;
+        $data->margintop = $this->gradepass !== null || $this->duedate !== null;
 
         return $data;
     }
@@ -172,7 +173,7 @@ class gradeitem_popover implements renderable, templatable {
      * @return array
      */
     private function get_options(grade_item $gradeitem): array {
-        if ($scale = $gradeitem->load_scale()) {
+        if (($scale = $gradeitem->load_scale()) !== null) {
             return make_menu_from_list($scale->scale);
         }
 

@@ -53,7 +53,7 @@ course_create_sections_if_missing($course, 0);
 $renderer = $PAGE->get_renderer('format_etask');
 
 // Start eTask topics course format.
-if (has_capability('moodle/course:viewparticipants', $context)) {
+if (has_capability('moodle/course:viewparticipants', $context) === true) {
 
     // The position above the sections.
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
@@ -61,7 +61,7 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
     }
 
     // Sections.
-    if (!empty($displaysection)) {
+    if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
@@ -73,14 +73,14 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
     }
 } else {
     // Sections.
-    if (!empty($displaysection)) {
+    if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 }
-// End eTask topics course format <---.
+// End eTask topics course format.
 
 // Include course format js module.
 $PAGE->requires->js('/course/format/topics/format.js');
-$PAGE->requires->js('/course/format/etask/format.js?v=' . get_config('format_etask', 'version'));
+$PAGE->requires->js('/course/format/etask/format.js');

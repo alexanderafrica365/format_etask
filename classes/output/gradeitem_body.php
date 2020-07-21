@@ -75,7 +75,7 @@ class gradeitem_body implements renderable, templatable {
             $this->css = 'text-white';
         }
 
-        if (has_capability('moodle/grade:edit', $PAGE->context)) {
+        if (has_capability('moodle/grade:edit', $PAGE->context) === true) {
             $this->url = new moodle_url('/grade/edit/tree/grade.php', [
                 'courseid' => $PAGE->course->id,
                 'id' => $usergrade->id,

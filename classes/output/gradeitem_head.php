@@ -54,7 +54,7 @@ class gradeitem_head implements renderable, templatable {
     /** @var int|null */
     private $duedate;
 
-    /** @var string */
+    /** @var string|null */
     private $gradepass;
 
     /** @var string */
@@ -69,7 +69,7 @@ class gradeitem_head implements renderable, templatable {
         [$progresscompleted, $progresspassed] = course_get_format($PAGE->course)->get_progress_values(
             $gradeitemstatuses, $studentscount);
         $duedate = course_get_format($PAGE->course)->get_due_date($gradeitem);
-        $gradepass = grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0);
+        $gradepass = $gradeitem->gradepass > 0 ? grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0) : null;
         $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);
 
         $this->gradeitem = $gradeitem;

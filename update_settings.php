@@ -35,7 +35,7 @@ $course        = required_param('course', PARAM_INT);
 
 require_login();
 
-if ($gradepass !== null && confirm_sesskey()) {
+if ($gradepass !== null && confirm_sesskey() === true) {
     $gradeitemid   = required_param('gradeitemid', PARAM_INT);
     $gradepass     = required_param('gradepass', PARAM_INT);
     $itemname      = required_param('itemname', PARAM_RAW);
