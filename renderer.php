@@ -26,13 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_body.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_head.php');
-require_once($CFG->dirroot.'/course/format/etask/classes/output/popover.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_popover.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/gradingtable_footer.php');
 require_once($CFG->dirroot.'/course/format/topics/renderer.php');
 
 use format_etask\dataprovider\course_settings;
 use format_etask\form\group_form;
 use format_etask\form\settings_form;
-use format_etask\output\footer;
+use format_etask\output\gradingtable_footer;
 use format_etask\output\gradeitem_body;
 use format_etask\output\gradeitem_head;
 
@@ -136,7 +137,7 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetable->data = $data;
 
         // Grade table footer: groups filter, pagination and legend.
-        $gradetablefooter = $this->render(new footer($studentscount, course_get_format($course->id)->get_groups(),
+        $gradetablefooter = $this->render(new gradingtable_footer($studentscount, course_get_format($course->id)->get_groups(),
             course_get_format($this->page->course)->get_current_group_id()));
         $css = 'border-bottom mb-3 pb-3';
         if (course_get_format($this->page->course)->get_placement() === format_etask::PLACEMENT_BELOW) {

@@ -25,7 +25,6 @@
 namespace format_etask\output;
 
 use grade_item;
-use html_writer;
 use renderable;
 use renderer_base;
 use stdClass;
@@ -91,7 +90,7 @@ class gradeitem_head implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output): stdClass {
         $data = new stdClass();
-        $data->popover = $output->render(new popover($this->gradeitem, $this->progresscompleted, $this->progresspassed,
+        $data->popover = $output->render(new gradeitem_popover($this->gradeitem, $this->progresscompleted, $this->progresspassed,
             $this->duedate, $this->gradepass, $this->grademax));
         $data->imageurl = $output->image_url('icon', $this->itemmodule);
         $data->shortcut = $this->shortcut;

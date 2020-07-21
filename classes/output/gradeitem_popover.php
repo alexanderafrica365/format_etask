@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for popover.
+ * Class containing data for grade item popover.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
@@ -36,13 +36,13 @@ use stdClass;
 use templatable;
 
 /**
- * Class to prepare a popover for display.
+ * Class to prepare a grade item popover for display.
  *
  * @package format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class popover implements renderable, templatable {
+class gradeitem_popover implements renderable, templatable {
 
     /** @var int */
     private $completed;

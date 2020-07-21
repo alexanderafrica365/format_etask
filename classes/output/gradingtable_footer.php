@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for footer.
+ * Class containing data for grading table footer.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
@@ -33,13 +33,13 @@ use stdClass;
 use templatable;
 
 /**
- * Class to prepare a footer for display.
+ * Class to prepare a grading table footer for display.
  *
  * @package format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class footer implements renderable, templatable {
+class gradingtable_footer implements renderable, templatable {
 
     /** @var single_select|null */
     private $select = null;
