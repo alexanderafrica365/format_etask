@@ -52,32 +52,54 @@ class format_etask_renderer extends format_topics_renderer {
      * @param stdClass $course
      * @return void
      */
-    public function print_grading_table(context_course $context, stdClass $course) {
-        global $USER;
+    public function print_grading_table() {
+        global $COURSE;
 
         // Get all allowed course students.
-        $students = get_enrolled_users($context, 'moodle/competency:coursecompetencygradable', course_get_format(
-            $this->page->course)->get_current_group_id(), 'u.*', null, 0, 0, true);
+        $students = course_get_format($this->page->course)->get_gradable_students();
         // Get students count for pagination.
-        $studentscount = course_get_format($this->page->course)->is_student_privacy() ? 1 : count($students);
+        $studentscount = course_get_format($this->page->course)->get_students_count($students);
         // Get sorted grade items.
-        $gradeitems = count($students) ? course_get_format($this->page->course)->get_sorted_gradeitems() : [];
+        $gradeitems = course_get_format($this->page->course)->get_sorted_gradeitems();
 
         /** @var html_table_row[] $data */
         $data = [];
         /** @var array<int, string[]> $gradeitemsstatuses */
         $gradeitemsstatuses = [];
-        // Move logged in student at the first position in the grade table.
-        if (isset($students[$USER->id]) && !course_get_format($this->page->course)->is_student_privacy()) {
-            $currentuser = $students[$USER->id];
-            unset($students[$USER->id]);
-            array_unshift($students , $currentuser);
+        // Table head.
+        $headcells = [new html_table_cell()]; // First cell of the head is empty.
+
+        //@todo continue here with move logic to gradingtable output class
+
+        // No students were found to grade.
+        if ($studentscount === 0) {
+            $cell = new html_table_cell();
+            $cell->text = 'No students were found to grade.'; //@todo localization strings
+            $cell->attributes = ['class' => 'text-nowrap p-2 bg-white'];
+
+            $bodycells[] = $cell;
+
+            do {
+                $cell = new html_table_cell();
+                $cell->text = '-';
+                $cell->attributes = ['class' => 'text-center'];
+                $bodycells[] = $cell;
+            } while (next($gradeitems));
+
+            $data = [new html_table_row($bodycells)];
         }
+
+        if (count($gradeitems) === 0) {
+            // If no grade items, show cell with message - no grading items found.
+            $cell = new html_table_cell();
+            $cell->text = 'No grading items were found.'; //@todo localization strings
+            $cell->attributes = ['class' => 'text-nowrap p-2 font-weight-normal'];
+            $headcells[] = $cell;
+        }
+
         foreach ($students as $user) {
-            // Collect table cells by student privacy. Either all or the current student only.
-            $collectcell = !course_get_format($this->page->course)->is_student_privacy() || (course_get_format($this->page->course)->is_student_privacy() && $user->id === $USER->id);
             $bodycells = [];
-            if ($collectcell) {
+            if (course_get_format($this->page->course)->is_collectible_cell($user)) {
                 $cell = new html_table_cell();
                 $cell->text = $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
                     'visibletoscreenreaders' => false]);
@@ -87,32 +109,40 @@ class format_etask_renderer extends format_topics_renderer {
                 $bodycells[] = $cell;
             }
 
+            // No grade items - each student has empty grade column.
+            if (count($gradeitems) === 0) {
+                $cell = new html_table_cell();
+                $cell->text = '-';
+                $cell->attributes = ['class' => 'text-center'];
+                $bodycells[] = $cell;
+            }
+
             /** @var grade_item $gradeitem */
             foreach ($gradeitems as $gradeitem) {
                 $status = course_get_format($this->page->course)->get_grade_item_status($gradeitem, $user);
                 $gradeitemsstatuses[$gradeitem->id][] = $status;
-                if ($collectcell) {
+                if (course_get_format($this->page->course)->is_collectible_cell($user)) {
                     $cell = new html_table_cell();
                     $cell->text = $this->render(new gradeitem_body($gradeitem, $user, $status));
                     $cell->attributes = [
-                        'class' => 'position-relative text-center text-nowrap p-2 ' . course_get_format($this->page->course)->transform_status_to_css($status),
+                        'class' => 'position-relative text-center text-nowrap p-2 '
+                            . course_get_format($this->page->course)->transform_status_to_css($status),
                         'title' => fullname($user) . ', ' . $gradeitem->itemname
                     ];
                     $bodycells[] = $cell;
                 }
             }
 
-            if (count($bodycells) > 0) {
+            if (count($bodycells) !== 0) {
                 $row = new html_table_row($bodycells);
                 $data[] = $row;
             }
         }
-        // Table head.
-        $headcells = ['']; // First cell of the head is empty.
-        // Render table cells.
+
+        // Render table cells of grade items.
         foreach ($gradeitems as $shortcut => $gradeitem) {
             $cell = new html_table_cell();
-            $cell->text = $this->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id],
+            $cell->text = $this->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id] ?? null,
                 count($students)));
             $cell->attributes = [
                 'class' => 'text-center text-nowrap'
@@ -137,7 +167,7 @@ class format_etask_renderer extends format_topics_renderer {
         $gradetable->data = $data;
 
         // Grade table footer: groups filter, pagination and legend.
-        $gradetablefooter = $this->render(new gradingtable_footer($studentscount, course_get_format($course->id)->get_groups(),
+        $gradetablefooter = $this->render(new gradingtable_footer($studentscount, course_get_format($COURSE->id)->get_groups(),
             course_get_format($this->page->course)->get_current_group_id()));
         $css = 'border-bottom mb-3 pb-3';
         if (course_get_format($this->page->course)->get_placement() === format_etask::PLACEMENT_BELOW) {

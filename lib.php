@@ -27,6 +27,7 @@ require_once($CFG->dirroot. '/course/format/topics/lib.php');
 
 use core\output\inplace_editable;
 use format_etask\dataprovider\course_settings;
+use format_etask\output\gradeitem_body;
 
 /**
  * The main class for the eTask topics course format.
@@ -220,16 +221,16 @@ class format_etask extends format_topics {
     /**
      * Return the grade item completed/passed progress in percent.
      *
-     * @param string[] $gradeitemstatuses
+     * @param string[]|null $gradeitemstatuses
      * @param int $studentscount
      *
      * @return array<float, float>
      */
-    public function get_progress_values(array $gradeitemstatuses, int $studentscount): array {
+    public function get_progress_values(?array $gradeitemstatuses, int $studentscount): array {
         global $COURSE;
 
         // If progress bars are not allowed, return zero values.
-        if (!course_get_format($COURSE)->show_grade_item_progress_bars()) {
+        if (!$this->show_grade_item_progress_bars() || $gradeitemstatuses === null) {
             return [0.0, 0.0];
         }
 
@@ -292,6 +293,23 @@ class format_etask extends format_topics {
     }
 
     /**
+     * Return gradable students count.
+     *
+     * @param array $students
+     *
+     * @return int
+     */
+    public function get_students_count(array $students): int {
+        global $USER;
+
+        if ($this->is_student_privacy() === true) {
+            return isset($students[$USER->id]) ? 1 : 0;
+        }
+
+        return count($students);
+    }
+
+    /**
      * Return the grade items sorting type.
      *
      * @return string
@@ -307,6 +325,19 @@ class format_etask extends format_topics {
      */
     public function get_placement(): string {
         return $this->course->placement ?? self::PLACEMENT_ABOVE;
+    }
+
+    /**
+     * Return true if cell is collectible, i.e collect table cells by student privacy - either all or the current student only.
+     *
+     * @param stdClass $user
+     *
+     * @return bool
+     */
+    public function is_collectible_cell(stdClass $user): bool {
+        global $USER;
+
+        return !$this->is_student_privacy() || ($this->is_student_privacy() && $user->id === $USER->id);
     }
 
     /**
@@ -381,7 +412,7 @@ class format_etask extends format_topics {
 
         // If the current page is out of bound, set it to the last page. Use "<=" comparison because the pages are numbered from 0.
         if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage']
-            * $studentsperpage && !course_get_format($COURSE)->is_student_privacy()) {
+            * $studentsperpage && !$this->is_student_privacy()) {
 
             return (int) $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
         }
@@ -396,19 +427,19 @@ class format_etask extends format_topics {
      *
      * @return array<string, grade_item>
      */
-    public function get_sorted_gradeitems(): ?array {
+    public function get_sorted_gradeitems(): array {
         global $COURSE;
 
         // Fetch all the grade item instances.
         $gradeiteminstances = grade_item::fetch_all(['courseid' => $COURSE->id, 'itemtype' => 'mod', 'hidden' => false]);
-        /** @var array<string, grade_item> $gradeitems */
-        $gradeitems = [];
 
         // If no grade items, return an empty array.
-        if (count($gradeiteminstances) === 0) {
+        if ($gradeiteminstances === false) {
             return [];
         }
 
+        /** @var array<string, grade_item> $gradeitems */
+        $gradeitems = [];
         /** @var grade_item $gradeiteminstance */
         foreach ($gradeiteminstances as $gradeiteminstance) {
             // If deletion is in progress for a grade item, continue silently.
@@ -547,6 +578,62 @@ class format_etask extends format_topics {
 
         return $css;
     }
+
+    /**
+     * Get gradable students (logged in student move to the first position in the grade table).
+     *
+     * @param array $students
+     *
+     * @return array
+     */
+    public function get_gradable_students(): array {
+        global $COURSE, $USER;
+
+        $students = get_enrolled_users(context_course::instance($COURSE->id), 'moodle/competency:coursecompetencygradable',
+            $this->get_current_group_id(), 'u.*', null, 0, 0, true);
+
+        if (isset($students[$USER->id]) && !$this->is_student_privacy()) {
+            $currentuser = $students[$USER->id];
+            unset($students[$USER->id]);
+            array_unshift($students , $currentuser);
+        }
+
+        return $students;
+    }
+
+//    /**
+//     * Return user grading table cell.
+//     *
+//     * @param stdClass $user
+//     *
+//     * @return html_table_cell
+//     */
+//    public function get_user_cell(stdClass $user): html_table_cell {
+//        global $OUTPUT;
+//
+//        $cell = new html_table_cell();
+//        $cell->text = $OUTPUT->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
+//            'visibletoscreenreaders' => false]);
+//        $cell->attributes = [
+//            'class' => 'text-nowrap pr-2'
+//        ];
+//
+//        return $cell;
+//    }
+//
+//    public function get_gradingitem_body_cell(grade_item $gradeitem, stdClass $user, string $status): html_table_cell {
+//        global $OUTPUT, $PAGE;
+//
+//        $cell = new html_table_cell();
+//        $cell->text = $OUTPUT->render(new gradeitem_body($gradeitem, $user, $status));
+//        $cell->attributes = [
+//            'class' => 'position-relative text-center text-nowrap p-2 '
+//                . $this->transform_status_to_css($status),
+//            'title' => fullname($user) . ', ' . $gradeitem->itemname
+//        ];
+//
+//        return $cell;
+//    }
 
     /**
      * Sort grade items by sections.

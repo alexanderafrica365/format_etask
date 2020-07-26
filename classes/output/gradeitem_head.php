@@ -63,7 +63,7 @@ class gradeitem_head implements renderable, templatable {
     /** @var string */
     private $itemmodule;
 
-    public function __construct(grade_item $gradeitem, string $shortcut, array $gradeitemstatuses, int $studentscount) {
+    public function __construct(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses, int $studentscount) {
         global $PAGE;
 
         [$progresscompleted, $progresspassed] = course_get_format($PAGE->course)->get_progress_values(
