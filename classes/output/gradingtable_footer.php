@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grading table footer.
@@ -58,7 +58,7 @@ class gradingtable_footer implements renderable, templatable {
      * @throws coding_exception
      */
     public function __construct(int $studentscount, array $groups, ?int $selectedgroup) {
-        global $COURSE, $OUTPUT, $PAGE;
+        global $OUTPUT, $PAGE;
 
         $currentpage = course_get_format($PAGE->course)->get_current_page($studentscount, course_get_format(
             $PAGE->course)->get_students_per_page());
@@ -69,7 +69,7 @@ class gradingtable_footer implements renderable, templatable {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
-                    'course' => $COURSE->id,
+                    'course' => $PAGE->course->id,
                 ]
             );
 

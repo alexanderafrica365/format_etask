@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Renderer for outputting the eTask topics course format.
@@ -24,6 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+// @todo move it to the output class where it is used
 require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_body.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_head.php');
 require_once($CFG->dirroot.'/course/format/etask/classes/output/gradeitem_popover.php');
@@ -62,59 +63,33 @@ class format_etask_renderer extends format_topics_renderer {
         // Get sorted grade items.
         $gradeitems = course_get_format($this->page->course)->get_sorted_gradeitems();
 
-        /** @var html_table_row[] $data */
-        $data = [];
+        /** @var html_table_row[] $rows */
+        $rows = [];
         /** @var array<int, string[]> $gradeitemsstatuses */
         $gradeitemsstatuses = [];
-        // Table head.
+        /** @var html_table_cell[] $headcells */
         $headcells = [new html_table_cell()]; // First cell of the head is empty.
 
-        //@todo continue here with move logic to gradingtable output class
-
-        // No students were found to grade.
+        // No students were found to grade. Add row to the table body data.
         if ($studentscount === 0) {
-            $cell = new html_table_cell();
-            $cell->text = 'No students were found to grade.'; //@todo localization strings
-            $cell->attributes = ['class' => 'text-nowrap p-2 bg-white'];
-
-            $bodycells[] = $cell;
-
-            do {
-                $cell = new html_table_cell();
-                $cell->text = '-';
-                $cell->attributes = ['class' => 'text-center'];
-                $bodycells[] = $cell;
-            } while (next($gradeitems));
-
-            $data = [new html_table_row($bodycells)];
+            $rows[] = $this->get_no_students_row($gradeitems);
         }
 
+        // No grade items were found. Add cell to the table head data.
         if (count($gradeitems) === 0) {
-            // If no grade items, show cell with message - no grading items found.
-            $cell = new html_table_cell();
-            $cell->text = 'No grading items were found.'; //@todo localization strings
-            $cell->attributes = ['class' => 'text-nowrap p-2 font-weight-normal'];
-            $headcells[] = $cell;
+            $headcells[] = $this->get_no_gradeitems_cell();
         }
 
         foreach ($students as $user) {
             $bodycells = [];
+            // Add student cell at the first position of the row.
             if (course_get_format($this->page->course)->is_collectible_cell($user)) {
-                $cell = new html_table_cell();
-                $cell->text = $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
-                    'visibletoscreenreaders' => false]);
-                $cell->attributes = [
-                    'class' => 'text-nowrap pr-2'
-                ];
-                $bodycells[] = $cell;
+                $bodycells[] = $this->get_student_cell($user);
             }
 
-            // No grade items - each student has empty grade column.
+            // No grade items were found. Each student has empty grade cell in the column.
             if (count($gradeitems) === 0) {
-                $cell = new html_table_cell();
-                $cell->text = '-';
-                $cell->attributes = ['class' => 'text-center'];
-                $bodycells[] = $cell;
+                $bodycells[] = $this->get_empty_cell();
             }
 
             /** @var grade_item $gradeitem */
@@ -122,49 +97,28 @@ class format_etask_renderer extends format_topics_renderer {
                 $status = course_get_format($this->page->course)->get_grade_item_status($gradeitem, $user);
                 $gradeitemsstatuses[$gradeitem->id][] = $status;
                 if (course_get_format($this->page->course)->is_collectible_cell($user)) {
-                    $cell = new html_table_cell();
-                    $cell->text = $this->render(new gradeitem_body($gradeitem, $user, $status));
-                    $cell->attributes = [
-                        'class' => 'position-relative text-center text-nowrap p-2 '
-                            . course_get_format($this->page->course)->transform_status_to_css($status),
-                        'title' => fullname($user) . ', ' . $gradeitem->itemname
-                    ];
-                    $bodycells[] = $cell;
+                    $bodycells[] = $this->get_gradeitem_body_cell($gradeitem, $user, $status);
                 }
             }
 
+            // If body cells, collect them to row.
             if (count($bodycells) !== 0) {
                 $row = new html_table_row($bodycells);
-                $data[] = $row;
+                $rows[] = $row;
             }
         }
 
         // Render table cells of grade items.
         foreach ($gradeitems as $shortcut => $gradeitem) {
-            $cell = new html_table_cell();
-            $cell->text = $this->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id] ?? null,
-                count($students)));
-            $cell->attributes = [
-                'class' => 'text-center text-nowrap'
-            ];
-            $headcells[] = $cell;
+            $headcells[] = $this->get_gradeitem_head_cell($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id] ?? null,
+                $studentscount);
         }
 
-        // Slice of students by paging after getting progress bar data.
-        $studentsperpage = course_get_format($this->page->course)->get_students_per_page();
-        if ($studentscount > $studentsperpage) {
-            $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $studentsperpage);
-            $data = array_slice($data, $currentpage * $studentsperpage, $studentsperpage, true);
-        }
+        // If pagination is needed, get rows by limit and offset.
+        $rows = $this->get_page_rows($studentscount, $rows);
 
         // Html table.
-        $gradetable = new html_table();
-        $gradetable->attributes = [
-            'class' => 'grade-table table-hover table-striped table-condensed table-responsive mb-3',
-            'table-layout' => 'fixed'
-        ];
-        $gradetable->head = $headcells;
-        $gradetable->data = $data;
+        $gradetable = $this->get_gradingtable($headcells, $rows);
 
         // Grade table footer: groups filter, pagination and legend.
         $gradetablefooter = $this->render(new gradingtable_footer($studentscount, course_get_format($COURSE->id)->get_groups(),
@@ -177,5 +131,148 @@ class format_etask_renderer extends format_topics_renderer {
             html_writer::table($gradetable) . $gradetablefooter,
             'etask-grade-table ' . $css
         );
+    }
+
+    /**
+     * Return no students found row, i.e. cell with message following by empty cells with slash for each grade item.
+     *
+     * @param grade_item[]
+     *
+     * @return html_table_row
+     * @throws coding_exception
+     */
+    private function get_no_students_row(array $gradeitems): html_table_row {
+        $cell = new html_table_cell();
+        $cell->text = get_string('nostudentsfound', 'format_etask');
+        $cell->attributes = ['class' => 'text-nowrap p-2 bg-white'];
+
+        $bodycells[] = $cell;
+
+        do {
+            $bodycells[] = $this->get_empty_cell();
+        } while (next($gradeitems));
+
+        return new html_table_row($bodycells);
+    }
+
+    /**
+     * Return no grade items found, i.e. cell with message.
+     *
+     * @return html_table_cell
+     * @throws coding_exception
+     */
+    private function get_no_gradeitems_cell(): html_table_cell {
+        $cell = new html_table_cell();
+        $cell->text = get_string('nogradeitemsfound', 'format_etask');
+        $cell->attributes = ['class' => 'text-nowrap p-2 font-weight-normal'];
+
+        return $cell;
+    }
+
+    /**
+     * Return empty cell containing slash.
+     *
+     * @return html_table_cell
+     */
+    private function get_empty_cell(): html_table_cell {
+        $cell = new html_table_cell();
+        $cell->text = '-';
+        $cell->attributes = ['class' => 'text-center'];
+
+        return $cell;
+    }
+
+    /**
+     * Return student cell containing user picture and full name as a link to the profile detail.
+     *
+     * @param stdClass $user
+     *
+     * @return html_table_cell
+     */
+    private function get_student_cell(stdClass $user): html_table_cell {
+        $cell = new html_table_cell();
+        $cell->text = $this->output->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
+            'visibletoscreenreaders' => false]);
+        $cell->attributes = ['class' => 'text-nowrap pr-2'];
+
+        return $cell;
+    }
+
+    /**
+     * Return grade item body cell containing grade value text (or link to edit grade if permissions).
+     *
+     * @param grade_item $gradeitem
+     * @param stdClass $user
+     * @param string $status
+     *
+     * @return html_table_cell
+     */
+    private function get_gradeitem_body_cell(grade_item $gradeitem, stdClass $user, string $status): html_table_cell {
+        $cell = new html_table_cell();
+        $cell->text = $this->render(new gradeitem_body($gradeitem, $user, $status));
+        $cell->attributes = [
+            'class' => 'position-relative text-center text-nowrap p-2 '
+                . course_get_format($this->page->course)->transform_status_to_css($status),
+            'title' => fullname($user) . ', ' . $gradeitem->itemname
+        ];
+
+        return $cell;
+    }
+
+    /**
+     * Return grade item head cell containing grade item shortcut with a popover containing grade item details (and settings if
+     * permissions).
+     *
+     * @param grade_item $gradeitem
+     * @param string $shortcut
+     * @param array|null $gradeitemstatuses
+     * @param int $studentscount
+     *
+     * @return html_table_cell
+     */
+    private function get_gradeitem_head_cell(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses,
+                                             int $studentscount): html_table_cell {
+        $cell = new html_table_cell();
+        $cell->text = $this->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemstatuses, $studentscount));
+        $cell->attributes = ['class' => 'text-center text-nowrap'];
+
+        return $cell;
+    }
+
+    /**
+     * Return html table containing table head and body.
+     *
+     * @param html_table_cell[] $headcells
+     * @param html_table_row[] $rows
+     *
+     * @return html_table
+     */
+    private function get_gradingtable(array $headcells, array $rows): html_table {
+        $table = new html_table();
+        $table->attributes = ['class' => 'grade-table table-hover table-striped table-condensed table-responsive mb-3',
+            'table-layout' => 'fixed'];
+        $table->head = $headcells;
+        $table->data = $rows;
+
+        return $table;
+    }
+
+    /**
+     * Return page rows as they are or by limit and offset if pagination is needed.
+     *
+     * @param int $studentscount
+     * @param html_table_row[] $rows
+     *
+     * @return html_table_row[]
+     */
+    private function get_page_rows(int $studentscount, array $rows): array {
+        $studentsperpage = course_get_format($this->page->course)->get_students_per_page();
+        if ($studentscount <= $studentsperpage) {
+            return $rows;
+        }
+
+        $currentpage = course_get_format($this->page->course)->get_current_page($studentscount, $studentsperpage);
+
+        return array_slice($rows, $currentpage * $studentsperpage, $studentsperpage, true);
     }
 }

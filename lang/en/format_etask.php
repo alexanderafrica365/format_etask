@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component eTask topics course format.
@@ -60,15 +60,18 @@ $string['placement_below'] = 'Place the grading table below the course topics';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registered due date modules';
 $string['registeredduedatemodules_help'] = 'Specifies in which module\'s database field the due date value is stored.';
-// Legend strings.
+// Grading table strings.
+$string['nostudentsfound'] = 'No students were found to grade.';
+$string['nogradeitemsfound'] = 'No grade items were found.';
+// Grading table footer strings.
 $string['legend'] = 'Legend';
 $string['gradeitemcompleted'] = 'Completed';
 $string['gradeitempassed'] = 'Passed';
 $string['gradeitemfailed'] = 'Failed';
-// Popover strings.
+// Grade item popover strings.
 $string['timemodified'] = 'Last modified on {$a}';
 $string['max'] = 'max.';
-$string['progresspercentage'] = '{$a} % <span class="text-black-50">of students</span>';
+$string['progresspercentage'] = '{$a} % <span class="text-black-50">of all students</span>';
 $string['choose'] = 'Choose ...';
 $string['showmore'] = 'Show more ...';
 // Flash messages.

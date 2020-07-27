@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * This file contains the main class for the eTask topics course format.
@@ -227,8 +227,6 @@ class format_etask extends format_topics {
      * @return array<float, float>
      */
     public function get_progress_values(?array $gradeitemstatuses, int $studentscount): array {
-        global $COURSE;
-
         // If progress bars are not allowed, return zero values.
         if (!$this->show_grade_item_progress_bars() || $gradeitemstatuses === null) {
             return [0.0, 0.0];
@@ -401,7 +399,7 @@ class format_etask extends format_topics {
      * @throws coding_exception
      */
     public function get_current_page(int $studentscount, int $studentsperpage): int {
-        global $COURSE, $SESSION;
+        global $SESSION;
 
         // Try to get a page from URL parameter.
         $currentpage = optional_param('page', null, PARAM_INT);
@@ -600,40 +598,6 @@ class format_etask extends format_topics {
 
         return $students;
     }
-
-//    /**
-//     * Return user grading table cell.
-//     *
-//     * @param stdClass $user
-//     *
-//     * @return html_table_cell
-//     */
-//    public function get_user_cell(stdClass $user): html_table_cell {
-//        global $OUTPUT;
-//
-//        $cell = new html_table_cell();
-//        $cell->text = $OUTPUT->user_picture($user, ['size' => 35, 'link' => true, 'includefullname' => true,
-//            'visibletoscreenreaders' => false]);
-//        $cell->attributes = [
-//            'class' => 'text-nowrap pr-2'
-//        ];
-//
-//        return $cell;
-//    }
-//
-//    public function get_gradingitem_body_cell(grade_item $gradeitem, stdClass $user, string $status): html_table_cell {
-//        global $OUTPUT, $PAGE;
-//
-//        $cell = new html_table_cell();
-//        $cell->text = $OUTPUT->render(new gradeitem_body($gradeitem, $user, $status));
-//        $cell->attributes = [
-//            'class' => 'position-relative text-center text-nowrap p-2 '
-//                . $this->transform_status_to_css($status),
-//            'title' => fullname($user) . ', ' . $gradeitem->itemname
-//        ];
-//
-//        return $cell;
-//    }
 
     /**
      * Sort grade items by sections.

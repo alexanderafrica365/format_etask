@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grading table.
@@ -70,21 +70,7 @@ class gradingtable implements renderable, templatable {
         // Table head.
         $headcells = [new html_table_cell()]; // First cell of the head is empty.
 
-
-
         //@todo move renderer logic
-
-
-
-        // ----- DONE ----
-//        $table = new html_table();
-//        $table->attributes = [
-//            'class' => 'grade-table table-hover table-striped table-condensed table-responsive mb-3',
-//            'table-layout' => 'fixed'
-//        ];
-//        $table->head = $headcells;
-//        $table->data = $data;
-//        $this->table = $table;
 
         $this->footer = new gradingtable_footer($studentscount, course_get_format($COURSE->id)->get_groups(),
             course_get_format($COURSE)->get_current_group_id());

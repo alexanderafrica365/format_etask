@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component eTask topics course format.
@@ -60,15 +60,18 @@ $string['placement_below'] = 'Umístit tabulku hodnocení pod tématy kurzu';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registrované moduly s datem odevzdání';
 $string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota data odevzdání.';
-// Legend strings.
+// Grading table strings.
+$string['nostudentsfound'] = 'Nebyli nalezeni žádní studenti k hodnocení.';
+$string['nogradeitemsfound'] = 'Nebyly nalezeny žádné položky hodnocení.';
+// Grading table footer strings.
 $string['legend'] = 'Legenda';
 $string['gradeitemcompleted'] = 'Dokončeno';
 $string['gradeitempassed'] = 'Splněno';
 $string['gradeitemfailed'] = 'Nesplněno';
-// Popover strings.
+// Grade item popover strings.
 $string['timemodified'] = 'Poslední úprava {$a}';
 $string['max'] = 'max.';
-$string['progresspercentage'] = '{$a} % <span class="text-black-50"> studentů</span>';
+$string['progresspercentage'] = '{$a} % <span class="text-black-50">všech studentů</span>';
 $string['choose'] = 'Vyberte ...';
 $string['showmore'] = 'Zobrazit více ...';
 // Flash messages.
