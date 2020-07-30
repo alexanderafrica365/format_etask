@@ -40,6 +40,7 @@ if ($gradepass !== null && confirm_sesskey() === true) {
     $gradepass     = required_param('gradepass', PARAM_INT);
     $itemname      = required_param('itemname', PARAM_RAW);
 
+    //@todo fix it - incorrect params to get cm/cmid! (now it returns to incorrect course)
     $cm     = get_coursemodule_from_id('', $course, 0, true, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 

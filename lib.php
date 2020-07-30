@@ -23,11 +23,10 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/course/format/topics/lib.php');
+require_once($CFG->dirroot . '/course/format/topics/lib.php');
 
 use core\output\inplace_editable;
 use format_etask\dataprovider\course_settings;
-use format_etask\output\gradeitem_body;
 
 /**
  * The main class for the eTask topics course format.

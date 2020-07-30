@@ -15,24 +15,17 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template format_etask/gradeitem_body
+    @template format_etask/gradingtable_help_popover
 
-    This template renders the grade item body cell content.
+    This template renders the grading table help popover.
 
     Example context (json):
     {
-        "url": "/grade/edit/tree/grade.php?...",
-        "fullname": "John Doe",
-        "itemname": "Grade item name",
-        "value": "B- (80 %)",
-        "css": "text-white"
+        "version": 2020071901
     }
 }}
 
-{{#url}}
-    <a href="{{{url}}}" class="d-block stretched-link {{css}}" title="{{#str}}editgrade, grades{{/str}}: {{fullname}}, {{itemname}}">{{{value}}}</a>
-{{/url}}
-
-{{^url}}
-    {{{value}}}
-{{/url}}
+<div class="popover-container m-3 text-justify">
+    {{! @todo translate help popover - provide a link to help page and other useful information, maybe questionnaire link to the future }}
+    You are using eTask topics format version {{version}}. For more information go to <a href="https://moodle.org/plugins/format_etask" target="_blank">plugin page</a>.
+</div>

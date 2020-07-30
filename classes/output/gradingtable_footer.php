@@ -24,6 +24,8 @@
 
 namespace format_etask\output;
 
+defined('MOODLE_INTERNAL') || die();
+
 use coding_exception;
 use moodle_url;
 use renderable;
@@ -89,6 +91,7 @@ class gradingtable_footer implements renderable, templatable {
         $data = new stdClass();
         $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
         $data->pagingbar = $this->pagingbar;
+        $data->help = $output->render(new gradingtable_help_popover());
 
         return $data;
     }

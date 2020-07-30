@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/course/format/topics/restore_format_topics_plugin.class.php');
+require_once($CFG->dirroot . '/course/format/topics/restore_format_etask_plugin.class.php');
 
 /**
  * Specialised restore for eTask topics course format.

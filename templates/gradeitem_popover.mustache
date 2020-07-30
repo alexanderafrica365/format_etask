@@ -39,12 +39,12 @@
     }
 }}
 
-<div class="popover-container m-3">
+<div class="popover-container m-3 text-justify">
     <div class="mb-3 text-black-50">
         {{#str}}timemodified, format_etask, {{#userdate}} {{timemodified}}, {{#str}} strftimedaydate, core_langconfig {{/str}} {{/userdate}}{{/str}}
     </div>
 
-    <div class="d-flex mt-2 align-items-start">
+    <div class="d-flex mt-3 align-items-start">
         {{{itemmoduleicon}}}
         <div class="d-flex flex-column w-100">
             <a href="{{{viewurl}}}" class="text-decoration-none d-block">
@@ -99,7 +99,7 @@
 
     {{#showsettings}}
         <div class="border-top mr-n3 ml-n3 mt-3 pt-3">
-            <div class="d-flex mt-2 align-items-start pl-3">
+            <div class="d-flex align-items-start pl-3">
                 {{{settingsicon}}}
                 <div class="d-flex flex-column w-100">
                     <h6 class="d-inline font-weight-bold">{{#str}}settings{{/str}}</h6>

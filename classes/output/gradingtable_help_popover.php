@@ -15,38 +15,51 @@
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for outputting the eTask topics course format.
+ * Class containing data for grading table help popover.
+ *
+ * @package   format_etask
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace format_etask\output;
+
+defined('MOODLE_INTERNAL') || die();
+
+use renderable;
+use renderer_base;
+use stdClass;
+use templatable;
+
+/**
+ * Class to prepare a grading table help popover for display.
  *
  * @package format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since Moodle 2.3
  */
+class gradingtable_help_popover implements renderable, templatable {
 
-defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/course/format/topics/renderer.php');
-
-use format_etask\dataprovider\course_settings;
-use format_etask\form\group_form;
-use format_etask\form\settings_form;
-use format_etask\output\gradingtable;
-
-/**
- * Basic renderer for eTask topics format.
- *
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class format_etask_renderer extends format_topics_renderer {
+    /** @var int */
+    private $version;
 
     /**
-     * Print the grading table with all features.
-     *
-     * @param context_course $context
-     * @param stdClass $course
-     * @return void
+     * The popover constructor.
      */
-    public function print_grading_table() {
-        echo $this->render(new gradingtable());
+    public function __construct() {
+        $this->version = get_config('format_etask', 'version');
+    }
+
+    /**
+     * Export for template.
+     *
+     * @param renderer_base $output
+     * @return stdClass
+     */
+    public function export_for_template(renderer_base $output): stdClass {
+        $data = new stdClass();
+        $data->version = $this->version;
+
+        return $data;
     }
 }

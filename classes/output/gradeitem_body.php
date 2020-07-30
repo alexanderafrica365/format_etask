@@ -24,6 +24,8 @@
 
 namespace format_etask\output;
 
+defined('MOODLE_INTERNAL') || die();
+
 use format_etask;
 use grade_item;
 use html_writer;

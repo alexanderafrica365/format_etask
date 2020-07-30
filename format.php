@@ -24,8 +24,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/completionlib.php');
+require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->libdir . '/completionlib.php');
 
 use format_etask\dataprovider\course_settings;
 
