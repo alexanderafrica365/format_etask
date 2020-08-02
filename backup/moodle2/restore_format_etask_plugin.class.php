@@ -12,15 +12,15 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Specialised restore for eTask topics course format.
  *
  * @package   format_etask
  * @category  backup
- * @copyright 2017 Marina Glancy
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,8 +33,8 @@ require_once($CFG->dirroot . '/course/format/topics/restore_format_etask_plugin.
  *
  * @package   format_etask
  * @category  backup
- * @copyright 2017 Marina Glancy
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_format_etask_plugin extends restore_format_topics_plugin {
 

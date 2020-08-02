@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grade item popover.
@@ -90,9 +90,9 @@ class gradeitem_popover implements renderable, templatable {
     public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
         ?string $gradepass, string $grademax) {
 
-        global $COURSE, $PAGE;
+        global $PAGE;
 
-        $cmid = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id;
+        $cmid = (int) get_fast_modinfo($PAGE->course->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id;
 
         $this->itemname = $gradeitem->itemname;
         $this->timemodified = $gradeitem->timemodified;
@@ -101,7 +101,7 @@ class gradeitem_popover implements renderable, templatable {
         $this->duedate = $duedate;
         $this->gradepass = $gradepass;
         $this->grademax = $grademax;
-        $this->showprogressbars = course_get_format($COURSE)->show_grade_item_progress_bars();
+        $this->showprogressbars = course_get_format($PAGE->course)->show_grade_item_progress_bars();
         $this->itemmodule = $gradeitem->itemmodule;
         $this->showsettings = has_capability('moodle/course:manageactivities', $PAGE->context);
         $this->viewurl = new moodle_url('/mod/' . $gradeitem->itemmodule . '/view.php', [
@@ -112,7 +112,7 @@ class gradeitem_popover implements renderable, templatable {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
-                    'course' => $COURSE->id,
+                    'course' => $PAGE->course->id,
                     'gradeitemid' => $gradeitem->id,
                     'itemname' => $gradeitem->itemname,
                     'sesskey' => sesskey(),
@@ -140,6 +140,7 @@ class gradeitem_popover implements renderable, templatable {
      * Export for template.
      *
      * @param renderer_base $output
+     *
      * @return stdClass
      */
     public function export_for_template(renderer_base $output): stdClass {

@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grading table.
@@ -140,6 +140,7 @@ class gradingtable implements renderable, templatable {
      * Export for template.
      *
      * @param renderer_base $output
+     *
      * @return stdClass
      */
     public function export_for_template(renderer_base $output): stdClass {
@@ -233,8 +234,8 @@ class gradingtable implements renderable, templatable {
         $cell = new html_table_cell();
         $cell->text = $OUTPUT->render(new gradeitem_body($gradeitem, $user, $status));
         $cell->attributes = [
-            'class' => 'position-relative text-center text-nowrap p-2 ' . course_get_format($COURSE)
-                ->transform_status_to_css($status),
+            'class' => 'position-relative text-center text-nowrap p-2 '
+                . course_get_format($COURSE)->transform_status_to_css($status),
             'title' => fullname($user) . ', ' . $gradeitem->itemname
         ];
 

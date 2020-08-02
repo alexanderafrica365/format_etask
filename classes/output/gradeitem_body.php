@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grade item body cell content.
@@ -95,6 +95,7 @@ class gradeitem_body implements renderable, templatable {
      * Export for template.
      *
      * @param renderer_base $output
+     *
      * @return stdClass
      */
     public function export_for_template(renderer_base $output): stdClass {

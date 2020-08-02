@@ -12,14 +12,14 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Privacy Subsystem implementation for eTask topics course format.
  *
  * @package    format_etask
- * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace format_etask\privacy;
@@ -31,8 +31,8 @@ use core_privacy\local\metadata\null_provider;
 /**
  * Privacy Subsystem for eTask topics course format implementing null_provider.
  *
- * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements null_provider {
     /**

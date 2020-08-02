@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Class containing data for grading table help popover.
@@ -26,10 +26,12 @@ namespace format_etask\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_plugin_manager;
 use renderable;
 use renderer_base;
 use stdClass;
 use templatable;
+use html_writer;
 
 /**
  * Class to prepare a grading table help popover for display.
@@ -43,22 +45,38 @@ class gradingtable_help_popover implements renderable, templatable {
     /** @var int */
     private $version;
 
+    /** @var string */
+    private $release;
+
+    /** @var string */
+    private $displayname;
+
     /**
      * The popover constructor.
      */
     public function __construct() {
-        $this->version = get_config('format_etask', 'version');
+        $plugininfo = core_plugin_manager::instance()->get_plugin_info('format_etask');
+        $this->version = $plugininfo->versiondb;
+        $this->release = $plugininfo->release;
+        $this->displayname = $plugininfo->displayname;
     }
 
     /**
      * Export for template.
      *
      * @param renderer_base $output
+     *
      * @return stdClass
      */
     public function export_for_template(renderer_base $output): stdClass {
         $data = new stdClass();
         $data->version = $this->version;
+        $data->release = $this->release;
+        $data->displayname = $this->displayname;
+        $data->pluginicon = html_writer::img($output->image_url('plugin', 'format_etask'), '', [
+            'class' => 'icon itemicon'
+        ]);
+        $data->settingsicon = $output->pix_icon('t/messages', get_string('edit'), 'core', ['class' => 'icon itemicon']);
 
         return $data;
     }

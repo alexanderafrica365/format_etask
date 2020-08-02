@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Strings for component eTask topics course format.
@@ -74,6 +74,10 @@ $string['max'] = 'max.';
 $string['progresspercentage'] = '{$a} % <span class="text-black-50">všech studentů</span>';
 $string['choose'] = 'Vyberte ...';
 $string['showmore'] = 'Zobrazit více ...';
+// Grading table help strings.
+$string['about'] = 'Bezplatný softwarový balíček Open Source, který má učitelům pomoci vytvořit efektivní online kurzy založené na zdravých pedagogických principech.';
+$string['questionnaireshead'] = 'Dotazníky';
+$string['questionnaires'] = 'Momentálně nemáte k dispozici žádné dotazníky, které by nám pomohly vylepšit tento plugin.';
 // Flash messages.
 $string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';

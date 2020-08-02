@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Updates settings.
@@ -29,19 +29,19 @@ require_once("../../../lib/grade/constants.php");
 
 use core\notification;
 
-$gradepass     = optional_param('gradepass', null, PARAM_INT);
-$group         = optional_param('group', null, PARAM_INT);
-$course        = required_param('course', PARAM_INT);
+$gradepass = optional_param('gradepass', null, PARAM_INT);
+$groupid = optional_param('group', null, PARAM_INT);
+$courseid = required_param('course', PARAM_INT);
 
 require_login();
 
 if ($gradepass !== null && confirm_sesskey() === true) {
-    $gradeitemid   = required_param('gradeitemid', PARAM_INT);
-    $gradepass     = required_param('gradepass', PARAM_INT);
-    $itemname      = required_param('itemname', PARAM_RAW);
+    $gradeitemid = required_param('gradeitemid', PARAM_INT);
+    $gradepass = required_param('gradepass', PARAM_INT);
+    $itemname = required_param('itemname', PARAM_RAW);
 
-    //@todo fix it - incorrect params to get cm/cmid! (now it returns to incorrect course)
-    $cm     = get_coursemodule_from_id('', $course, 0, true, MUST_EXIST);
+    $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
+    $cm = get_fast_modinfo($courseid)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance];
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 
     require_login($course, false, $cm);
@@ -69,8 +69,8 @@ if ($gradepass !== null && confirm_sesskey() === true) {
     }
 
      redirect(course_get_url($course), $message, null, $messagetype);
-} else if ($group > 0) {
-    $SESSION->format_etask['currentgroup'] = $group;
+} else if ($groupid > 0) {
+    $SESSION->format_etask['currentgroup'] = $groupid;
 
     redirect(course_get_url($course));
 }
