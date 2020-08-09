@@ -17,9 +17,9 @@
 /**
  * Upgrade scripts for eTask topics course format.
  *
- * @package    format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -27,23 +27,11 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Upgrade script for eTask topics course format.
  *
- * @param int|float $oldversion the version we are upgrading from
- * @return bool result
+ * @param int|float $oldversion
+ *
+ * @return bool
  */
 function xmldb_format_etask_upgrade($oldversion) {
-    global $CFG, $DB;
-
-    // Automatically generated Moodle v3.5.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.6.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.7.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.8.0 release upgrade line.
-    // Put any upgrade step following this.
-
+    // No upgrade steps.
     return true;
 }

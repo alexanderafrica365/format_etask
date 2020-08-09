@@ -77,7 +77,7 @@ $string['showmore'] = 'Zobrazit více ...';
 // Grading table help strings.
 $string['helpabout'] = 'Bezplatný softwarový balíček Open Source, který má učitelům pomoci vytvořit efektivní online kurzy založené na zdravých pedagogických principech.';
 $string['helpimprovehead'] = 'Vylepšení pluginu';
-$string['helpimprovebody'] = 'Pomozte vylepšovat! Napište zpětnou vazbu nebo vyplňte dostupné dotazníky na <a href="https://moodle.org/plugins/format_etask" target="_blank">stránce pluginu</a>.';
+$string['helpimprovebody'] = 'Pomozte nám vylepšit tento plugin! Napište zpětnou vazbu nebo vyplňte dostupné dotazníky na <a href="https://moodle.org/plugins/format_etask" target="_blank">stránce pluginu</a>.';
 // Flash messages.
 $string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';

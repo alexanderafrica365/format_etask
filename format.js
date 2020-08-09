@@ -1,4 +1,4 @@
-// Popover.
+// The grading table popover. Show on hover/tap due to links and selects.
 require(['jquery'], function($) {
     require(['theme_boost/popover'], function() {
         var counter;
@@ -27,8 +27,8 @@ require(['jquery'], function($) {
         }).on('mouseleave', function () {
             var _this = this;
             setTimeout(function () {
-                if (!$('.popover:hover').length) {
-                    if(!$(_this).is(':hover')) { // Change $(this) to $(_this).
+                if (!$('.popover:hover').length > 0) {
+                    if(!$(_this).is(':hover')) {
                         $(_this).popover('hide');
                     }
                 }

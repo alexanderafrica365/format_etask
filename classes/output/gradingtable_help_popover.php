@@ -36,9 +36,9 @@ use html_writer;
 /**
  * Class to prepare a grading table help popover for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingtable_help_popover implements renderable, templatable {
 

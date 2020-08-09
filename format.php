@@ -17,9 +17,9 @@
 /**
  * The eTask topics course format. Display the whole course as "topics" made of modules.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -29,7 +29,8 @@ require_once($CFG->libdir . '/completionlib.php');
 use format_etask\dataprovider\course_settings;
 
 // Horrible backwards compatible parameter aliasing.
-if ($topic = optional_param('topic', 0, PARAM_INT)) {
+$topic = optional_param('topic', null, PARAM_INT);
+if ($topic !== null) {
     $url = $PAGE->url;
     $url->param('section', $topic);
     debugging('Outdated topic param passed to course/view.php', DEBUG_DEVELOPER);
@@ -52,8 +53,7 @@ course_create_sections_if_missing($course, 0);
 $renderer = $PAGE->get_renderer('format_etask');
 
 // Start eTask topics course format.
-if (has_capability('moodle/course:viewparticipants', $context) === true) {
-
+if (has_capability('moodle/course:viewparticipants', $context)) {
     // The position above the sections.
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
         $renderer->print_grading_table($context, $course);
@@ -80,6 +80,6 @@ if (has_capability('moodle/course:viewparticipants', $context) === true) {
 }
 // End eTask topics course format.
 
-// Include course format js module.
+// Include course format JS modules.
 $PAGE->requires->js('/course/format/topics/format.js');
 $PAGE->requires->js('/course/format/etask/format.js');

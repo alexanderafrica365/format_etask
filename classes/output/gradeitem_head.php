@@ -35,9 +35,9 @@ use templatable;
 /**
  * Class to prepare a grade item head cell content for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradeitem_head implements renderable, templatable {
 
@@ -65,9 +65,18 @@ class gradeitem_head implements renderable, templatable {
     /** @var string */
     private $itemmodule;
 
+    /**
+     * Grade item head constructor.
+     *
+     * @param grade_item $gradeitem
+     * @param string $shortcut
+     * @param array|null $gradeitemstatuses
+     * @param int $studentscount
+     */
     public function __construct(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses, int $studentscount) {
         global $PAGE;
 
+        // Prepare the grade item completed/passed progress in percent.
         [$progresscompleted, $progresspassed] = course_get_format($PAGE->course)->get_progress_values(
             $gradeitemstatuses, $studentscount);
         $duedate = course_get_format($PAGE->course)->get_due_date($gradeitem);

@@ -77,7 +77,7 @@ $string['showmore'] = 'Show more ...';
 // Grading table help strings.
 $string['helpabout'] = 'Free Open Source software package designed to help educators create effective online courses based on sound pedagogical principles.';
 $string['helpimprovehead'] = 'Plugin improvements';
-$string['helpimprovebody'] = 'Help improve! Write feedback or fill out available questionnaires on the <a href="https://moodle.org/plugins/format_etask" target="_blank">plugin page</a>.';
+$string['helpimprovebody'] = 'Help us improve this plugin! Write feedback or fill out available questionnaires on the <a href="https://moodle.org/plugins/format_etask" target="_blank">plugin page</a>.';
 // Flash messages.
 $string['gradepasschanged'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Grade to pass for grade item <strong>{$a}</strong> has been successfully removed.';

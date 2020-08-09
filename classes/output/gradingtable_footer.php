@@ -27,6 +27,7 @@ namespace format_etask\output;
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
+use moodle_exception;
 use moodle_url;
 use renderable;
 use renderer_base;
@@ -37,9 +38,9 @@ use templatable;
 /**
  * Class to prepare a grading table footer for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingtable_footer implements renderable, templatable {
 
@@ -56,7 +57,7 @@ class gradingtable_footer implements renderable, templatable {
      * @param array $groups
      * @param int|null $selectedgroup
      *
-     * @throws \moodle_exception
+     * @throws moodle_exception
      * @throws coding_exception
      */
     public function __construct(int $studentscount, array $groups, ?int $selectedgroup) {
@@ -67,6 +68,7 @@ class gradingtable_footer implements renderable, templatable {
         $this->pagingbar = $OUTPUT->paging_bar($studentscount, $currentpage, course_get_format(
             $PAGE->course)->get_students_per_page(), $PAGE->url);
 
+        // If more then one group, prepare groups select. This method contains only groups available by permissions.
         if (count($groups) > 1) {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
@@ -92,7 +94,7 @@ class gradingtable_footer implements renderable, templatable {
         $data = new stdClass();
         $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
         $data->pagingbar = $this->pagingbar;
-        $data->help = $output->render(new gradingtable_help_popover());
+        $data->popover = $output->render(new gradingtable_help_popover());
 
         return $data;
     }

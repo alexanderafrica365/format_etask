@@ -29,16 +29,16 @@ require_once("../../../lib/grade/constants.php");
 
 use core\notification;
 
+// Get values from the URL parameters.
 $gradepass = optional_param('gradepass', null, PARAM_INT);
 $groupid = optional_param('group', null, PARAM_INT);
 $courseid = required_param('course', PARAM_INT);
 
 require_login();
 
-if ($gradepass !== null && confirm_sesskey() === true) {
+if ($gradepass !== null && confirm_sesskey()) {
+    // Update the grade item 'gradepass' and 'timemodified' fields.
     $gradeitemid = required_param('gradeitemid', PARAM_INT);
-    $gradepass = required_param('gradepass', PARAM_INT);
-    $itemname = required_param('itemname', PARAM_RAW);
 
     $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
     $cm = get_fast_modinfo($courseid)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance];
@@ -50,13 +50,14 @@ if ($gradepass !== null && confirm_sesskey() === true) {
 
     // Fetch the grade item by ID and set the grade to pass and time of modification.
     $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
+    $itemname = $gradeitem->get_name();
     $gradeitem->gradepass = $gradepass;
     $gradeitem->timemodified = time();
     $saved = $DB->update_record('grade_items', $gradeitem);
 
     $message = get_string('gradepassunablesave', 'format_etask', $itemname);
     $messagetype = notification::ERROR;
-    if ($saved === true) {
+    if ($saved) {
         if ($gradepass > 0) {
             $message = get_string('gradepasschanged', 'format_etask', [
                 'itemname' => $itemname,
@@ -65,12 +66,17 @@ if ($gradepass !== null && confirm_sesskey() === true) {
         } else {
             $message = get_string('gradepassremoved', 'format_etask', $itemname);
         }
+
+
         $messagetype = notification::SUCCESS;
     }
 
      redirect(course_get_url($course), $message, null, $messagetype);
 } else if ($groupid > 0) {
+    require_login($courseid, false);
+
+    // Update the 'currentgroup' session value.
     $SESSION->format_etask['currentgroup'] = $groupid;
 
-    redirect(course_get_url($course));
+    redirect(course_get_url($courseid));
 }

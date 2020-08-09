@@ -33,7 +33,7 @@
     white-space: nowrap;
 }
 
-/* Popover. */
+/* The grading table popover. */
 body.format-etask .popover.etask-popover {
     min-width: 380px;
     max-width: 380px;

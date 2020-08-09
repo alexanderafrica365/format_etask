@@ -17,9 +17,9 @@
 /**
  * Privacy Subsystem implementation for eTask topics course format.
  *
- * @package    format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace format_etask\privacy;
@@ -32,9 +32,10 @@ use core_privacy\local\metadata\null_provider;
  * Privacy Subsystem for eTask topics course format implementing null_provider.
  *
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements null_provider {
+
     /**
      * Get the language string identifier with the component's language
      * file to explain why this plugin stores no data.

@@ -40,9 +40,9 @@ use templatable;
 /**
  * Class to prepare a grading table for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradingtable implements renderable, templatable {
 
@@ -63,7 +63,7 @@ class gradingtable implements renderable, templatable {
 
         // Get all allowed course students.
         $students = course_get_format($COURSE)->get_gradable_students();
-        // Get students count for pagination.
+        // Get student's count for pagination.
         $studentscount = course_get_format($COURSE)->get_students_count($students);
         // Get sorted grade items.
         $gradeitems = course_get_format($COURSE)->get_sorted_gradeitems();
@@ -71,7 +71,7 @@ class gradingtable implements renderable, templatable {
         /** @var array<int, string[]> $gradeitemsstatuses */
         $gradeitemsstatuses = [];
         /** @var html_table_cell[] $headcells */
-        $headcells = [new html_table_cell()]; // First cell of the head is always empty.
+        $headcells = [new html_table_cell()]; // The first cell of the head is always empty.
         /** @var html_table_row[] $rows */
         $rows = [];
 
@@ -80,7 +80,7 @@ class gradingtable implements renderable, templatable {
             $rows[] = $this->get_no_students_row($gradeitems);
         }
 
-        // No grade items were found. Add cell to the table head data.
+        // No grade items were found. Add the cell to the table head data.
         if (count($gradeitems) === 0) {
             $headcells[] = $this->get_no_gradeitems_cell();
         }
@@ -91,11 +91,11 @@ class gradingtable implements renderable, templatable {
             /** @var html_table_cell[] $bodycells */
             $bodycells = [];
 
-            if ($collectiblecell === true) {
-                // Add student cell at the first position of the row.
+            if ($collectiblecell) {
+                // Add the student cell at the first position of the row.
                 $bodycells[] = $this->get_student_cell($user);
 
-                // No grade items were found. Each student has empty grade cell in the column.
+                // No grade items were found. Each student has an empty grade cell in the column.
                 if (count($gradeitems) === 0) {
                     $bodycells[] = $this->get_empty_cell();
                 }
@@ -107,12 +107,12 @@ class gradingtable implements renderable, templatable {
                 // even if the student's privacy is applied.
                 $status = course_get_format($COURSE)->get_grade_item_status($gradeitem, $user);
                 $gradeitemsstatuses[$gradeitem->id][] = $status;
-                if ($collectiblecell === true) {
+                if ($collectiblecell) {
                     $bodycells[] = $this->get_gradeitem_body_cell($gradeitem, $user, $status);
                 }
             }
 
-            // If count of body cells is the same as count of gradeitems + 1 (user cell), collect them to row.
+            // If the count of body cells is the same as the count of grade items + 1 (i.e. user cell), collect them to row.
             if (count($bodycells) === count($gradeitems) + 1) {
                 $rows[] = new html_table_row($bodycells);
             }
@@ -153,7 +153,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return no students found row, i.e. cell with message following by empty cells with slash for each grade item.
+     * Return 'no students found' row, i.e. cell with a message following by empty cells with a slash for each grade item.
      *
      * @param grade_item[]
      *
@@ -167,6 +167,7 @@ class gradingtable implements renderable, templatable {
 
         $bodycells[] = $cell;
 
+        // At least one empty body cell, i.e. 'no grade items'.
         do {
             $bodycells[] = $this->get_empty_cell();
         } while (next($gradeitems));
@@ -175,7 +176,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return no grade items found, i.e. cell with message.
+     * Return 'no grade items found' cell.
      *
      * @return html_table_cell
      * @throws coding_exception
@@ -189,7 +190,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return empty cell containing slash.
+     * Return empty cell containing '-'.
      *
      * @return html_table_cell
      */
@@ -220,7 +221,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return grade item body cell containing grade value text (or link to edit grade if permissions).
+     * Return grade item body cell containing grade value (text or link to edit grade if permissions).
      *
      * @param grade_item $gradeitem
      * @param stdClass $user
@@ -243,7 +244,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return grade item head cell containing grade item shortcut with a popover containing grade item details (and settings if
+     * Return the grade item head cell containing the shortcut with a popover containing grade item details (and settings if
      * permissions).
      *
      * @param grade_item $gradeitem
@@ -254,7 +255,7 @@ class gradingtable implements renderable, templatable {
      * @return html_table_cell
      */
     private function get_gradeitem_head_cell(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses,
-            int $studentscount): html_table_cell {
+                                             int $studentscount): html_table_cell {
         global $OUTPUT;
 
         $cell = new html_table_cell();
@@ -265,7 +266,7 @@ class gradingtable implements renderable, templatable {
     }
 
     /**
-     * Return html table containing table head and body.
+     * Return HTML table containing table head and body.
      *
      * @param html_table_cell[] $headcells
      * @param html_table_row[] $rows

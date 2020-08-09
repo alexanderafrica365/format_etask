@@ -26,9 +26,11 @@ namespace format_etask\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
 use format_etask;
 use grade_item;
 use html_writer;
+use moodle_exception;
 use moodle_url;
 use renderable;
 use renderer_base;
@@ -38,14 +40,11 @@ use templatable;
 /**
  * Class to prepare a grade item body cell content for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradeitem_body implements renderable, templatable {
-
-    /** @var bool */
-    private $completed;
 
     /** @var string */
     private $value;
@@ -62,22 +61,34 @@ class gradeitem_body implements renderable, templatable {
     /** @var string|null */
     private $css = null;
 
+    /**
+     * Grade item body constructor.
+     *
+     * @param grade_item $gradeitem
+     * @param stdClass $user
+     * @param string $status
+     *
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     public function __construct(grade_item $gradeitem, stdClass $user, string $status) {
         global $PAGE;
 
         $usergrade = $gradeitem->get_grade($user->id);
 
-        if ($status === format_etask::STATUS_COMPLETED) {
-            $this->value = html_writer::tag('i', '', ['class' => 'fa fa-check-square-o', 'area-hidden' => 'true']);
-        } else {
-            $this->value = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
-        }
+        // If the grade item is completed, value is replaced by the completed icon as an <i> tag. Otherwise, it is formatted grade
+        // value.
+        $this->value = $status === format_etask::STATUS_COMPLETED
+            ? $this->value = html_writer::tag('i', '', ['class' => 'fa fa-check-square-o', 'area-hidden' => 'true'])
+            : $this->value = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
 
+        // If the table cell has some status except 'none', text color is white.
         if ($status !== format_etask::STATUS_NONE) {
             $this->css = 'text-white';
         }
 
-        if (has_capability('moodle/grade:edit', $PAGE->context) === true) {
+        // If the user can edit a grade, value is a link to the grade edit.
+        if (has_capability('moodle/grade:edit', $PAGE->context)) {
             $this->url = new moodle_url('/grade/edit/tree/grade.php', [
                 'courseid' => $PAGE->course->id,
                 'id' => $usergrade->id,

@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/course/format/topics/restore_format_etask_plugin.
  * @package   format_etask
  * @category  backup
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_format_etask_plugin extends restore_format_topics_plugin {
 
@@ -67,7 +67,7 @@ class restore_format_etask_plugin extends restore_format_topics_plugin {
             // in the original course.
             // Exception is when we restore with merging and the course already had a section with this section number,
             // in this case we don't modify the visibility.
-            if ($this->step->get_task()->get_setting_value($key . '_included')) {
+            if ($this->step->get_task()->get_setting_value($key . '_included') !== null) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {
                     $DB->execute("UPDATE {course_sections} SET visible = 0 WHERE course = ? AND section = ?",

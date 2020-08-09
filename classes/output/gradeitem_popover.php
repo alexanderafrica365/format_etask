@@ -38,9 +38,9 @@ use templatable;
 /**
  * Class to prepare a grade item popover for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradeitem_popover implements renderable, templatable {
 
@@ -87,11 +87,11 @@ class gradeitem_popover implements renderable, templatable {
      * @param string $gradepass
      * @param string $grademax
      */
-    public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate,
-        ?string $gradepass, string $grademax) {
-
+    public function __construct(grade_item $gradeitem, int $completed, int $passed, ?int $duedate, ?string $gradepass,
+                                string $grademax) {
         global $PAGE;
 
+        // Get course module ID.
         $cmid = (int) get_fast_modinfo($PAGE->course->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]->id;
 
         $this->itemname = $gradeitem->itemname;
@@ -108,13 +108,13 @@ class gradeitem_popover implements renderable, templatable {
             'id' => $cmid
         ]);
 
-        if ($this->showsettings === true) {
+        // If the user can view the grade item settings, prepare grade to pass select and the grade item edit URL.
+        if ($this->showsettings) {
             $action = new moodle_url(
                 '/course/format/etask/update_settings.php',
                 [
                     'course' => $PAGE->course->id,
                     'gradeitemid' => $gradeitem->id,
-                    'itemname' => $gradeitem->itemname,
                     'sesskey' => sesskey(),
                 ]
             );
@@ -167,7 +167,7 @@ class gradeitem_popover implements renderable, templatable {
     }
 
     /**
-     * Return gradepass options for select.
+     * Return 'gradepass' options for select.
      *
      * @param grade_item $gradeitem
      *

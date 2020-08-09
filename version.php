@@ -17,16 +17,16 @@
 /**
  * Version details.
  *
- * @package    format_etask
- * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   format_etask
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020071901;
+$plugin->version   = 2020080900;
 $plugin->requires  = 2019111200;
 $plugin->supported = [38, 39];
 $plugin->component = 'format_etask';
-$plugin->maturity = MATURITY_BETA;
+$plugin->maturity = MATURITY_RC;
 $plugin->release = '2.4';

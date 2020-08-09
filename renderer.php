@@ -17,10 +17,10 @@
 /**
  * Renderer for outputting the eTask topics course format.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since Moodle 2.3
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since     Moodle 2.3
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -35,7 +35,7 @@ use format_etask\output\gradingtable;
  * Basic renderer for eTask topics format.
  *
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_etask_renderer extends format_topics_renderer {
 
@@ -44,6 +44,7 @@ class format_etask_renderer extends format_topics_renderer {
      *
      * @param context_course $context
      * @param stdClass $course
+     *
      * @return void
      */
     public function print_grading_table() {
