@@ -20,7 +20,7 @@
  * @package   format_etask
  * @category  backup
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -62,11 +62,10 @@ class restore_format_etask_plugin extends restore_format_topics_plugin {
 
         $numsections = (int)$data['tags']['numsections'];
         foreach ($backupinfo->sections as $key => $section) {
-            // For each section from the backup file check if it was restored and if was "orphaned" in the original
-            // course and mark it as hidden. This will leave all activities in it visible and available just as it was
-            // in the original course.
-            // Exception is when we restore with merging and the course already had a section with this section number,
-            // in this case we don't modify the visibility.
+            // For each section from the backup file check if it was restored and if was "orphaned" in the original course and mark
+            // it as hidden. This will leave all activities in it visible and available just as it was in the original course.
+            // Exception is when we restore with merging and the course already had a section with this section number, in this
+            // case we don't modify the visibility.
             if ($this->step->get_task()->get_setting_value($key . '_included') !== null) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {

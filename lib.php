@@ -71,17 +71,17 @@ class format_etask extends format_topics {
      * Definitions of the additional options that this course format uses for course.
      *
      * eTask topics format uses the following options:
-     * - hiddensections
-     * - coursedisplay
-     * - studentprivacy
-     * - gradeitemprogressbars
-     * - studentsperpage
-     * - gradeitemssorting
-     * - placement
+     * - hiddensections,
+     * - coursedisplay,
+     * - studentprivacy,
+     * - gradeitemprogressbars,
+     * - studentsperpage,
+     * - gradeitemssorting,
+     * - placement.
      *
      * @param bool $foreditform
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function course_format_options($foreditform = false): array {
         static $courseformatoptions = false;
@@ -234,6 +234,7 @@ class format_etask extends format_topics {
         // Merge initial values with the count of each status.
         $progressbardatacount = array_merge(['passed' => 0.0, 'completed' => 0.0, 'failed' => 0.0],
             array_count_values($gradeitemstatuses));
+
         // Calculate % of completed/passed progress.
         $progresscompleted = round(100 * (array_sum([$progressbardatacount['completed'], $progressbardatacount['passed'],
             $progressbardatacount['failed']]) / $studentscount));
@@ -401,10 +402,10 @@ class format_etask extends format_topics {
             return (int) $SESSION->format_etask['currentpage'] = $currentpage;
         }
 
-        // If the current page is out of bound set it to the last page. Use '<=' comparison because the pages are numbered from '0'.
+        // If the current page is out of bound set it to the last page. Use '<=' comparison because the pages are numbered from
+        // the zero.
         if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage']
             * $studentsperpage && !$this->is_student_privacy()) {
-
             return (int) $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
         }
 
@@ -492,9 +493,8 @@ class format_etask extends format_topics {
 
         // If due date fields exist for the item module, try to return timestamp from the database.
         if (isset($duedatefields[$gradeitem->itemmodule])) {
-            $time = (int) $DB->get_field($gradeitem->itemmodule, $duedatefields[$gradeitem->itemmodule], [
-                'id' => $gradeitem->iteminstance
-            ], IGNORE_MISSING);
+            $time = (int) $DB->get_field($gradeitem->itemmodule, $duedatefields[$gradeitem->itemmodule],
+                ['id' => $gradeitem->iteminstance], IGNORE_MISSING);
 
             if ($time > 0) {
                 return $time;
@@ -575,7 +575,7 @@ class format_etask extends format_topics {
      *
      * @param array $students
      *
-     * @return array
+     * @return array<int, stdClass>
      */
     public function get_gradable_students(): array {
         global $COURSE, $USER;
@@ -597,7 +597,7 @@ class format_etask extends format_topics {
      *
      * @param grade_item[] $gradeitems
      *
-     * @return array
+     * @return array<string, grade_item>
      */
     private function sort_grade_items_by_sections(array $gradeitems): array {
         global $COURSE;
@@ -643,6 +643,7 @@ class format_etask extends format_topics {
                 $duedatefields[trim($module)] = trim($duedatefield);
             }
         }
+
         return $duedatefields;
     }
 }
@@ -663,6 +664,7 @@ function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_e
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
             [$itemid, 'etask'], MUST_EXIST);
+
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }

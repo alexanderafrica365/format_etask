@@ -79,8 +79,8 @@ class gradeitem_body implements renderable, templatable {
         // If the grade item is completed, value is replaced by the completed icon as an <i> tag. Otherwise, it is formatted grade
         // value.
         $this->value = $status === format_etask::STATUS_COMPLETED
-            ? $this->value = html_writer::tag('i', '', ['class' => 'fa fa-check-square-o', 'area-hidden' => 'true'])
-            : $this->value = grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
+            ? html_writer::tag('i', '', ['class' => 'fa fa-check-square-o', 'area-hidden' => 'true'])
+            : grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
 
         // If the table cell has some status except 'none', text color is white.
         if ($status !== format_etask::STATUS_NONE) {

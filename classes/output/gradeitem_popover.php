@@ -171,13 +171,14 @@ class gradeitem_popover implements renderable, templatable {
      *
      * @param grade_item $gradeitem
      *
-     * @return array
+     * @return array<int, int>
      */
     private function get_options(grade_item $gradeitem): array {
         if (($scale = $gradeitem->load_scale()) !== null) {
             return make_menu_from_list($scale->scale);
         }
 
+        // If no scale defined, prepare the integer scale in interval <grade max., 1>.
         $grademax = round($gradeitem->grademax, 0);
         $options = [];
         for ($i = $grademax; $i >= 1; --$i) {

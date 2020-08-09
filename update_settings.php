@@ -34,27 +34,32 @@ $gradepass = optional_param('gradepass', null, PARAM_INT);
 $groupid = optional_param('group', null, PARAM_INT);
 $courseid = required_param('course', PARAM_INT);
 
+// Checks that the current user is logged in.
 require_login();
 
 if ($gradepass !== null && confirm_sesskey()) {
     // Update the grade item 'gradepass' and 'timemodified' fields.
     $gradeitemid = required_param('gradeitemid', PARAM_INT);
 
+    // Find the grade item by ID.
     $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
+    // Get the course module because of the privileges check.
     $cm = get_fast_modinfo($courseid)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance];
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 
+    // Checks that the current user is logged in and has the required privileges.
     require_login($course, false, $cm);
     $modcontext = context_module::instance($cm->id);
     require_capability('moodle/course:manageactivities', $modcontext);
 
-    // Fetch the grade item by ID and set the grade to pass and time of modification.
+    // Fetch the grade item by ID, set the 'gradepass' with 'timemodified', and save it.
     $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
     $itemname = $gradeitem->get_name();
     $gradeitem->gradepass = $gradepass;
     $gradeitem->timemodified = time();
     $saved = $DB->update_record('grade_items', $gradeitem);
 
+    // Prepare a flash message for the redirect.
     $message = get_string('gradepassunablesave', 'format_etask', $itemname);
     $messagetype = notification::ERROR;
     if ($saved) {
@@ -73,6 +78,7 @@ if ($gradepass !== null && confirm_sesskey()) {
 
      redirect(course_get_url($course), $message, null, $messagetype);
 } else if ($groupid > 0) {
+    // Checks that the current user is logged in and has the required privileges.
     require_login($courseid, false);
 
     // Update the 'currentgroup' session value.

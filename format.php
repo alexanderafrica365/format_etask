@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The eTask topics course format. Display the whole course as "topics" made of modules.
+ * The eTask topics course format. Display the whole course as 'topics' made of modules. The course includes the grading table
+ * above or below the course sections.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
@@ -52,34 +53,33 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_etask');
 
-// Start eTask topics course format.
+// Start of eTask topics course format.
 if (has_capability('moodle/course:viewparticipants', $context)) {
-    // The position above the sections.
+    // Print the grading table (the position above the sections).
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
         $renderer->print_grading_table($context, $course);
     }
 
-    // Sections.
+    // Print the sections.
     if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 
-    // The position below the sections.
+    // Print the grading table (the position below the sections).
     if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_BELOW) {
         $renderer->print_grading_table($context, $course);
     }
 } else {
-    // Sections.
+    // Print the sections only (no grading table - user cannot view participants).
     if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 }
-// End eTask topics course format.
+// End of eTask topics course format.
 
-// Include course format JS modules.
 $PAGE->requires->js('/course/format/topics/format.js');
 $PAGE->requires->js('/course/format/etask/format.js');

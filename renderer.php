@@ -34,6 +34,7 @@ use format_etask\output\gradingtable;
 /**
  * Basic renderer for eTask topics format.
  *
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
