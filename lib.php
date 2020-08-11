@@ -121,7 +121,7 @@ class format_etask extends format_topics {
         }
 
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
-            $courseformatoptions = [
+            $courseformatoptionsedit = [
                 'hiddensections' => [
                     'label' => new lang_string('hiddensections'),
                     'help' => 'hiddensections',
@@ -212,6 +212,8 @@ class format_etask extends format_topics {
                     ],
                 ],
             ];
+
+            $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
 
         return $courseformatoptions;
