@@ -20,7 +20,7 @@
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since     Moodle 3.7
+ * @since     Moodle 3.8
  */
 
 defined('MOODLE_INTERNAL') || die();
