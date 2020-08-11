@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'format_etask', language 'cs', branch 'MOODLE_20_STABLE'
+ * Strings for component eTask topics course format.
  *
  * @package   format_etask
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -60,7 +60,7 @@ $string['placement_below'] = 'Umístit hodnotící tabulku pod témata kurzu';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registrované moduly s datumem odevzdání';
 $string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota datuu odevzání.';
-// ETask grading table strings.
+// The eTask grading table strings.
 $string['gradesavingsuccess'] = 'Potřebná známka pro <strong>{$a->itemName}</strong> byla úspěšně nastavena na hodnotu <strong>{$a->gradePass}</strong>.';
 $string['gradesavingerror'] = 'Chyba při ukládání potřebné známky pro <strong>{$a}</strong>. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
 $string['legend'] = 'Legenda';
