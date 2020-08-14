@@ -71,14 +71,15 @@ class gradeitem_head implements renderable, templatable {
      * @param grade_item $gradeitem
      * @param string $shortcut
      * @param array|null $gradeitemstatuses
-     * @param int $studentscount
+     * @param int $studentscountforcalculations
      */
-    public function __construct(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses, int $studentscount) {
+    public function __construct(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses,
+                                int $studentscountforcalculations) {
         global $PAGE;
 
         // Prepare the grade item completed/passed progress in percent.
         [$progresscompleted, $progresspassed] = course_get_format($PAGE->course)->get_progress_values(
-            $gradeitemstatuses, $studentscount);
+            $gradeitemstatuses, $studentscountforcalculations);
         $duedate = course_get_format($PAGE->course)->get_due_date($gradeitem);
         $gradepass = $gradeitem->gradepass > 0 ? grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0) : null;
         $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);

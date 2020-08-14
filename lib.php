@@ -223,11 +223,11 @@ class format_etask extends format_topics {
      * Return the grade item completed/passed progress in percent.
      *
      * @param string[]|null $gradeitemstatuses
-     * @param int $studentscount
+     * @param int $studentscountforcalculations
      *
      * @return array<float, float>
      */
-    public function get_progress_values(?array $gradeitemstatuses, int $studentscount): array {
+    public function get_progress_values(?array $gradeitemstatuses, int $studentscountforcalculations): array {
         // If progress bars are not allowed, return zero values.
         if (!$this->show_grade_item_progress_bars() || $gradeitemstatuses === null) {
             return [0.0, 0.0];
@@ -239,8 +239,8 @@ class format_etask extends format_topics {
 
         // Calculate % of completed/passed progress.
         $progresscompleted = round(100 * (array_sum([$progressbardatacount['completed'], $progressbardatacount['passed'],
-            $progressbardatacount['failed']]) / $studentscount));
-        $progresspassed = round(100 * ($progressbardatacount['passed'] / $studentscount));
+            $progressbardatacount['failed']]) / $studentscountforcalculations));
+        $progresspassed = round(100 * ($progressbardatacount['passed'] / $studentscountforcalculations));
 
         return [$progresscompleted, $progresspassed];
     }
@@ -287,13 +287,13 @@ class format_etask extends format_topics {
     }
 
     /**
-     * Return grading table student's total count.
+     * Return grading table student's total count for view.
      *
      * @param array $students
      *
      * @return int
      */
-    public function get_students_count(array $students): int {
+    public function get_students_count_for_view(array $students): int {
         global $USER;
 
         if ($this->is_student_privacy()) {
@@ -388,13 +388,13 @@ class format_etask extends format_topics {
     /**
      * Return the current pagination page.
      *
-     * @param int $studentscount
+     * @param int $studentscountforview
      * @param int $studentsperpage
      *
      * @return int
      * @throws coding_exception
      */
-    public function get_current_page(int $studentscount, int $studentsperpage): int {
+    public function get_current_page(int $studentscountforview, int $studentsperpage): int {
         global $SESSION;
 
         // Try to get a page from the URL parameter.
@@ -406,9 +406,9 @@ class format_etask extends format_topics {
 
         // If the current page is out of bound set it to the last page. Use '<=' comparison because the pages are numbered from
         // the zero.
-        if (isset($SESSION->format_etask['currentpage']) && $studentscount <= $SESSION->format_etask['currentpage']
+        if (isset($SESSION->format_etask['currentpage']) && $studentscountforview <= $SESSION->format_etask['currentpage']
             * $studentsperpage && !$this->is_student_privacy()) {
-            return (int) $SESSION->format_etask['currentpage'] = round($studentscount / $studentsperpage, 0) - 1;
+            return (int) $SESSION->format_etask['currentpage'] = round($studentscountforview / $studentsperpage, 0) - 1;
         }
 
         // Return valid current page, i.e. does not allow a negative current page.

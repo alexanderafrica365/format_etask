@@ -63,8 +63,10 @@ class gradingtable implements renderable, templatable {
 
         // Get all allowed course students.
         $students = course_get_format($COURSE)->get_gradable_students();
-        // Get student's count for pagination.
-        $studentscount = course_get_format($COURSE)->get_students_count($students);
+        // The real number of students displayed in the grading table (depends on student privacy).
+        $studentscountforview = course_get_format($COURSE)->get_students_count_for_view($students);
+        // The number of all the students (does not depend on student privacy) needed for progress bars calculations.
+        $studentscountforcalculations = count($students);
         // Get sorted grade items.
         $gradeitems = course_get_format($COURSE)->get_sorted_gradeitems();
 
@@ -76,7 +78,7 @@ class gradingtable implements renderable, templatable {
         $rows = [];
 
         // No students were found to grade. Add row to the table body data.
-        if ($studentscount === 0) {
+        if ($studentscountforview === 0) {
             $rows[] = $this->get_no_students_row($gradeitems);
         }
 
@@ -121,14 +123,14 @@ class gradingtable implements renderable, templatable {
         // Render table cells of grade items.
         foreach ($gradeitems as $shortcut => $gradeitem) {
             $headcells[] = $this->get_gradeitem_head_cell($gradeitem, $shortcut, $gradeitemsstatuses[$gradeitem->id] ?? null,
-                $studentscount);
+                $studentscountforcalculations);
         }
 
         // If pagination is needed, get rows by limit and offset.
-        $rows = $this->get_page_rows($studentscount, $rows);
+        $rows = $this->get_page_rows($studentscountforview, $rows);
 
         $this->table = $this->get_gradingtable($headcells, $rows);
-        $this->footer = new gradingtable_footer($studentscount, course_get_format($COURSE->id)->get_groups(),
+        $this->footer = new gradingtable_footer($studentscountforview, course_get_format($COURSE->id)->get_groups(),
             course_get_format($COURSE)->get_current_group_id());
         $this->css = 'border-bottom mb-3 pb-3';
         if (course_get_format($COURSE)->get_placement() === format_etask::PLACEMENT_BELOW) {
@@ -250,16 +252,17 @@ class gradingtable implements renderable, templatable {
      * @param grade_item $gradeitem
      * @param string $shortcut
      * @param array|null $gradeitemstatuses
-     * @param int $studentscount
+     * @param int $studentscountforcalculations
      *
      * @return html_table_cell
      */
     private function get_gradeitem_head_cell(grade_item $gradeitem, string $shortcut, ?array $gradeitemstatuses,
-                                             int $studentscount): html_table_cell {
+                                             int $studentscountforcalculations): html_table_cell {
         global $OUTPUT;
 
         $cell = new html_table_cell();
-        $cell->text = $OUTPUT->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemstatuses, $studentscount));
+        $cell->text = $OUTPUT->render(new gradeitem_head($gradeitem, $shortcut, $gradeitemstatuses,
+            $studentscountforcalculations));
         $cell->attributes = ['class' => 'text-center text-nowrap'];
 
         return $cell;
@@ -286,20 +289,20 @@ class gradingtable implements renderable, templatable {
     /**
      * Return page rows as they are or by limit and offset if pagination is needed.
      *
-     * @param int $studentscount
+     * @param int $studentscountforview
      * @param html_table_row[] $rows
      *
      * @return html_table_row[]
      */
-    private function get_page_rows(int $studentscount, array $rows): array {
+    private function get_page_rows(int $studentscountforview, array $rows): array {
         global $COURSE;
 
         $studentsperpage = course_get_format($COURSE)->get_students_per_page();
-        if ($studentscount <= $studentsperpage) {
+        if ($studentscountforview <= $studentsperpage) {
             return $rows;
         }
 
-        $currentpage = course_get_format($COURSE)->get_current_page($studentscount, $studentsperpage);
+        $currentpage = course_get_format($COURSE)->get_current_page($studentscountforview, $studentsperpage);
 
         return array_slice($rows, $currentpage * $studentsperpage, $studentsperpage, true);
     }

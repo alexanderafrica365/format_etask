@@ -53,19 +53,19 @@ class gradingtable_footer implements renderable, templatable {
     /**
      * Footer constructor.
      *
-     * @param int $studentscount
+     * @param int $studentscountforview
      * @param array $groups
      * @param int|null $selectedgroup
      *
      * @throws moodle_exception
      * @throws coding_exception
      */
-    public function __construct(int $studentscount, array $groups, ?int $selectedgroup) {
+    public function __construct(int $studentscountforview, array $groups, ?int $selectedgroup) {
         global $OUTPUT, $PAGE;
 
-        $currentpage = course_get_format($PAGE->course)->get_current_page($studentscount, course_get_format(
+        $currentpage = course_get_format($PAGE->course)->get_current_page($studentscountforview, course_get_format(
             $PAGE->course)->get_students_per_page());
-        $this->pagingbar = $OUTPUT->paging_bar($studentscount, $currentpage, course_get_format(
+        $this->pagingbar = $OUTPUT->paging_bar($studentscountforview, $currentpage, course_get_format(
             $PAGE->course)->get_students_per_page(), $PAGE->url);
 
         // If more then one group, prepare groups select. This method contains only groups available by permissions.
