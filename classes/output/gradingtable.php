@@ -63,7 +63,7 @@ class gradingtable implements renderable, templatable {
 
         // Get all allowed course students.
         $students = course_get_format($COURSE)->get_gradable_students();
-        // The real number of students displayed in the grading table (depends on student privacy).
+        // The number of students displayed in the grading table (depends on student privacy).
         $studentscountforview = course_get_format($COURSE)->get_students_count_for_view($students);
         // The number of all the students (does not depend on student privacy) needed for progress bars calculations.
         $studentscountforcalculations = count($students);
