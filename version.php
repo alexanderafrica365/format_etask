@@ -30,4 +30,4 @@ $plugin->supported = [37, 37];
 $plugin->incompatible = 38;
 $plugin->component = 'format_etask';
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '2.3';
+$plugin->release = '2.0';
