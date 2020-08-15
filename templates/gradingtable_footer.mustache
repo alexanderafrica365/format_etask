@@ -27,18 +27,14 @@
     }
 }}
 
-<div class="d-flex justify-content-md-between flex-wrap">
-    {{#select}}
-        <div class="mt-1 mr-2">
-            {{{select}}}
-        </div>
-    {{/select}}
+<div class="d-flex justify-content-md-between justify-content-center flex-wrap">
+    <div class="mt-1 mr-2">
+        {{{select}}}
+    </div>
 
-    {{#pagingbar}}
-        <div class="mr-2">
-            {{{pagingbar}}}
-        </div>
-    {{/pagingbar}}
+    <div class="mr-2">
+        {{{pagingbar}}}
+    </div>
 
     <div class="mt-2">
         <span class="mr-1 d-none d-md-inline">{{#str}}legend, format_etask{{/str}}</span>
