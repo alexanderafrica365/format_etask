@@ -58,17 +58,17 @@ body.format-etask td.bg-danger, body.format-etask .badge.badge-danger {
 
 /* Backward compatibility due to the older Bootstrap version. */
 body.format-etask .mr-n3 {
-    margin-right: -15px !important;
+    margin-right: -16px !important;
 }
 
 body.format-etask .ml-n3 {
-    margin-left: -15px !important;
+    margin-left: -16px !important;
 }
 
 body.format-etask .mt-n3 {
-    margin-top: -15px !important;
+    margin-top: -16px !important;
 }
 
 body.format-etask .text-black-50 {
-    color: rgba(0,0,0,.5)!important;
+    color: rgba(0,0,0,.5) !important;
 }
