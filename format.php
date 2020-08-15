@@ -81,5 +81,6 @@ if (has_capability('moodle/course:viewparticipants', $context)) {
 }
 // End of eTask topics course format.
 
+// Include course formats js modules.
 $PAGE->requires->js('/course/format/topics/format.js');
 $PAGE->requires->js('/course/format/etask/format.js');
