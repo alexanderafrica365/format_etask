@@ -55,3 +55,20 @@ body.format-etask td.bg-warning, body.format-etask .badge.badge-warning, body.fo
 body.format-etask td.bg-danger, body.format-etask .badge.badge-danger {
     background-color: #dc3545 !important;
 }
+
+/* Backward compatibility due to the older Bootstrap version. */
+body.format-etask .mr-n3 {
+    margin-right: -15px !important;
+}
+
+body.format-etask .ml-n3 {
+    margin-left: -15px !important;
+}
+
+body.format-etask .mt-n3 {
+    margin-top: -15px !important;
+}
+
+body.format-etask .text-black-50 {
+    color: rgba(0,0,0,.5)!important;
+}
