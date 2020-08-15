@@ -29,4 +29,4 @@ $plugin->requires  = 2019111200;
 $plugin->supported = [38, 39];
 $plugin->component = 'format_etask';
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '2.4';
+$plugin->release = '2.1';
