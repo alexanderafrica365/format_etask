@@ -388,12 +388,14 @@ function get_etask_gradebook($assignments, $context, $courseid, $sesskey, $secti
 
             $class = get_cell_color($submission, $gradepass, $grade);
 
-            $url = str_replace('&amp;', '&', (string) new moodle_url('/mod/assign/view.php',
+            $url = str_replace('&amp;', '&', (string) new moodle_url('/grade/edit/tree/grade.php',
                 array(
-                    'id'=>$assignment->assign_id,
-                    'rownum'=>$rownum,
-                    'assign'=>$assignment->assign_id,
-                    'action'=>'grade')));
+                    'courseid'=>$courseid,
+                    'itemid'=>$gradinginfo[$assignmentindex]->items[0]->id,
+                    'userid'=>$user->id,
+                    'gpr_type'=>'report',
+                    'gpr_plugin'=>'grader',
+                    'gpr_courseid'=>$courseid)));
 
             // onli user with capability of update the course can clicked on table cell
             if(has_capability('moodle/course:update', $context)) {
