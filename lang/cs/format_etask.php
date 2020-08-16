@@ -15,20 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component eTask topics course format.
+ * Strings for component 'format_etask', language 'cs', branch 'MOODLE_20_STABLE'
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // Topics format strings.
-$string['addsections'] = 'Přidat témata';
 $string['currentsection'] = 'Aktuální téma';
 $string['editsection'] = 'Upravit téma';
-$string['editsectionname'] = 'Upravit název tématu';
 $string['deletesection'] = 'Odstranit téma';
-$string['newsectionname'] = 'Nový název tématu {$a}';
 $string['sectionname'] = 'Téma';
 $string['pluginname'] = 'eTask tematické uspořádání';
 $string['section0name'] = 'Úvod';
@@ -36,16 +33,15 @@ $string['page-course-view-topics'] = 'Hlavní stránka libovolného kurzu v eTas
 $string['page-course-view-topics-x'] = 'Jakákoliv stránka kurzu s eTask tematickým uspořádáním';
 $string['hidefromothers'] = 'Skrýt téma';
 $string['showfromothers'] = 'Zobrazit téma';
-$string['privacy:metadata'] = 'Modul Formát eTask tématické uspořádání neukládá žádné osobní údaje.';
 // Course format settings strings.
 $string['privateview'] = 'eTask soukromé zobrazení';
 $string['privateview_help'] = 'Toto nastavení určuje, zda mohou všichni studenti vidět své známky navzájem v tabulce hodnocení eTask nebo ne.';
 $string['privateview_no'] = 'Každý student může vidět známky ostatních studentů kurzu/skupiny';
 $string['privateview_yes'] = 'Přihlášený student může vidět pouze své vlastní známky';
-$string['progressbars'] = 'eTask progress bary';
-$string['progressbars_help'] = 'Toto nastavení určuje, zda se počítají progress bary Dokončeno a Splněno v nápovědě aktivity tabulky hodnocení eTask nebo ne.';
-$string['progressbars_donotcalculate'] = 'Nepočítat progress bary Dokončeno a Splněno';
-$string['progressbars_calculate'] = 'Počítat progress bary Dokončeno a Splněno';
+$string['progresscharts'] = 'eTask progress grafy';
+$string['progresscharts_help'] = 'Toto nastavení určuje, zda se počítají progress grafy Dokončeno a Splněno v nápovědě aktivity tabulky hodnocení eTask nebo ne.';
+$string['progresscharts_donotcalculate'] = 'Nepočítat progress grafy Dokončeno a Splněno';
+$string['progresscharts_calculate'] = 'Počítat progress grafy Dokončeno a Splněno';
 $string['studentsperpage'] = 'eTask počet studentů na stránce';
 $string['studentsperpage_help'] = 'Toto nastavení určuje počet studentů na stránce v tabulce hodnocení eTask.';
 $string['activitiessorting'] = 'eTask řazení aktivit';
@@ -60,7 +56,7 @@ $string['placement_below'] = 'Umístit hodnotící tabulku pod témata kurzu';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registrované moduly s datumem odevzdání';
 $string['registeredduedatemodules_help'] = 'Určuje, v jakém databázovém poli modulu je ukládána hodnota datuu odevzání.';
-// The eTask grading table strings.
+// ETask grading table strings.
 $string['gradesavingsuccess'] = 'Potřebná známka pro <strong>{$a->itemName}</strong> byla úspěšně nastavena na hodnotu <strong>{$a->gradePass}</strong>.';
 $string['gradesavingerror'] = 'Chyba při ukládání potřebné známky pro <strong>{$a}</strong>. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
 $string['legend'] = 'Legenda';

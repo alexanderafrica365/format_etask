@@ -18,7 +18,7 @@
  * Settings.
  *
  * @package    format_etask
- * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright  2017 Martin Drlik <martin.drlik@email.cz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,6 +29,6 @@ $settings->add(
         'format_etask/registered_due_date_modules',
         get_string('registeredduedatemodules', 'format_etask'),
         get_string('registeredduedatemodules_help', 'format_etask'),
-        'assign:duedate, forum:duedate, lesson:deadline, lucson:deadline, quiz:timeclose, scorm:timeclose, workshop:submissionend'
+        'assign:duedate, lesson:deadline, lucson:deadline, quiz:timeclose, scorm:timeclose, workshop:submissionend'
     )
 );
