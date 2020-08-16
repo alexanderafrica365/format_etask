@@ -1,0 +1,22 @@
+table.etask{white-space: nowrap;margin-bottom:1px;}
+td.user{padding:3px;font-weight: bold;}
+td.user img{vertical-align: middle;}
+td.center{text-align:center;vertical-align: middle;}
+p.legend{padding:10px 3px;}
+p .unsubmitted, p .submitted, p .passed, p .failed{padding:3px;}
+table.etask td.unsubmitted, p .unsubmitted{background:white;}
+table.etask td.submitted, p .submitted{background:#efd9a4;}
+table.etask td.passed, p .passed{background:#c2ebbd;color:green;}
+table.etask td.failed, p .failed{background:#ebc4bd;color:#890d0d;}
+#tooltip h3{font-size:100%;}
+table.etask .assigncontainer{position:relative;}
+table.etask form.mform{padding:0px;margin:0px;}
+table.etask form.mform .fitem .felement{float:right;text-align:left;width:110px;}
+table.etask .gradesettings{position:absolute;background:#eeeeee;border:1px solid #808080;min-width:250px;margin-top:1px;z-index:1;}
+table.etask .gradesettings h3{font-size:100%;text-align: left;padding-left: 10px;}
+.pointer{cursor: pointer;}
+.overflowtable{overflow: auto;}
+.etaskcontainer{min-height:180px;position: relative;}
+.directionrtl{direction:rtl;}
+.directionltr{direction:ltr;}
+.no-data{width:100%;text-align: center;font-size: 200%;color: gray;margin-top: 60px;}
