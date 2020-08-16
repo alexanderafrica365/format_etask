@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capabilities for eTask topics course format.
+ * Version details.
  *
  * @package    format_etask
- * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright  2018 Martin Drlik <martin.drlik@email.cz>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

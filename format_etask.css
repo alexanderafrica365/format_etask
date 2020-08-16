@@ -1,108 +1,160 @@
 /* Popover. */
-body.format-etask .popover {
+.popover {
     width: 430px;
     max-width: 700px;
 }
-body.format-etask .badge.badge-success {
-    background-color: #28a745;
+.popover-container img {
+    vertical-align: text-bottom;
 }
-/* Progress bars. */
-body.format-etask .progress-bar-passed .progress-bar.bar {
-    background-color: #28a745;
+.popover-container .grade-to-pass {
+    padding-top: 8px;
 }
-body.format-etask .progress-bar-completed .progress-bar.bar {
-    background-color: #ffc107;
+.badge.badge-success {
+    background-color: #28a745 !important;
+}
+/* Progress charts. */
+.popover-container progress {
+    margin-bottom: 0;
+}
+.popover-container progress.progress-chart-passed {
+    margin-top: 0.3rem;
+}
+.popover-container .progress-chart-completed.enabled {
+    text-align: center;
+    color: #ffc107;
+}
+.popover-container .progress-chart-passed.enabled {
+    text-align: center;
+    color: #28a745;
+}
+.popover-container .progress-chart-completed.disabled {
+    text-align: center;
+    color: #eee;
+}
+.popover-container .progress-chart-passed.disabled {
+    text-align: center;
+    color: #eee;
+}
+.popover-container progress.progress-success {
+    background-color: #28a745 !important;
+}
+.popover-container progress.progress-success::-moz-progress-bar {
+    background-color: #28a745 !important;
+}
+.popover-container progress.progress-success::-webkit-progress-value {
+    background-color: #28a745 !important;
+}
+.popover-container progress.progress-success[aria-valuenow]:before {
+    background-color: #28a745 !important;
+}
+.popover-container progress.progress-warning {
+    background-color: #ffc107 !important;
+}
+.popover-container progress.progress-warning::-moz-progress-bar {
+    background-color: #ffc107 !important;
+}
+.popover-container progress.progress-warning::-webkit-progress-value {
+    background-color: #ffc107 !important;
+}
+.popover-container progress.progress-warning[aria-valuenow]:before {
+    background-color: #ffc107 !important;
 }
 /* Section line. */
-body.format-etask .etask-grade-table.above {
-    border-bottom: 1px solid #dee2e6;
+.etask-grade-table.above {
+    border-bottom: 1px solid #f4f4f4;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
 }
-body.format-etask .etask-grade-table.below {
-    border-top: 1px solid #dee2e6;
+.etask-grade-table.below {
+    border-top: 1px solid #f4f4f4;
     padding-top: 1rem;
     margin-top: 1rem;
 }
 /* Grade table. */
-body.format-etask .etask-grade-table th.grade-item-header {
+.etask-grade-table img.item-ico {
+    width: 16px;
+    height: 16px;
+}
+.etask-grade-table th.grade-item-header {
     min-width: 50px;
     height: 35px;
     padding: 8px 5px;
     white-space: nowrap;
 }
-body.format-etask .etask-grade-table td.user-header {
+.etask-grade-table td.user-header {
     min-width: 130px;
     padding-right: 5px;
     white-space: nowrap;
     height: 37px;
 }
-body.format-etask .etask-grade-table table .text-center {
+.etask-grade-table table .text-center {
     text-align: center;
 }
-body.format-etask .etask-grade-table td a.grade-item-body {
+.etask-grade-table td a.grade-item-body {
     display: block;
     width: 100%;
 }
-body.format-etask .etask-grade-table .pointer {
+.etask-grade-table .pointer {
     cursor: pointer;
 }
-body.format-etask .etask-grade-table .grade-item-dialog {
+.etask-grade-table .grade-item-dialog {
     opacity: 0.5;
 }
-body.format-etask .grade-item-dialog i.icon {
+img.grade-item-dialog {
     margin: 0 0 0 3px;
 }
 /* Grade table activity colors. */
-body.format-etask .etask-grade-table .completed {
-    color: #fff;
-    background-color: #ffc107;
+.etask-grade-table .completed {
+    color: #fff !important;
+    background-color: #ffc107 !important;
 }
-body.format-etask .etask-grade-table .passed {
-    color: #fff;
-    background-color: #28a745;
+.etask-grade-table .passed {
+    color: #fff !important;
+    background-color: #28a745 !important;
 }
-body.format-etask .etask-grade-table .failed {
-    color: #fff;
-    background-color: #dc3545;
+.etask-grade-table .failed {
+    color: #fff !important;
+    background-color: #dc3545 !important;
 }
-body.format-etask .etask-grade-table .completed a {
-    color: #fff;
+.etask-grade-table .completed a {
+    color: #fff !important;
 }
-body.format-etask .etask-grade-table .passed a {
-    color: #fff;
+.etask-grade-table .passed a {
+    color: #fff !important;
 }
-body.format-etask .etask-grade-table .failed a {
-    color: #fff;
+.etask-grade-table .failed a {
+    color: #fff !important;
 }
 /* Legend. */
-body.format-etask .etask-grade-table .legend {
+.etask-grade-table .legend {
     line-height: 2.5em;
     text-align: right;
-    padding-bottom: 20px;
+    padding: 5px 0 20px 0;
 }
-body.format-etask .etask-grade-table .legend span {
+.etask-grade-table .legend span {
     padding: 8px;
     margin-left: 10px;
 }
 /* Hack of mform. */
-body.format-etask .inline-form .form-group {
+.inline-form .form-group {
     margin-left: 0;
 }
-body.format-etask .inline-form .form-group .col-md-3,
-body.format-etask .inline-form .form-group .col-md-9 {
+.inline-form .form-group .col-md-3, .inline-form .form-group .col-md-9 {
     padding-left: 0;
 }
-body.format-etask .inline-form .form-group .col-md-3 {
+.inline-form .form-group .col-md-3 {
     margin-top: 5px;
 }
 /* Pagination. */
-body.format-etask .etask-grade-table nav ul {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    margin-top: 0;
+.etask-grade-table nav ul {
+    -webkit-box-pack: center !important;
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+    margin-top: 6px !important;
 }
-body.format-etask .grade-table-footer {
+.etask-grade-table nav {
+    text-align: center;
+}
+.grade-table-footer {
     margin-top: 13px;
 }
