@@ -18,32 +18,41 @@
  * Renderer for outputting the eTask topics course format.
  *
  * @package format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2012 Dan Poltawski
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 2.3
  */
 
+
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/course/format/renderer.php');
-require_once($CFG->dirroot.'/course/format/etask/classes/output/progress_bar.php');
 
 use \format_etask\output\progress_bar;
+
+require_once($CFG->dirroot.'/course/format/renderer.php');
+require_once($CFG->dirroot.'/course/format/etask/classes/output/progress_bar.php');
 
 /**
  * Basic renderer for eTask topics format.
  *
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2017 Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_etask_renderer extends format_section_renderer_base {
+class format_etask_renderer extends format_section_renderer_base
+{
 
-    /** @var FormatEtaskLib */
+    /**
+     * @var FormatEtaskLib
+     */
     private $etasklib;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $etaskversion;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     private $config;
 
     /**
@@ -57,9 +66,8 @@ class format_etask_renderer extends format_section_renderer_base {
 
         $this->etaskversion = get_config('format_etask', 'version');
 
-        // Since format_etask_renderer::section_edit_controls() only displays the 'Highlight' control
-        // when editing mode is on we need to be sure that the link 'Turn editing mode on' is available for a user
-        // who does not have any other managing capability.
+        // Since format_etask_renderer::section_edit_control_items() only displays the 'Highlight' control when editing mode is on
+        // we need to be sure that the link 'Turn editing mode on' is available for a user who does not have any other managing capability.
         $page->set_other_editing_capability('moodle/course:setcurrentsection');
     }
 
@@ -76,7 +84,7 @@ class format_etask_renderer extends format_section_renderer_base {
     }
 
     /**
-     * Html representation of user picture and name with link to user profile.
+     * Html representaiton of user picture and name with link to user profile.
      *
      * @param stdClass $user
      * @return string
@@ -108,22 +116,27 @@ class format_etask_renderer extends format_section_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    private function render_activities_head(grade_item $gradeitem, int $itemnum, int $studentscount, array $progressbardata,
-            int $cmid, string $completionexpected): string {
+    private function render_activities_head(
+        grade_item $gradeitem,
+        int $itemnum,
+        int $studentscount,
+        array $progressbardata,
+        int $cmid,
+        string $completionexpected): string {
         $sesskey = sesskey();
         $sectionreturn = optional_param('sr', 0, PARAM_INT);
 
         $itemtitleshort = strtoupper(substr($gradeitem->itemmodule, 0, 1)) . $itemnum;
         $gradesettings = $this->render_grade_settings($gradeitem, $this->page->context);
 
-        // Calculate progress bar data count if allowed in config.
+        // Calculate progress bar data count if allowed in cfg.
         $progresscompleted = 0;
         $progresspassed = 0;
-        // Calculate progress bars config.
+        // Calculate progress bars cfg.
         if ($this->config['progressbars'] === true
             || has_capability('format/etask:teacher', $this->page->context)
             || has_capability('format/etask:noneditingteacher', $this->page->context)) {
-            // Init progress bars data.
+            // Init porgress bars data.
             $progressbardatainit = [
                 'passed' => 0,
                 'completed' => 0,
@@ -141,7 +154,7 @@ class format_etask_renderer extends format_section_renderer_base {
 
         // Prepare module icon.
         $ico = html_writer::img($this->output->image_url('icon', $gradeitem->itemmodule), '', [
-            'class' => 'icon itemicon mr-0'
+            'class' => 'item-ico'
         ]);
 
         // Prepare grade to pass string.
@@ -187,7 +200,7 @@ class format_etask_renderer extends format_section_renderer_base {
             html_writer::tag('span', $gradetopassvalue, [
                 'class' => 'badge badge-pill badge-' . $badgetype
             ]),
-            'grade-to-pass mt-2'
+            'grade-to-pass'
         );
         // Activity popover string.
         $activitypopoverstring = implode(' ', [$duedatestring, $gradetopassstring]);
@@ -204,16 +217,16 @@ class format_etask_renderer extends format_section_renderer_base {
 
         // Activity popover progress bars.
         $progressbars = html_writer::div(
-            html_writer::div($progressbarcompleted, 'col-md-12') .
-            html_writer::div($progressbarpassed, 'col-md-12'),
+            html_writer::div($progressbarcompleted, 'col-xs-12') .
+            html_writer::div($progressbarpassed, 'col-xs-12'),
             'row'
         );
 
         // Prepare activity popover.
         $popover = html_writer::div(
             html_writer::div(
-                html_writer::div($progressbars, 'col-md-5') .
-                html_writer::div($activitypopoverstring, 'col-md-7'),
+                html_writer::div($progressbars, 'col-xs-5') .
+                html_writer::div($activitypopoverstring, 'col-xs-7'),
                 'row'),
             'popover-container'
         );
@@ -240,7 +253,9 @@ class format_etask_renderer extends format_section_renderer_base {
         }
 
         // Prepare grade item head.
-        return html_writer::div($itemtitleshortlink . $gradesettings, 'grade-item-container');
+        $ret = html_writer::div($itemtitleshortlink . $gradesettings, 'grade-item-container');
+
+        return $ret;
     }
 
     /**
@@ -327,20 +342,20 @@ class format_etask_renderer extends format_section_renderer_base {
         }
 
         return html_writer::start_tag('div', ['class' => 'row grade-table-footer']) .
-            html_writer::div($formrender, 'col-md-4') .
-            html_writer::div($this->paging_bar($studentscount, $page, $this->config['studentsperpage'], $action), 'col-md-4') .
-            html_writer::div(html_writer::div(
-                get_string('legend', 'format_etask') . ':' . html_writer::tag(
-                    'span',
-                    get_string('activitycompleted', 'format_etask'), [
-                        'class' => 'badge badge-warning completed'
-                    ]
-                ) . html_writer::tag('span', get_string('activitypassed', 'format_etask'), [
-                    'class' => 'badge badge-success passed'
-                ]) . html_writer::tag('span', get_string('activityfailed', 'format_etask'), [
-                    'class' => 'badge badge-danger failed'
-                ]), 'legend'), 'col-md-4') .
-            html_writer::end_tag('div');
+                html_writer::div($formrender, 'col-md-4') .
+                html_writer::div($this->paging_bar($studentscount, $page, $this->config['studentsperpage'], $action), 'col-md-4') .
+                html_writer::div(html_writer::div(
+                    get_string('legend', 'format_etask') . ':' . html_writer::tag(
+                        'span',
+                        get_string('activitycompleted', 'format_etask'), [
+                            'class' => 'badge badge-warning completed'
+                        ]
+                    ) . html_writer::tag('span', get_string('activitypassed', 'format_etask'), [
+                        'class' => 'badge badge-success passed'
+                    ]) . html_writer::tag('span', get_string('activityfailed', 'format_etask'), [
+                        'class' => 'badge badge-danger failed'
+                    ]), 'legend'), 'col-md-4') .
+                html_writer::end_tag('div');
     }
 
     /**
@@ -352,8 +367,11 @@ class format_etask_renderer extends format_section_renderer_base {
      * @param stdClass $user
      * @return array
      */
-    private function render_activity_body(grade_grade $usergrade, grade_item $gradeitem, bool $activitycompletionstate,
-            stdClass $user): array {
+    private function render_activity_body(
+        grade_grade $usergrade,
+        grade_item $gradeitem,
+        bool $activitycompletionstate,
+        stdClass $user): array {
         $finalgrade = (int) $usergrade->finalgrade;
         $status = $this->etasklib->get_grade_item_status($gradeitem, $finalgrade, $activitycompletionstate);
         if (empty($usergrade->rawscaleid) && !empty($finalgrade)) {
@@ -653,65 +671,64 @@ class format_etask_renderer extends format_section_renderer_base {
     }
 
     /**
-     * Generate the starting container html for a list of sections.
-     *
+     * Generate the starting container html for a list of sections
      * @return string HTML to output.
      */
-    protected function start_section_list(): string {
-        return html_writer::start_tag('ul', ['class' => 'topics']);
+    protected function start_section_list() {
+        return html_writer::start_tag('ul', array('class' => 'topics'));
     }
 
     /**
-     * Generate the closing container html for a list of sections.
-     *
+     * Generate the closing container html for a list of sections
      * @return string HTML to output.
      */
-    protected function end_section_list(): string {
+    protected function end_section_list() {
         return html_writer::end_tag('ul');
     }
 
     /**
-     * Generate the title for this section page.
-     *
+     * Generate the title for this section page
      * @return string the page title
      */
-    protected function page_title(): string {
+    protected function page_title() {
         return get_string('topicoutline');
     }
 
     /**
-     * Generate the section title, wraps it in a link to the section page if page is to be displayed on a separate page.
+     * Generate the section title, wraps it in a link to the section page if page is to be displayed on a separate page
      *
-     * @param section_info|stdClass $section The course_section entry from DB
+     * @param stdClass $section The course_section entry from DB
      * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title($section, $course): string {
+    public function section_title($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section));
     }
 
     /**
-     * Generate the section title to be displayed on the section page, without a link.
+     * Generate the section title to be displayed on the section page, without a link
      *
-     * @param section_info|stdClass $section The course_section entry from DB
-     * @param int|stdClass $course The course entry from DB
+     * @param stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
      * @return string HTML to output.
      */
-    public function section_title_without_link($section, $course): string {
+    public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
 
     /**
-     * Generate the edit control items of a section.
+     * Generate the edit control items of a section
      *
-     * @param int|stdClass $course The course entry from DB
-     * @param section_info|stdClass $section The course_section entry from DB
+     * @param stdClass $course The course entry from DB
+     * @param stdClass $section The course_section entry from DB
      * @param bool $onsectionpage true if being printed on a section page
      * @return array of edit control items
      */
-    protected function section_edit_control_items($course, $section, $onsectionpage = false): array {
-        if (!$this->page->user_is_editing()) {
-            return [];
+    protected function section_edit_control_items($course, $section, $onsectionpage = false) {
+        global $PAGE;
+
+        if (!$PAGE->user_is_editing()) {
+            return array();
         }
 
         $coursecontext = context_course::instance($course->id);
@@ -723,34 +740,24 @@ class format_etask_renderer extends format_section_renderer_base {
         }
         $url->param('sesskey', sesskey());
 
-        $controls = [];
+        $controls = array();
         if ($section->section && has_capability('moodle/course:setcurrentsection', $coursecontext)) {
             if ($course->marker == $section->section) {  // Show the "light globe" on/off.
                 $url->param('marker', 0);
                 $highlightoff = get_string('highlightoff');
-                $controls['highlight'] = [
-                    'url' => $url,
-                    'icon' => 'i/marked',
-                    'name' => $highlightoff,
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
-                        'class' => 'editing_highlight',
-                        'data-action' => 'removemarker'
-                    ],
-                ];
+                $controls['highlight'] = array('url' => $url, "icon" => 'i/marked',
+                                               'name' => $highlightoff,
+                                               'pixattr' => array('class' => ''),
+                                               'attr' => array('class' => 'editing_highlight',
+                                                   'data-action' => 'removemarker'));
             } else {
                 $url->param('marker', $section->section);
                 $highlight = get_string('highlight');
-                $controls['highlight'] = [
-                    'url' => $url,
-                    'icon' => 'i/marker',
-                    'name' => $highlight,
-                    'pixattr' => ['class' => ''],
-                    'attr' => [
-                        'class' => 'editing_highlight',
-                        'data-action' => 'setmarker'
-                    ],
-                ];
+                $controls['highlight'] = array('url' => $url, "icon" => 'i/marker',
+                                               'name' => $highlight,
+                                               'pixattr' => array('class' => ''),
+                                               'attr' => array('class' => 'editing_highlight',
+                                                   'data-action' => 'setmarker'));
             }
         }
 
@@ -758,7 +765,7 @@ class format_etask_renderer extends format_section_renderer_base {
 
         // If the edit key exists, we are going to insert our controls after it.
         if (array_key_exists("edit", $parentcontrols)) {
-            $merged = [];
+            $merged = array();
             // We can't use splice because we are using associative arrays.
             // Step through the array and merge the arrays.
             foreach ($parentcontrols as $key => $action) {

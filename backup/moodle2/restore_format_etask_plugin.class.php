@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Specialised restore for eTask topics course format.
+ * Specialised restore for format_etask
  *
  * @package   format_etask
  * @category  backup
@@ -26,9 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Specialised restore for eTask topics course format.
+ * Specialised restore for format_etask
  *
- * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned".
+ * Processes 'numsections' from the old backup files and hides sections that used to be "orphaned"
  *
  * @package   format_etask
  * @category  backup
@@ -46,18 +46,18 @@ class restore_format_etask_plugin extends restore_format_plugin {
      *
      * @return bool
      */
-    protected function need_restore_numsections(): bool {
+    protected function need_restore_numsections() {
         $backupinfo = $this->step->get_task()->get_info();
         $backuprelease = $backupinfo->backup_release;
         return version_compare($backuprelease, '3.3', 'lt');
     }
 
     /**
-     * Creates a dummy path element in order to be able to execute code after restore.
+     * Creates a dummy path element in order to be able to execute code after restore
      *
      * @return restore_path_element[]
      */
-    public function define_course_plugin_structure(): array {
+    public function define_course_plugin_structure() {
         global $DB;
 
         // Since this method is executed before the restore we can do some pre-checks here.
@@ -76,22 +76,18 @@ class restore_format_etask_plugin extends restore_format_plugin {
     }
 
     /**
-     * Dummy process method.
-     *
-     * @return void
+     * Dummy process method
      */
-    public function process_dummy_course(): void {
+    public function process_dummy_course() {
 
     }
 
     /**
-     * Executed after course restore is complete.
+     * Executed after course restore is complete
      *
-     * This method is only executed if course configuration was overridden.
-     *
-     * @return void
+     * This method is only executed if course configuration was overridden
      */
-    public function after_restore_course(): void {
+    public function after_restore_course() {
         global $DB;
 
         if (!$this->need_restore_numsections()) {

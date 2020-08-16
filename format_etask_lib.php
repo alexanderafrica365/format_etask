@@ -17,9 +17,9 @@
 /**
  * This file contains main class for the course format Topic
  *
- * @since Moodle 2.9
+ * @since Moodle 2.0
  * @package format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2017 Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();

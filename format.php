@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The eTask topics course format. Display the whole course as "topics" made of modules.
+ * ETask topics course format.  Display the whole course as "eTask" made of modules.
  *
  * @package format_etask
  * @copyright 2006 The Open University
@@ -29,20 +29,20 @@ require_once($CFG->libdir.'/filelib.php');
 require_once($CFG->libdir.'/completionlib.php');
 require_once($CFG->dirroot.'/course/format/etask/format_etask_lib.php');
 
-// Horrible backwards compatible parameter aliasing.
+// Horrible backwards compatible parameter aliasing..
 if ($topic = optional_param('topic', 0, PARAM_INT)) {
     $url = $PAGE->url;
     $url->param('section', $topic);
     debugging('Outdated topic param passed to course/view.php', DEBUG_DEVELOPER);
     redirect($url);
 }
-// End backwards-compatible aliasing.
+// End backwards-compatible aliasing..
 
 $context = context_course::instance($course->id);
 // Retrieve course format option fields and add them to the $course object.
 $course = course_get_format($course)->get_course();
 
-if (($marker >= 0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
+if (($marker >=0) && has_capability('moodle/course:setcurrentsection', $context) && confirm_sesskey()) {
     $course->marker = $marker;
     course_set_marker($course->id, $marker);
 }
@@ -52,7 +52,7 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_etask');
 
-// The eTask topics course format START.
+// ETask topics format START.
 $etasklib = new FormatEtaskLib();
 $etaskconfig = $etasklib->get_etask_config($course);
 
@@ -64,7 +64,7 @@ if (has_capability('format/etask:teacher', $context)
     require_once($CFG->dirroot . '/course/format/etask/format_etask_lib.php');
     require_once($CFG->dirroot . '/grade/lib.php');
 
-    // The position above the sections.
+    // ETask above the sections.
     if ($etaskconfig['placement'] === FormatEtaskLib::PLACEMENT_ABOVE) {
         $renderer->render_grade_table($context, $course, $etasklib);
     }
@@ -76,7 +76,7 @@ if (has_capability('format/etask:teacher', $context)
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 
-    // The position below the sections.
+    // ETask below the sections.
     if ($etaskconfig['placement'] === FormatEtaskLib::PLACEMENT_BELOW) {
         $renderer->render_grade_table($context, $course, $etasklib);
     }
@@ -88,7 +88,8 @@ if (has_capability('format/etask:teacher', $context)
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 }
-// The eTask topics course format END.
+// ETask topics format END.
 
-// Include course format js module.
-$PAGE->requires->js('/course/format/topics/format.js');
+// Include course format js module
+$PAGE->requires->js('/course/format/etask/format.js');
+$PAGE->requires->js_call_amd('core_course/sectionlistener');
