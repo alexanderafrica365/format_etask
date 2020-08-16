@@ -13,21 +13,17 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Privacy Subsystem implementation for eTask topics course format.
+ * Privacy Subsystem implementation for format_etask.
  *
  * @package    format_etask
  * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace format_etask\privacy;
-
 defined('MOODLE_INTERNAL') || die();
-
 /**
- * Privacy Subsystem for eTask topics course format implementing null_provider.
+ * Privacy Subsystem for format_etask implementing null_provider.
  *
  * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,7 +35,7 @@ class provider implements \core_privacy\local\metadata\null_provider {
      *
      * @return  string
      */
-    public static function get_reason(): string {
+    public static function get_reason() : string {
         return 'privacy:metadata';
     }
 }
