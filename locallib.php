@@ -347,8 +347,6 @@ function mod_assign_grading_sort_by($field) {
  * @return string Gradebook table
  */
 function get_etask_gradebook($assignments, $context, $courseid, $sesskey, $sectionreturn, $users, $gradinginfo) {
-    global $PAGE;
-
     // ses session sortby in mod_assign_grading flextable, sort users by lastname
     mod_assign_grading_sort_by('lastname');
 
@@ -366,7 +364,6 @@ function get_etask_gradebook($assignments, $context, $courseid, $sesskey, $secti
         $cell->attributes = array('class'=>'assignment'); // atributes of cell
         $tablerow[] = $cell; // adding cell to the table row array
     }
-    $tablehead = new html_table_row(); // object of the table row
     $tablehead = $tablerow; // table head is the table row array
 
     // table body
@@ -388,12 +385,14 @@ function get_etask_gradebook($assignments, $context, $courseid, $sesskey, $secti
 
             $class = get_cell_color($submission, $gradepass, $grade);
 
-            $url = str_replace('&amp;', '&', (string) new moodle_url('/mod/assign/view.php',
+            $url = str_replace('&amp;', '&', (string) new moodle_url('/grade/edit/tree/grade.php',
                 array(
-                    'id'=>$assignment->assign_id,
-                    'rownum'=>$rownum,
-                    'assign'=>$assignment->assign_id,
-                    'action'=>'grade')));
+                    'courseid'=>$courseid,
+                    'itemid'=>$gradinginfo[$assignmentindex]->items[0]->id,
+                    'userid'=>$user->id,
+                    'gpr_type'=>'report',
+                    'gpr_plugin'=>'grader',
+                    'gpr_courseid'=>$courseid)));
 
             // onli user with capability of update the course can clicked on table cell
             if(has_capability('moodle/course:update', $context)) {
@@ -414,9 +413,7 @@ function get_etask_gradebook($assignments, $context, $courseid, $sesskey, $secti
             $assignmentindex++;
         }
 
-        $tablebody = new html_table_row(); // object of the row
-        $tablebody = $tablerow; // table body is the table row array
-        $data[] = $tablebody;
+        $data[] = $tablerow;
 
         $rownum++;
     }
@@ -452,7 +449,6 @@ function update_gradepass($context, $courseid) {
 
     // update record
     if(data_submitted() and confirm_sesskey() and has_capability('moodle/grade:edit', $context) and $assign) {
-        $assignment  = $assignid->instance; // assignment id
         $gradepass = trim(optional_param('gradepass' . $assign, 0, PARAM_INT)); // post grade pass value
 
         // assignment id in grade_items - tehere is gradepass
