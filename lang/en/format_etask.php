@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component eTask topics course format.
+ * Strings for component 'format_etask', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -60,7 +60,7 @@ $string['placement_below'] = 'Place the grading table below the course topics';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registered due date modules';
 $string['registeredduedatemodules_help'] = 'Specifies in which module\'s database field the due date value is stored.';
-// The eTask grading table strings.
+// ETask grading table strings.
 $string['gradesavingsuccess'] = 'Grade to pass for <strong>{$a->itemName}</strong> was successfully updated to value <strong>{$a->gradePass}</strong>.';
 $string['gradesavingerror'] = 'Error in saving grade to pass for <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
 $string['legend'] = 'Legend';

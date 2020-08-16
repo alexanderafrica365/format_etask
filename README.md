@@ -1,8 +1,12 @@
-# eTask topics format 3.8.0
+# eTask topics format 3.6.4
 
 **eTask topics format** is based on the topics format and **includes grading table** (above or below the course sections) with aditional functionality such as a highlighting of grading values, grade to pass settings, motivational progress bars and much more.
 
 ![eTask_mdl_36](https://bitbucket.org/repo/obeE8n/images/829736702-eTask_mdl_36.png)
+
+## Changelog
+
+- Old configuration compatibility removed (no longer needed).
 
 ## Installation
 
@@ -17,7 +21,7 @@
 
 ### Activity completion
 
-Activity completion is enabled by default in Moodle 3.9. You can manage `Activity completion` in each of the course activity.
+Activity completion is enabled by default in Moodle 3.6. You can manage `Activity completion` in each of the course activity.
 
 ### Plugin settings
 
