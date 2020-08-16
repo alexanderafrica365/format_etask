@@ -29,6 +29,6 @@ $plugin->requires  = 2015050500;        // Requires this Moodle version.
 $plugin->supported = [29, 29];
 $plugin->incompatible = 30;
 $plugin->component = 'format_etask';    // Full name of the plugin (used for diagnostics).
-$plugin->release = '1.5';
+$plugin->release = '1.0';
 $plugin->maturity = MATURITY_STABLE;
 
