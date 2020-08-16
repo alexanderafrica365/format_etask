@@ -17,9 +17,9 @@
 /**
  * This file contains main class for the course format Topic
  *
- * @since Moodle 2.9
+ * @since Moodle 2.0
  * @package format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2017 Martin Drlik <martin.drlik@email.cz>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
@@ -39,7 +39,7 @@ class FormatEtaskLib
      */
     const STATUS_COMPLETED = 'completed';
 
-    /**
+    /*
      * @var string
      */
     const STATUS_PASSED = 'passed';
@@ -88,29 +88,31 @@ class FormatEtaskLib
     /**
      * Return module items.
      *
-     * @param course_modinfo $modinfo
+     * @param course_modinfo $modInfo
      * @return array
      */
-    public function get_mod_items(course_modinfo $modinfo): array {
-        $moditems = [];
-        foreach ($modinfo->cms as $cm) {
-            $moditems[$cm->modname][$cm->instance] = $cm->id;
+    public function getModItems(course_modinfo $modInfo): array
+    {
+        $modItems = [];
+        foreach ($modInfo->cms as $cm) {
+            $modItems[$cm->modname][$cm->instance] = $cm->id;
         }
 
-        return $moditems;
+        return $modItems;
     }
 
     /**
      * Array of scale values.
      *
-     * @param int $scaleid
+     * @param int $scaleId
      * @return array
      */
-    public function get_scale(int $scaleid): array {
+    public function getScale(int $scaleId): array
+    {
         global $DB;
 
         $scale = $DB->get_field('scale', 'scale', [
-            'id' => $scaleid
+            'id' => $scaleId
         ], IGNORE_MISSING);
 
         return make_menu_from_list($scale);
@@ -119,105 +121,108 @@ class FormatEtaskLib
     /**
      * Return due date of grade item.
      *
-     * @param grade_item $gradeitem
-     * @param string $completionexpected
+     * @param grade_item $gradeItem
+     * @param string $completionExpected
      * @return string
      */
-    public function get_due_date(grade_item $gradeitem, string $completionexpected): string {
+    public function getDueDate(grade_item $gradeItem, string $completionExpected): string
+    {
         global $DB;
 
         $timestamp = '';
-        $gradedatefields = $this->get_grade_date_fields();
+        $gradeDateFields = $this->getGradeDateFields();
 
-        if (isset($gradedatefields[$gradeitem->itemmodule])) {
-            $timestamp = $DB->get_field($gradeitem->itemmodule, $gradedatefields[$gradeitem->itemmodule], [
-                'id' => $gradeitem->iteminstance
+        if (isset($gradeDateFields[$gradeItem->itemmodule])) {
+            $timestamp = $DB->get_field($gradeItem->itemmodule, $gradeDateFields[$gradeItem->itemmodule], [
+                'id' => $gradeItem->iteminstance
             ], IGNORE_MISSING);
         }
 
-        $duedate = '';
+        $dueDate = '';
         if (!empty($timestamp)) {
-            $duedate = userdate($timestamp);
-        } else if (!empty($completionexpected)) {
-            $duedate = userdate($completionexpected);
+            $dueDate = userdate($timestamp);
+        } elseif (!empty($completionExpected)) {
+            $dueDate = userdate($completionExpected);
         }
 
-        return $duedate;
+        return $dueDate;
     }
 
     /**
      * Set gradepass value for grade item.
      *
      * @param context $context
-     * @param int $gradeitemid
+     * @param int $gradeItemId
      * @return array
      */
-    public function update_grade_pass(context $context, int $gradeitemid): array {
+    public function updateGradePass(context $context, int $gradeItemId): array
+    {
         global $DB;
 
-        $messagedata = [];
+        $messageData = [];
         if (data_submitted() && confirm_sesskey() && has_capability('format/etask:teacher', $context)) {
-            $gradepassvalue = required_param('gradePass' . $gradeitemid, PARAM_INT);
+            $gradePassValue = required_param('gradePass' . $gradeItemId, PARAM_INT);
 
-            $gradeitemobj = new grade_item();
-            $gradeitem = $gradeitemobj->fetch([
-                'id' => $gradeitemid
+            $gradeItemObj = new grade_item();
+            $gradeItem = $gradeItemObj->fetch([
+                'id' => $gradeItemId
             ]);
-            $gradeitem->id = $gradeitemid;
-            $gradeitem->gradepass = $gradepassvalue;
+            $gradeItem->id = $gradeItemId;
+            $gradeItem->gradepass = $gradePassValue;
 
-            if (!empty($gradeitem->scaleid)) {
-                $scale = $this->get_scale($gradeitem->scaleid);
-                $gradepass = isset($scale[$gradepassvalue]) ? $scale[$gradepassvalue] : '-';
+            if (!empty($gradeItem->scaleid)) {
+                $scale = $this->getScale($gradeItem->scaleid);
+                $gradePass = isset($scale[$gradePassValue]) ? $scale[$gradePassValue] : '-';
             } else {
-                $gradepass = $gradepassvalue;
+                $gradePass = $gradePassValue;
             }
 
-            $res = $DB->update_record('grade_items', $gradeitem);
+            $res = $DB->update_record('grade_items', $gradeItem);
 
             if ($res !== false) {
-                $messagedata = [
+                $messageData = [
                     'message' => get_string('gradesavingsuccess', 'format_etask', [
-                        'itemName' => $gradeitem->itemname,
-                        'gradePass' => $gradepass
+                        'itemName' => $gradeItem->itemname,
+                        'gradePass' => $gradePass
                     ]),
                     'success' => true
                 ];
             } else {
-                $messagedata = [
-                    'message' => get_string('gradesavingerror', 'format_etask', $gradeitem->itemname),
+                $messageData = [
+                    'message' => get_string('gradesavingerror', 'format_etask', $gradeItem->itemname),
                     'success' => false
                 ];
             }
         }
 
-        return $messagedata;
+        return $messageData;
     }
 
     /**
      * Return grade stasus.
      *
-     * @param grade_item $gradeitem
+     * @param grade_item $gradeItem
      * @param float $grade
-     * @param bool $activitycompletionstate
+     * @param bool $activityCompletionState
      * @return string
      */
-    public function get_grade_item_status(
-        grade_item $gradeitem,
+    public function getGradeItemStatus(
+        grade_item $gradeItem,
         float $grade,
-        bool $activitycompletionstate): string {
-        $gradepass = (int) $gradeitem->gradepass;
-        if (empty($grade) && $activitycompletionstate === true) {
-            // Activity no have grade value and have completed status or is marked as completed.
+        bool $activityCompletionState): string
+    {
+        $gradePass = (int) $gradeItem->gradepass;
+        // Activity no have grade value and have completed status or is marked as completed.
+        if (empty($grade) && $activityCompletionState === true) {
             $status = self::STATUS_COMPLETED;
-        } else if (empty($grade) || empty($gradepass)) {
-            // Activity no have grade value and is not completed or grade to pass is not set.
+        // Activity no have grade value and is not completed or grade to pass is not set.
+        } elseif (empty($grade) || empty($gradePass)) {
             $status = self::STATUS_NONE;
-        } else if ($grade >= $gradepass) {
-            // Activity grade value is higher then grade to pass.
+        // Activity grade value is higher then grade to pass.
+        } elseif ($grade >= $gradePass) {
             $status = self::STATUS_PASSED;
-        } else if ($grade < $gradepass) {
-            // Activity grade value is lower then grade to pass.
+        // Activity grade value is lower then grade to pass.
+        } elseif ($grade < $gradePass) {
             $status = self::STATUS_FAILED;
         }
 
@@ -229,20 +234,21 @@ class FormatEtaskLib
      *
      * @param context_course $context
      * @param stdClass $course
-     * @param int $selectedgroup
+     * @param int $selectedGroup
      * @return array
      */
-    public function get_students(context_course $context, stdClass $course, int $selectedgroup = null): array {
+    public function getStudents(context_course $context, stdClass $course, int $selectedGroup = null): array
+    {
         global $USER;
 
         $users = get_enrolled_users($context);
         // Get logged in user groups membership.
-        $loggedinusergroups = current(groups_get_user_groups($course->id, $USER->id));
+        $loggedInUserGroups = current(groups_get_user_groups($course->id, $USER->id));
         // In the grading table show only users with role 'student'.
         $students = [];
         foreach ($users as $user) {
-            $isalloweduser = $this->is_allowed_user($context, $course, $user, $selectedgroup, $loggedinusergroups);
-            if ($isalloweduser === true) {
+            $isAllowedUser = $this->isAllowedUser($context, $course, $user, $selectedGroup, $loggedInUserGroups);
+            if ($isAllowedUser === true) {
                 $students[$user->id] = $user;
             }
         }
@@ -253,16 +259,17 @@ class FormatEtaskLib
     /**
      * Course groups.
      *
-     * @param int $courseid
+     * @param int $courseId
      * @return array
      */
-    public function get_course_groups(int $courseid): array {
-        $coursegroupsobjects = groups_get_all_groups($courseid);
-        $coursegroups = [];
-        foreach ($coursegroupsobjects as $coursegroup) {
-            $coursegroups[$coursegroup->id] = $coursegroup->name;
+    public function getCourseGroups(int $courseId): array
+    {
+        $courseGroupsObjects = groups_get_all_groups($courseId);
+        $courseGroups = [];
+        foreach ($courseGroupsObjects as $courseGroup) {
+            $courseGroups[$courseGroup->id] = $courseGroup->name;
         }
-        return $coursegroups;
+        return $courseGroups;
     }
 
     /**
@@ -271,12 +278,13 @@ class FormatEtaskLib
      * @param stdClass $course
      * @return array
      */
-    public function get_etask_config(stdClass $course): array {
+    public function getEtaskConfig(stdClass $course): array
+    {
         $config = course_get_format($course)->get_course();
         return [
-            'privateview' => (bool) $config->privateview ?? true,
-            'progressbars' => (bool) $config->progressbars ?? true,
-            'studentsperpage' => (int) $config->studentsperpage ?? self::STUDENTS_PER_PAGE_DEFAULT,
+            'privateview' => (bool) $config->privateview ?? (bool) get_config('format_etask', 'private_view') ?? true,
+            'progressbars' => (bool) $config->progressbars ?? (bool) get_config('format_etask', 'calculate_progress_bars') ?? true,
+            'studentsperpage' => (int) $config->studentsperpage ?? (int) get_config('format_etask', 'students_per_page') ?? self::STUDENTS_PER_PAGE_DEFAULT,
             'activitiessorting' => $config->activitiessorting ?? self::ACTIVITIES_SORTING_LATEST,
             'placement' => $config->placement ?? self::PLACEMENT_ABOVE,
         ];
@@ -285,12 +293,13 @@ class FormatEtaskLib
     /**
      * Sort grade items by sections.
      *
-     * @param array $gradeitems
-     * @param array $moditems
+     * @param array $gradeItems
+     * @param array $modItems
      * @param array $sections
      * @return array
      */
-    public function sort_grade_items_by_sections(array $gradeitems, array $moditems, array $sections): array {
+    public function sortGradeItemsBySections(array $gradeItems, array $modItems, array $sections): array
+    {
         $sequence = [];
         $sorted = [];
         // Prepare sequence array. Sequence contains an array of grade items.
@@ -301,24 +310,24 @@ class FormatEtaskLib
         }
 
         // Prepare associative array of grade item instance and grade item ids for this instance.
-        foreach ($gradeitems as $gradeitem) {
-            $gradeiteminstanceids[$moditems[$gradeitem->itemmodule][$gradeitem->iteminstance]][] = $gradeitem->id;
+        foreach ($gradeItems as $gradeItem) {
+            $gradeItemInstanceIds[$modItems[$gradeItem->itemmodule][$gradeItem->iteminstance]][] = $gradeItem->id;
         }
 
         // Replace sequence array with grade item instance ids. Sequence must contains grade item instances only.
-        $sequence = array_replace(array_intersect_key($sequence, $gradeiteminstanceids), $gradeiteminstanceids);
+        $sequence = array_replace(array_intersect_key($sequence, $gradeItemInstanceIds), $gradeItemInstanceIds);
 
         // Prepare array of sorted grade item ids.
-        $sortedgradeitemids = [];
-        foreach ($sequence as $gradeiteminstance) {
-            foreach ($gradeiteminstance as $id) {
-                $sortedgradeitemids[] = $id;
+        $sortedGradeItemIds = [];
+        foreach ($sequence as $gradeItemInstance) {
+            foreach ($gradeItemInstance as $id) {
+                $sortedGradeItemIds[] = $id;
             }
         }
 
         // Sort grade items.
-        foreach ($sortedgradeitemids as $gradeitemid) {
-            $sorted[$gradeitemid] = $gradeitems[$gradeitemid];
+        foreach ($sortedGradeItemIds as $gradeItemId) {
+            $sorted[$gradeItemId] = $gradeItems[$gradeItemId];
         }
 
         return $sorted;
@@ -330,42 +339,43 @@ class FormatEtaskLib
      * @param context_course $context
      * @param stdClass $course
      * @param stdClass $user
-     * @param int $selectedgroup
-     * @param array $loggedinusergroups
+     * @param int $selectedGroup
+     * @param array $loggedInUserGroups
      * @return bool
      */
-    private function is_allowed_user(
+    private function isAllowedUser(
         context_course $context,
         stdClass $course,
         stdClass $user,
-        int $selectedgroup = null,
-        array $loggedinusergroups = null): bool {
-        $isalloweduser = false;
+        int $selectedGroup = null,
+        array $loggedInUserGroups = null): bool
+    {
+        $isAllowedUser = false;
         // Default state of allowed user group (no groups mode).
-        $allowedusergroup = true;
+        $allowedUserGroup = true;
         // Get enroled user groups membership.
-        $usergroups = current(groups_get_user_groups($course->id, $user->id));
-        if (!empty($usergroups)) {
+        $userGroups = current(groups_get_user_groups($course->id, $user->id));
+        if (!empty($userGroups)) {
             // Filter users by filter or show students from logged in user group.
-            if (!empty($selectedgroup)) {
+            if (!empty($selectedGroup)) {
                 // Check if user is in allowed group.
-                if (in_array($selectedgroup, $usergroups) === false) {
-                    $allowedusergroup = false;
+                if (in_array($selectedGroup, $userGroups) === false) {
+                    $allowedUserGroup = false;
                 }
             } else {
                 // Check if user is in allowed group.
-                foreach ($usergroups as $usergroup) {
-                    if (in_array($usergroup, $loggedinusergroups) === false) {
-                        $allowedusergroup = false;
+                foreach ($userGroups as $userGroup) {
+                    if (in_array($userGroup, $loggedInUserGroups) === false) {
+                        $allowedUserGroup = false;
                     }
                 }
             }
         }
 
-        if ($allowedusergroup === true && has_capability('format/etask:student', $context, $user, false)) {
-            $isalloweduser = true;
+        if ($allowedUserGroup === true && has_capability('format/etask:student', $context, $user, false)) {
+            $isAllowedUser = true;
         }
-        return $isalloweduser;
+        return $isAllowedUser;
     }
 
     /**
@@ -373,16 +383,17 @@ class FormatEtaskLib
      *
      * @return array
      */
-    private function get_grade_date_fields(): array {
-        $gradedatefields = [];
+    private function getGradeDateFields(): array
+    {
+        $gradeDateFields = [];
         $config = get_config('format_etask', 'registered_due_date_modules');
         $items = explode(',', $config);
         foreach ($items as $item) {
             if (!empty($item)) {
                 list($module, $duedate) = explode(':', $item);
-                $gradedatefields[trim($module)] = trim($duedate);
+                $gradeDateFields[trim($module)] = trim($duedate);
             }
         }
-        return $gradedatefields;
+        return $gradeDateFields;
     }
 }

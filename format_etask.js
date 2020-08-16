@@ -7,8 +7,7 @@ require(['jquery', 'theme_boost/tether'], function($, Tether) {
             html: true,
             container: 'body',
             placement: 'bottom',
-            trigger: 'hover',
-            sanitize: false,
+            trigger: 'hover'
         });
     });
 });

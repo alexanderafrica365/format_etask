@@ -15,59 +15,50 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for progress bar.
+ * Class containing data for my overview block.
  *
- * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    format_etask
+ * @copyright  2019 Martin Drlik <martin.drlik@email.cz>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace format_etask\output;
-
 defined('MOODLE_INTERNAL') || die();
 
 use renderable;
 use renderer_base;
-use stdClass;
 use templatable;
 
-/**
- * Class to prepare a progress bar for display.
- *
- * @package format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+
 class progress_bar implements renderable, templatable {
 
-    /** @var int */
-    private $progressvalue;
+    /*
+     * @var int
+     */
+    private $progressValue;
 
-    /** @var string */
-    private $progressstate;
+    /*
+     * @var string
+     */
+    private $progressState;
 
     /**
-     * The progress_bar constructor.
-     *
-     * @param int $progressvalue
-     * @param string $progressstate
+     * progress_bar constructor.
+     * @param int $progressValue
+     * @param string $progressState
      */
-    public function __construct(int $progressvalue, string $progressstate) {
-        $this->progressvalue = $progressvalue;
-        $this->progressstate = $progressstate;
+    public function __construct(int $progressValue, string $progressState) {
+        $this->progressValue = $progressValue;
+        $this->progressState = $progressState;
     }
 
     /**
-     * Export for template.
-     *
      * @param renderer_base $output
-     * @return stdClass
+     * @return array|\stdClass
      */
-    public function export_for_template(renderer_base $output): stdClass {
-        $data = new stdClass();
-        $data->progressValue = $this->progressvalue;
-        $data->progressState = $this->progressstate;
-
+    public function export_for_template(renderer_base $output) {
+        $data = new \stdClass();
+        $data->progressValue = $this->progressValue;
+        $data->progressState = $this->progressState;
         return $data;
     }
 }
