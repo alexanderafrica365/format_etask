@@ -1,8 +1,12 @@
-# eTask topics format 3.8.0
+# eTask topics format 3.5
 
-**eTask topics format** is based on the topics format and **includes grading table** (above or below the course sections) with aditional functionality such as a highlighting of grading values, grade to pass settings, motivational progress bars and much more.
+**eTask topics format** is based on the topics format and **includes grading table** (above or below the course sections) with aditional functionality such as a highlighting of grading values, grade to pass settings, motivational progress charts and much more.
 
-![eTask_mdl_36](https://bitbucket.org/repo/obeE8n/images/829736702-eTask_mdl_36.png)
+![eTask_mdl_33](https://bitbucket.org/repo/obeE8n/images/3001788952-eTask_mdl_33.png)
+
+## Changelog
+
+- Old configuration compatibility removed (no longer needed).
 
 ## Installation
 
@@ -17,7 +21,7 @@
 
 ### Activity completion
 
-Activity completion is enabled by default in Moodle 3.9. You can manage `Activity completion` in each of the course activity.
+Activity completion is enabled by default in Moodle 3.3. You can manage `Activity completion` in each of the course activity.
 
 ### Plugin settings
 
@@ -25,7 +29,7 @@ You can edit plugin setting by visiting `Site administration` -> `Plugins` -> `C
 
 #### Registered due date modules
 
-![eTask-plugin-settings_mdl_36](https://bitbucket.org/repo/obeE8n/images/3581889433-eTask-pluginSettings_mdl_36.png)
+![eTask-plugin-settings_mdl_33](https://bitbucket.org/repo/obeE8n/images/252286885-eTask-pluginSettings_mdl_33.png)
 
 **Registered due date modules** provide a list of activity modules and specifies in which module's database field is the due date value stored. It helps you to menage modules with due date information used in activity popover.
 
@@ -33,15 +37,15 @@ You can edit plugin setting by visiting `Site administration` -> `Plugins` -> `C
 
 You can edit course format settings by `Edit settings` in the course. There are **five configurable fields**.
 
-![eTask-course-format-settings_mdl_36](https://bitbucket.org/repo/obeE8n/images/910644360-etask-course-format-settings.png)
+![eTask-course-format-settings_mdl_33](https://bitbucket.org/repo/obeE8n/images/2743431468-eTask-courseFormatSettings_mdl_33.png)
 
 #### eTask private view
 
 **By default**, private view **is active -- students can see only their own grades**. Othervise they see grades of all the students.
 
-#### eTask progress bars 
+#### eTask progress charts 
 
-**Motivates your students** even more with **progress bars Completed and Passed** placed in the activity popover. Students can see progress of completed activities as well as passed activities. Private view is back in a play! No private data like grades of the other students -- motivational progress bars only. Progress bars are **calculated by default**. Because of the activity popover consistency, progress bars are visible all the time -- if progress bars are not allowed, they are not calculated but still visible with zero values.
+**Motivates your students** even more with **progress charts Completed and Passed** placed in the activity popover. Students can see progress of completed activities as well as passed activities. Private view is back in a play! No private data like grades of the other students -- motivational progress charts only. Progress charts are **calculated by default**. Because of the activity popover consistency, progress charts are visible all the time -- if progress charts are not allowed, they are not calculated but still visible with zero values.
 
 #### eTask students per page
 
@@ -61,31 +65,31 @@ You can edit course format settings by `Edit settings` in the course. There are 
 
 Provides grading table of many activity types such as `assign`, `quiz`, `scorm`, `worksop` etc.
 
-![eTask_mdl_36](https://bitbucket.org/repo/obeE8n/images/829736702-eTask_mdl_36.png)
+![eTask_mdl_33](https://bitbucket.org/repo/obeE8n/images/3001788952-eTask_mdl_33.png)
 
 ### Activity popover
 
-Shows **activity popover** with `due date` (expected completion date if due date is missing), `grade to pass` and optionally calculated `completed` and `passed` progress bars (see [course format settings](#markdown-header-course-format-settings) for [eTask progress bars](#markdown-header-etask-progress-bars)).
+Shows **activity popover** with `due date` (expected completion date if due date is missing), `grade to pass` and optionally calculated `completed` and `passed` progress charts (see [course format settings](#markdown-header-course-format-settings) for [eTask progress charts](#markdown-header-etask-progress-charts)).
 
-![eTask-popover_mdl_36](https://bitbucket.org/repo/obeE8n/images/3020990510-eTask-popover_mdl_362.png)
+![eTask-popover_mdl_33](https://bitbucket.org/repo/obeE8n/images/3289160212-eTask-popover_mdl_33.png)
 
 ### Grade to pass settings
 
 Allows **set up grade to pass** in a course editing mode. It includes scales as well!
 
-![eTask-gradeSettingsModal_mdl_36](https://bitbucket.org/repo/obeE8n/images/3212550979-eTask-gradeSettingsModal_mdl_36.png)
+![eTask-gradeSettingsModal_mdl_33](https://bitbucket.org/repo/obeE8n/images/1984496429-eTask-gradeSettingsModal_mdl_33.png)
 
 ### Highlighting of grading values
 
 **Highlights grading value** by different statuses (`completed`, `passed`, `failed` or without highlighting if grade to pass is not defined). Completed status is applied through the activity completion in the activity settings. The status completed is displayed until a grade is entered, then 'passed' or 'failed' status is shown according to the grade to pass. Otherwise no status if grade to pass is not set.
 
-![eTask-gradeToPassMessage_mdl_36](https://bitbucket.org/repo/obeE8n/images/2349476036-eTask-gradeToPassMessage_mdl_36.png)
+![eTask-gradeToPassMessage_mdl_33](https://bitbucket.org/repo/obeE8n/images/2273389916-eTask-gradeToPassMessage_mdl_33.png)
 
 ### Private view
 
 **Private view** allows students to see only own grades (see [course format settings](#markdown-header-course-format-settings) for [eTask private view](#markdown-header-etask-private-view)).
 
-![eTask-privateView_mdl_36](https://bitbucket.org/repo/obeE8n/images/190471794-eTask-privateView_mdl_36.png)
+![eTask-privateView_mdl_33](https://bitbucket.org/repo/obeE8n/images/3438527201-eTask-privateView_mdl_33.png)
 
 ### Permissions
 
@@ -97,7 +101,7 @@ Allows **set up grade to pass** in a course editing mode. It includes scales as 
 
 Switching the user roles provide real view on grading table in permissions context.
 
-![eTask-permissions_mdl_36](https://bitbucket.org/repo/obeE8n/images/1154170442-eTask-permissions_mdl_36.png)
+![eTask-permissions_mdl_33](https://bitbucket.org/repo/obeE8n/images/568563207-eTask-permissions_mdl_33.png)
 
 ### Scales
 
@@ -110,7 +114,7 @@ It is possible to use user defined scales in the grading activities. It is neces
 - all **activities** in an eTask grading table **are sorted from the newest by default** because of the information value of the latest activities -- **you can change it** by your preferences in the [course format settings](#markdown-header-course-format-settings) and sort activities by the latest, by the oldest or as they are in the course, see [eTask activities sorting](#markdown-header-etask-activities-sorting),
 - you can change **grading table placement** -- above or below the course topics, see [eTask placement](#markdown-header-etask-placement),
 - **logged in student is always at the first row** of the grading table,
-- **activity completion support** (completed status in the table, completed progress bar, expected completion date as due date if due date is not set),
+- **activity completion support** (completed status in the table, completed progress chart, expected completion date as due date if due date is not set),
 - there **three types of access permissions**:
     - **teacher** can edit activities by clicking on activity headers; grade to pass setting is available; links from activity headers goes to activity editation; links from grade table cells goes to activity grading; filtering by groups is available as well as pagination,
     - **non-editing teacher** can click only on activity header; links goes to activity detail; filtering by groups is available as well as pagination and
@@ -120,4 +124,4 @@ It is possible to use user defined scales in the grading activities. It is neces
 
 One more thing. **We are mobile ready!** You can simply swipe the eTask grading table or set up grade to pass.
 
-![eTask-mobile_mdl_36](https://bitbucket.org/repo/obeE8n/images/1893259122-eTask-mobile_mdl_36.png)
+![eTask-mobile_mdl_33](https://bitbucket.org/repo/obeE8n/images/884595084-eTask-mobile_mdl_33.png)

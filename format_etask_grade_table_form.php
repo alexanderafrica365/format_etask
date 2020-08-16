@@ -18,7 +18,7 @@
  * This file contains the forms to create and edit an instance of this module
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2013 Martin Drlik
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ require_once("$CFG->libdir/formslib.php");
  * Grade settings form.
  *
  * @package     format_etask
- * @copyright   2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright   2017 Martin Drlik <martin.drlik@email.cz>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class GradeTableForm extends moodleform
@@ -38,24 +38,24 @@ class GradeTableForm extends moodleform
     /**
      * Called to define this moodle form.
      *
-     * @throws coding_exception
      * @return void
      */
-    public function definition() {
+    public function definition()
+    {
         $groups = $this->_customdata['groups'];
         $selected = $this->_customdata['selectedGroup'];
 
-        $mform =& $this->_form; // Don't forget the underscore.
-        $mform->updateAttributes(['class' => 'inline-form groups']);
+        $mForm =& $this->_form; // Don't forget the underscore.
+        $mForm->updateAttributes(['class' => 'inline-form groups']);
 
         // Select element.
-        $select = $mform->addElement(
+        $select = $mForm->addElement(
             'select',
             'eTaskFilterGroup',
             get_string('group') . ':',
             $groups,
             ['onchange' => 'this.form.submit();']);
         $select->setSelected($selected);
-        $mform->disable_form_change_checker();
+        $mForm->disable_form_change_checker();
     }
 }
