@@ -32,48 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_format_etask_upgrade($oldversion) {
-    global $CFG, $DB;
-
-    require_once($CFG->dirroot . '/course/format/etask/db/upgradelib.php');
-
-    if ($oldversion < 2017020200) {
-
-        // Remove 'numsections' option and hide or delete orphaned sections.
-        format_etask_upgrade_remove_numsections();
-
-        upgrade_plugin_savepoint(true, 2017020200, 'format', 'etask');
-    }
-
-    // Automatically generated Moodle v3.3.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.4.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    if ($oldversion < 2018030900) {
-
-        // During upgrade to Moodle 3.3 it could happen that general section (section 0) became 'invisible'.
-        // It should always be visible.
-        $DB->execute("UPDATE {course_sections} SET visible=1 WHERE visible=0 AND section=0 AND course IN
-        (SELECT id FROM {course} WHERE format=?)", ['etask']);
-
-        upgrade_plugin_savepoint(true, 2018030900, 'format', 'etask');
-    }
-
-    // Automatically generated Moodle v3.5.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.6.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.7.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.8.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.9.0 release upgrade line.
-    // Put any upgrade step following this.
+    // No upgrade steps.
 
     return true;
 }

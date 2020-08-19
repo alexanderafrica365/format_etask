@@ -114,8 +114,8 @@ class gradingtable implements renderable, templatable {
                 }
             }
 
-            // If the count of body cells is the same as the count of grade items + 1 (i.e. user cell), collect them to row.
-            if (count($bodycells) === count($gradeitems) + 1) {
+            // If there are any cells, collect them to row.
+            if (count($bodycells) > 0) {
                 $rows[] = new html_table_row($bodycells);
             }
         }
