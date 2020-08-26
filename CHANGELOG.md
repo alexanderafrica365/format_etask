@@ -28,7 +28,7 @@
 ### Added (4 changes)
 
 - Support formating of grade value, e.g `B- (80%)`.
-- New `licence`, `changelog.md`, `contributing.md` and `readme.md`.
+- New `licence`, `changelog.md` and `readme.md`.
 - Help link from the grading table to plugin directory page.
 - Code documentation.
 
