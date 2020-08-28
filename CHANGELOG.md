@@ -6,7 +6,7 @@
 - Move specific CSS to the `styles.css`.
 - Renderer logic to the output classes with `.mustache` templates.
 - System of plugin versioning.
-- Popover redesign.
+- Popover redesign (including grade to pass setting).
 
 ### Fixed (5 changes)
 
@@ -25,9 +25,11 @@
 - Course format `styles.css` selectors (from Moodle 3.8 they are a part of core styles).
 - `mform`s classes (replaced with single select component).
 
-### Added (4 changes)
+### Added (6 changes)
 
-- Support formating of grade value, e.g `B- (80%)`.
+- Last modified information in the grade item popover.
+- Grade max. in the grade item popover.
+- Support formatting of grade value, e.g `B- (80%)`.
 - New `licence`, `changelog.md` and `readme.md`.
 - Help link from the grading table to plugin directory page.
 - Code documentation.
