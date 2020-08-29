@@ -8,7 +8,7 @@ All information about changes, fixes, or new features you can find in the [chang
 
 ## Installation
 
-Choose the [version](https://moodle.org/plugins/pluginversions.php?plugin=format_etask) compatible with your Moodle installation. For registered sites, use the `Install now` button. You can also install it from the Moodle `Site administration`/`Plugins`/`Install plugins` by the upload of a ZIP file. For manual installation, use the steps below.
+Choose the [version](https://moodle.org/plugins/pluginversions.php?plugin=format_etask) compatible with your Moodle installation. For registered sites, use the `Install now` button. You can also install it from the Moodle `Site administration` / `Plugins` / `Install plugins` by the upload of a ZIP file. For manual installation, use the steps below.
 
 1. Download the plugin as a ZIP file,
 2. extract the files to the folder named `etask`,
@@ -19,7 +19,7 @@ Choose the [version](https://moodle.org/plugins/pluginversions.php?plugin=format
 
 ### After installation
 
-After installation (or later by visiting `Site administration`/`Plugins`/`Course formats`/`eTask topics format`), you can optionally configure the plugin. Only one configuration field is available. Do not remove default value - extend it if necessary.
+After installation (or later by visiting `Site administration` / `Plugins` / `Course formats` / `eTask topics format`), you can optionally configure the plugin. Only one configuration field is available. Do not remove default value - extend it if necessary.
 
 #### Configuration
 
@@ -49,7 +49,7 @@ You can find fully specified user documentation on the [plugin page](https://moo
 
 Non-editing teachers do not have the capability `moodle/site:accessallgroups` and so cannot by default access groups of which they are not a member.
 
-The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration`/`Users`/`Permissions`/`Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
+The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration` / `Users` / `Permissions` / `Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
 
 ### Incorrect colors of graded items using scales
 
@@ -57,7 +57,7 @@ If you are using scales, and the colors of graded items are not correct, maybe y
 
 ### Cannot apply completed status
 
-Completed status in the grading table is applied automatically. To use this feature, you have to enable `completion tracking` in the course settings. If you cannot find this option, allow it in `Site administration`/`Advanced features`/`Enable completion tracking` first.
+Completed status in the grading table is applied automatically. To use this feature, you have to enable `completion tracking` in the course settings. If you cannot find this option, allow it in `Site administration` / `Advanced features` / `Enable completion tracking` first.
 
 ## Contributing
 
