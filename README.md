@@ -47,7 +47,9 @@ You can find fully specified user documentation on the [plugin page](https://moo
 
 ### Teachers can access groups of which they are not a member
 
-Non-editing teachers do not have the capability `moodle/site:accessallgroups` and so cannot by default access groups of which they are not a member. The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration`/`Users`/`Permissions`/`Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
+Non-editing teachers do not have the capability `moodle/site:accessallgroups` and so cannot by default access groups of which they are not a member.
+
+The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration`/`Users`/`Permissions`/`Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
 
 ### Incorrect colors of graded items using scales
 
@@ -59,7 +61,9 @@ Completed status in the grading table is applied automatically. To use this feat
 
 ## Contributing
 
-For contributing details and reporting issues, please see [contribution guidelines](CONTRIBUTING.md).
+If you have any issue, or you are requesting a new feature, report the [new issue](https://gitlab.com/drlikm/format_etask/-/issues/new). Do not create security issues publicly, contact [plugin maintainer](https://moodle.org/user/profile.php?id=1566618) instead.
+
+If you are reporting a bug, use a clear title. Description should contain short summary, steps to reproduce, current and expected behavior, optionally link to the theme you are using. Attache the relevant logs and/or screenshots. Provide the eTask topics release and version as well as your Moodle installation version.
 
 ## License
 
