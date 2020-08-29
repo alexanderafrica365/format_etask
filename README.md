@@ -1,12 +1,12 @@
-### Description
+## Description
 
 eTask topics format extends Topics format and provides the shortest way to manage activities and their comfortable grading. In addition to its clarity, it creates a motivating and competitive environment supporting a positive educational experience.
 
-### Changes
+## Changes
 
 All information about changes, fixes, or new features you can find in the [changelog file](CHANGELOG.md).
 
-### Installation
+## Installation
 
 Choose the [version](https://moodle.org/plugins/pluginversions.php?plugin=format_etask) compatible with your Moodle installation. For registered sites, use the `Install now` button. You can also install it from the Moodle `Site administration`/`Plugins`/`Install plugins` by the upload of a ZIP file. For manual installation, use the steps below.
 
@@ -39,24 +39,28 @@ Except for basic Topics format course settings, the following are available in t
 | Grade items sorting      | `latest`, `oldest`, `inherit` | `latest` (new activities first)           |
 | Placement                | `above`, `below`              | `above` (above the course topics)         |
 
-### Documentation
+## Documentation
 
 You can find fully specified user documentation on the [plugin page](https://moodle.org/plugins/format_etask).
 
-### Contributing
+## Common problems
 
-For contributing details and reporting issues, please see [contribution guidelines](CONTRIBUTING.md).
+### Teachers can access groups of which they are not a member
 
-### Common problems
+Non-editing teachers do not have the capability `moodle/site:accessallgroups` and so cannot by default access groups of which they are not a member. The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration`/`Users`/`Permissions`/`Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
 
-#### Incorrect colors of graded items using scales
+### Incorrect colors of graded items using scales
 
 If you are using scales, and the colors of graded items are not correct, maybe you have incorrectly defined scales. It is necessary to define them ascending (from the worst to the best), e.g. `No`, `Yes` or `F`, `D`, `C`, `B`, `A`.
 
-#### Cannot apply completed status
+### Cannot apply completed status
 
-Completed status in the grading table is applied automatically. To use this feature, you have to enable `completion tracking` in the course settings. If you cannot find this option, allow it globally in `Site administration`/`Advanced features`/`Enable completion tracking` first.
+Completed status in the grading table is applied automatically. To use this feature, you have to enable `completion tracking` in the course settings. If you cannot find this option, allow it in `Site administration`/`Advanced features`/`Enable completion tracking` first.
 
-### License
+## Contributing
+
+For contributing details and reporting issues, please see [contribution guidelines](CONTRIBUTING.md).
+
+## License
 
 eTask topics format is a Free Open Source software package available under the [GNU General Public License](LICENSE), designed to help educators create effective online courses based on sound pedagogical principles.
