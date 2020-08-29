@@ -49,7 +49,7 @@ You can find fully specified user documentation on the [plugin page](https://moo
 
 Non-editing teachers do not have the capability `moodle/site:accessallgroups` and so cannot by default access groups of which they are not a member.
 
-The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration` / `Users` / `Permissions` / `Define roles`. Edit the `Teacher` role and into the `Filter` type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
+The teachers have this capability allowed by default, but you can disallow it for this role manually in `Site administration` / `Users` / `Permissions` / `Define roles`. Edit the `Teacher` role and in the `Filter` field type `moodle/site:accessallgroups`. You can see `Access all groups` is allowed so uncheck the checkbox for disallowing and click the `Save changes` button.
 
 ### Incorrect colors of graded items using scales
 
