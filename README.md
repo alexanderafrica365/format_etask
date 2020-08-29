@@ -23,21 +23,21 @@ After installation (or later by visiting `Site administration`/`Plugins`/`Course
 
 #### Configuration
 
-| Setting                     | Description                                                             | Example           |
-| --------------------------- | ----------------------------------------------------------------------- | ----------------- |
-| Registered due date modules | specifies in which module's database field is the due date value stored | `lucson:deadline` |
+| Setting                     | Description                                                              | Example           |
+| --------------------------- | ------------------------------------------------------------------------ | ----------------- |
+| Registered due date modules | Specifies in which module's database field is the due date value stored. | `lucson:deadline` |
 
 #### Additional course format settings
 
 Except for basic Topics format course settings, the following are available in the context of the grading table.
 
-| Setting                  | Options                       | Default                                   |
-| ------------------------ | ----------------------------- | ----------------------------------------- |
-| Student privacy          | `0`, `1`                      | `1` (student can only see his/her grades) |
-| Grade item progress bars | `0`, `1`                      | `1` (progress bars are visible)           |
-| Students per page        | `<1, ...>`                    | `10`                                      |
-| Grade items sorting      | `latest`, `oldest`, `inherit` | `latest` (new activities first)           |
-| Placement                | `above`, `below`              | `above` (above the course topics)         |
+| Setting                  | Description                     | Options                       | Default                           |
+| ------------------------ | ------------------------------- | ----------------------------- | --------------------------------- |
+| Student privacy          | Turns student privacy off/on.   | `0`, `1`                      | `1` (turned on)                   |
+| Grade item progress bars | Hide or show progress bars.     | `0`, `1`                      | `1` (shown)                       |
+| Students per page        | Number of students per page.    | `<1, ...>`                    | `10`                              |
+| Grade items sorting      | Sorting of the grade items.     | `latest`, `oldest`, `inherit` | `latest` (new activities first)   |
+| Placement                | Placement of the grading table. | `above`, `below`              | `above` (above the course topics) |
 
 ## Documentation
 
