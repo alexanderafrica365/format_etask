@@ -59,6 +59,10 @@ If you are using scales, and the colors of graded items are not correct, maybe y
 
 Completed status in the grading table is applied automatically. To use this feature, you have to enable `completion tracking` in the course settings. If you cannot find this option, allow it in `Site administration` / `Advanced features` / `Enable completion tracking` first.
 
+### Use Cut-off date instead of Due date for assign module
+
+For using Cut-off date instead of Due date, go to the `Site administration` / `Plugins` / `Course formats` / `eTask topics format` and change `assign:duedate` to `assign:cutoffdate`.
+
 ## Contributing
 
 If you have any issue, or you are requesting a new feature, report the [new issue](https://gitlab.com/drlikm/format_etask/-/issues/new). Do not create security issues publicly, contact [plugin maintainer](https://moodle.org/user/profile.php?id=1566618) instead.
