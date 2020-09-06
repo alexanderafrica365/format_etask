@@ -443,17 +443,26 @@ class format_etask extends format_topics {
             }
 
             // Initialize the grade item number.
-            $initnum[$gradeiteminstance->itemmodule] = $initnum[$gradeiteminstance->itemmodule] ?? 0;
+            $itemnum[$gradeiteminstance->itemmodule] = $itemnum[$gradeiteminstance->itemmodule] ?? 0;
+
+            // Store the grade item instances count due to sub-numbering. If the same instance is repeating (count is greater than
+            // zero), sub-numbering is needed.
+            $instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance] = $instancescount[$gradeiteminstance
+                    ->itemmodule][$gradeiteminstance->iteminstance] ?? 0;
 
             // If the item number exists, do not increment number and include this item number after the dot. E.g. the workshop has
             // assessment and submission parts, i.e. shortcut is W1 and W1.1.
-            if ($gradeiteminstance->itemnumber > 0) {
+            if ($gradeiteminstance->itemnumber > 0
+                && $instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance] > 0) {
                 $shortcut = sprintf('%s%d.%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
-                    $initnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
+                    $itemnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
             } else {
                 $shortcut = sprintf('%s%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
-                    ++$initnum[$gradeiteminstance->itemmodule]);
+                    ++$itemnum[$gradeiteminstance->itemmodule]);
             }
+
+            // Increment the grade item instances count.
+            ++$instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance];
 
             // Collect grade items with numbering.
             $gradeitems[$shortcut] = $gradeiteminstance;
@@ -492,7 +501,6 @@ class format_etask extends format_topics {
 
         /** @var array<string, string> $duedatefields */
         $duedatefields = $this->get_due_date_fields();
-
         // If due date fields exist for the item module, try to return timestamp from the database.
         if (isset($duedatefields[$gradeitem->itemmodule])) {
             $time = (int) $DB->get_field($gradeitem->itemmodule, $duedatefields[$gradeitem->itemmodule],
