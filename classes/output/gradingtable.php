@@ -278,7 +278,7 @@ class gradingtable implements renderable, templatable {
      */
     private function get_gradingtable(array $headcells, array $rows): html_table {
         $table = new html_table();
-        $table->attributes = ['class' => 'grade-table table-hover table-striped table-condensed table-responsive mb-3',
+        $table->attributes = ['class' => 'grade-table table-hover table-striped table-condensed table-responsive mb-3 w-auto',
             'table-layout' => 'fixed'];
         $table->head = $headcells;
         $table->data = $rows;
