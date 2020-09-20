@@ -43,9 +43,6 @@ class format_etask_renderer extends format_topics_renderer {
     /**
      * Print the grading table with all features.
      *
-     * @param context_course $context
-     * @param stdClass $course
-     *
      * @return void
      */
     public function print_grading_table() {

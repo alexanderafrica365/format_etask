@@ -74,9 +74,13 @@ class gradingtable_help_popover implements renderable, templatable {
         $data->release = $this->release;
         $data->displayname = $this->displayname;
         $data->pluginicon = html_writer::img($output->image_url('plugin', 'format_etask'), '', [
-            'class' => 'icon itemicon'
+            'class' => 'icon itemicon',
+            'alt' => '',
         ]);
-        $data->settingsicon = $output->pix_icon('t/messages', get_string('edit'), 'core', ['class' => 'icon itemicon']);
+        $data->improveicon = $output->pix_icon('t/messages', get_string('edit'), 'core', [
+            'class' => 'icon itemicon',
+            'alt' => '',
+        ]);
 
         return $data;
     }

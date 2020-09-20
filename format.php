@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The eTask topics course format. Display the whole course as 'topics' made of modules. The course includes the grading table
- * above or below the course sections.
+ * The eTask topics course format extends Topics format and includes the grading table above or below the course topics.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>

@@ -448,7 +448,7 @@ class format_etask extends format_topics {
             // Store the grade item instances count due to sub-numbering. If the same instance is repeating (count is greater than
             // zero), sub-numbering is needed.
             $instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance] = $instancescount[$gradeiteminstance
-                    ->itemmodule][$gradeiteminstance->iteminstance] ?? 0;
+                ->itemmodule][$gradeiteminstance->iteminstance] ?? 0;
 
             // If the item number exists, do not increment number and include this item number after the dot. E.g. the workshop has
             // assessment and submission parts, i.e. shortcut is W1 and W1.1.
@@ -565,13 +565,13 @@ class format_etask extends format_topics {
     public function transform_status_to_css(string $status): string {
         switch ($status) {
             case self::STATUS_COMPLETED:
-                $css = 'text-white bg-warning';
+                $css = 'text-white bg-completed';
                 break;
             case self::STATUS_PASSED:
-                $css = 'text-white bg-success';
+                $css = 'text-white bg-passed';
                 break;
             case self::STATUS_FAILED:
-                $css = 'text-white bg-danger';
+                $css = 'text-white bg-failed';
                 break;
             default:
                 $css = '';
@@ -582,8 +582,6 @@ class format_etask extends format_topics {
 
     /**
      * Get gradable students (logged in student move to the first position in the grade table).
-     *
-     * @param array $students
      *
      * @return array<int, stdClass>
      */

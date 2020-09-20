@@ -9,14 +9,19 @@ body.format-etask .popover.etask-popover .popover-body {
 }
 
 /* Moodle to Bootstrap colors overrides. */
-body.format-etask td.bg-success, body.format-etask .badge.badge-success, body.format-etask .progress-bar-passed .progress-bar.bar {
-    background-color: #28a745 !important;
+body.format-etask .bg-passed,
+body.format-etask .badge-success,
+body.format-etask .progress-bar-passed .progress-bar.bar {
+    background-color: #28a745;
 }
 
-body.format-etask td.bg-warning, body.format-etask .badge.badge-warning, body.format-etask .progress-bar-completed .progress-bar.bar {
-    background-color: #ffc107 !important;
+body.format-etask .bg-completed,
+body.format-etask .badge-warning,
+body.format-etask .progress-bar-completed .progress-bar.bar {
+    background-color: #ffc107;
 }
 
-body.format-etask td.bg-danger, body.format-etask .badge.badge-danger {
-    background-color: #dc3545 !important;
+body.format-etask td.bg-failed,
+body.format-etask .badge-danger {
+    background-color: #dc3545;
 }

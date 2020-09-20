@@ -154,9 +154,13 @@ class gradeitem_popover implements renderable, templatable {
         $data->grademax = $this->grademax;
         $data->showprogressbars = $this->showprogressbars;
         $data->itemmoduleicon = html_writer::img($output->image_url('icon', $this->itemmodule), '', [
-            'class' => 'icon itemicon'
+            'class' => 'icon itemicon',
+            'alt' => '',
         ]);
-        $data->settingsicon = $output->pix_icon('t/edit', get_string('edit'), 'core', ['class' => 'icon itemicon']);
+        $data->settingsicon = $output->pix_icon('t/edit', get_string('edit'), 'core', [
+            'class' => 'icon itemicon',
+            'alt' => '',
+        ]);
         $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
         $data->showsettings = $this->showsettings;
         $data->viewurl = $this->viewurl;
