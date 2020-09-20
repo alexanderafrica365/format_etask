@@ -157,7 +157,7 @@ class gradingtable implements renderable, templatable {
     /**
      * Return 'no students found' row, i.e. cell with a message following by empty cells with a slash for each grade item.
      *
-     * @param grade_item[]
+     * @param grade_item[] $gradeitems
      *
      * @return html_table_row
      * @throws coding_exception
