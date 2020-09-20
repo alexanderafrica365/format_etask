@@ -19,9 +19,11 @@ Choose the [version](https://moodle.org/plugins/pluginversions.php?plugin=format
 
 ### After installation
 
-After installation (or later by visiting `Site administration` / `Plugins` / `Course formats` / `eTask topics format`), you can optionally configure the plugin. Only one configuration field is available. Do not remove default value - extend it if necessary.
+After installation (or later), you can change the plugin configuration and/or additional course format settings.
 
 #### Configuration
+
+You can optionally configure the plugin in `Site administration` / `Plugins` / `Course formats` / `eTask topics format`. Only one configuration field is available. Do not remove default value - extend it if necessary.
 
 | Setting                     | Description                                                              | Example           |
 | --------------------------- | ------------------------------------------------------------------------ | ----------------- |
@@ -38,6 +40,18 @@ Except for basic Topics format course settings, the following are available in t
 | Students per page        | Number of students per page.    | `<1, ...>`                    | `10`                            |
 | Grade items sorting      | Sorting of the grade items.     | `latest`, `oldest`, `inherit` | `latest` (new activities first) |
 | Placement                | Placement of the grading table. | `above`, `below`              | `above` (above topics)          |
+
+## Capabilities
+
+This plugin is using existing Moodle core capabilities. See the table below, describing what is accessible for the user which has given capability.
+
+| Capability                       | Description                                                              |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `moodle/course:manageactivities` | The settings section is available in the grade item popover.             |
+| `moodle/course:viewparticipants` | The grading table is displayed.                                          |
+| `moodle/grade:edit`              | Grade value in the grading table refers to the grade edit.               |
+| `moodle/grade:viewall`           | Show all the grades and progress bars regardless of the course settings. |
+| `moodle/site:accessallgroups`    | Allow access to all groups.                                              |
 
 ## Documentation
 
@@ -62,6 +76,14 @@ Completed status in the grading table is applied automatically. To use this feat
 ### Use Cut-off date instead of Due date for assign module
 
 For using Cut-off date instead of Due date, go to the `Site administration` / `Plugins` / `Course formats` / `eTask topics format` and change `assign:duedate` to `assign:cutoffdate`.
+
+### Set up formatting of grade value
+
+You can set up the formatting of grade value on grade item or course level. All the grades associating with grade item or course will be recalculated automatically.
+
+If you want to set up formatting of grade value on course level, go to `My courses` / `Your course name` / `Grades` / `Setup` / `Course grade settings`. In the `Grade item settings` section change the `Grade display type`. Click to the `Save changes` button to save.
+
+For set up formatting of grade value on grade item level, go to `My courses` / `Your course name` / `Grades` / `Setup` / `Gradebook setup`. Choose the grade item you want to setup and click `Edit` / `Edit settings`. In the `Grade item` section, click `Show more...` and change the `Grade display type`. Click to the `Save changes` button to save.
 
 ## Contributing
 

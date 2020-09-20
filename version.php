@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020081000;
+$plugin->version   = 2020092001;
 $plugin->requires  = 2019111200;
 $plugin->supported = [38, 39];
 $plugin->component = 'format_etask';
-$plugin->maturity = MATURITY_RC;
+$plugin->maturity = MATURITY_STABLE;
 $plugin->release = '2.1';
