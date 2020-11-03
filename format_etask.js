@@ -1,7 +1,5 @@
 // Popover.
-require(['jquery', 'theme_boost/tether'], function($, Tether) {
-    window.jQuery = $;
-    window.Tether = Tether;
+require(['jquery'], function($) {
     require(['theme_boost/popover'], function() {
         $('[data-toggle="popover"]').popover({
             html: true,
