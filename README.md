@@ -1,4 +1,4 @@
-# eTask topics format 1.10
+# eTask topics format 1.11
 
 **eTask topics format** is based on the topics format and **includes grading table** (above or below the course sections) with aditional functionality such as a highlighting of grading values, grade to pass settings, motivational progress bars and much more.
 
