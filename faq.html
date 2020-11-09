@@ -1,0 +1,24 @@
+---
+faq:
+  - question: Plugin is not working correctly, how can I report the issue?
+    answer: If you have some problems, check the [Common problems](../category/4-common-problems/) section first. If problems with plugin functionality persist, check the plugin updates or see the [Report issue](../5-contributing/5.1-report-issue/) page.
+  - question: I have feedback, how can I provide it?
+    answer: We welcome any feedback. To provide it, just fill in the questionnaire or add a comment on the [plugin page](https://moodle.org/plugins/format_etask). You can also contact [plugin maintainer](https://moodle.org/user/profile.php?id=1566618), or use [LinkedIn](https://www.linkedin.com/in/drlikm/) and [Twitter](https://twitter.com/drlikm) profiles.
+  - question: I don't have the activity due date defined, but still due date is shown in the grade item popover. Why?
+    answer: Due date in popover shows the expected completion date if the due date is not defined for the activity.
+---
+
+<h1>FAQ</h1>
+
+<section class="faq">
+    <ul>
+        {% for item in page.faq %}
+        <li><a href="#{{ item.question | slugify }}">{{ item.question }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% for item in page.faq %}
+    <h2 id="{{ item.question | slugify}}">{{ item.question }}<a class="header-link" href="#{{ item.question | slugify }}">#</a></h2>
+    {{ item.answer | markdownify }}
+    {% endfor %}
+</section>

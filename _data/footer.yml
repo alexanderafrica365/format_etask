@@ -1,0 +1,12 @@
+- name:
+  link: https://www.linkedin.com/in/drlikm/
+  social_icon: LinkedIn
+  new_window: true
+- name:
+  link: https://twitter.com/drlikm
+  social_icon: Twitter
+  new_window: true
+- name:
+  link: https://www.youtube.com/channel/UCb0ErVUmJXDv_LpneIJSn4g
+  social_icon: YouTube
+  new_window: true

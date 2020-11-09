@@ -1,0 +1,8 @@
+- name: Documentation
+  link: /
+- name: Videos
+  link: /videos/
+- name: FAQ
+  link: /faq/
+- name: Changelog
+  link: /changelog/
