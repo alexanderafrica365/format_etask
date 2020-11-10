@@ -18,6 +18,4 @@ eTask topics format extends Topics format and provides the shortest way to manag
 
 #### Thanks to
 
-We are using JetBrains to develop this plugin.
-
-![JetBrains](https://drlikm.gitlab.io/format_etask/images/jetbrains.png)
+We are using [JetBrains](https://www.jetbrains.com/?from=etasktopicsformat) to develop this plugin.
