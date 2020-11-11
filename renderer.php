@@ -26,9 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/topics/renderer.php');
 
-use format_etask\dataprovider\course_settings;
-use format_etask\form\group_form;
-use format_etask\form\settings_form;
 use format_etask\output\gradingtable;
 
 /**

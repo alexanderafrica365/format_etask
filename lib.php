@@ -26,7 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/format/topics/lib.php');
 
 use core\output\inplace_editable;
-use format_etask\dataprovider\course_settings;
 
 /**
  * The main class for the eTask topics course format.

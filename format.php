@@ -26,8 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
-use format_etask\dataprovider\course_settings;
-
 // Horrible backwards compatible parameter aliasing.
 $topic = optional_param('topic', null, PARAM_INT);
 if ($topic !== null) {
