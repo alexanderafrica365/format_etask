@@ -4,8 +4,9 @@ body.format-etask .popover.etask-popover {
     max-width: 380px;
 }
 
-body.format-etask .popover.etask-popover .popover-body {
-    padding: 0;
+/* Backward compatibility due to the older Bootstrap version. */
+body.format-etask .mr-n3 {
+    margin-right: -16px;
 }
 
 /* Moodle to Bootstrap colors overrides. */
