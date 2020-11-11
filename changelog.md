@@ -35,7 +35,7 @@ type: Document
 
 **Removed (2 changes)**
 
-- Course format `styles.css` selectors (from Moodle 3.8 they are a part of core styles).
+- Course format `styles.css` selectors (they are a part of core styles).
 - `mform`s classes (replaced with single select component).
 
 **Added (6 changes)**
@@ -43,7 +43,7 @@ type: Document
 - Last modified information in the grade item popover.
 - Grade max. in the grade item popover.
 - Support formatting of grade value, e.g. `B- (80%)`.
-- New `licence`, `changelog.md` and `readme.md`.
+- New `licence` and `readme.md`.
 - Help link from the grading table to the plugin directory page.
 - Code documentation.
 
