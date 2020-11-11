@@ -15,22 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The eTask topics course format. Display the whole course as "topics" made of modules.
+ * The eTask topics course format extends Topics format and includes the grading table above or below the course topics.
  *
- * @package format_etask
- * @copyright 2006 The Open University
- * @author N.D.Freear@open.ac.uk, and others.
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   format_etask
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->libdir.'/filelib.php');
-require_once($CFG->libdir.'/completionlib.php');
-require_once($CFG->dirroot.'/course/format/etask/format_etask_lib.php');
+require_once($CFG->libdir . '/filelib.php');
+require_once($CFG->libdir . '/completionlib.php');
 
 // Horrible backwards compatible parameter aliasing.
-if ($topic = optional_param('topic', 0, PARAM_INT)) {
+$topic = optional_param('topic', null, PARAM_INT);
+if ($topic !== null) {
     $url = $PAGE->url;
     $url->param('section', $topic);
     debugging('Outdated topic param passed to course/view.php', DEBUG_DEVELOPER);
@@ -52,43 +50,34 @@ course_create_sections_if_missing($course, 0);
 
 $renderer = $PAGE->get_renderer('format_etask');
 
-// The eTask topics course format START.
-$etasklib = new FormatEtaskLib();
-$etaskconfig = $etasklib->get_etask_config($course);
-
-if (has_capability('format/etask:teacher', $context)
-    || has_capability('format/etask:noneditingteacher', $context)
-    || has_capability('format/etask:student', $context)) {
-    require_once($CFG->dirroot . '/course/format/etask/format_etask_grade_settings_form.php');
-    require_once($CFG->dirroot . '/course/format/etask/format_etask_grade_table_form.php');
-    require_once($CFG->dirroot . '/course/format/etask/format_etask_lib.php');
-    require_once($CFG->dirroot . '/grade/lib.php');
-
-    // The position above the sections.
-    if ($etaskconfig['placement'] === FormatEtaskLib::PLACEMENT_ABOVE) {
-        $renderer->render_grade_table($context, $course, $etasklib);
+// Start of eTask topics course format.
+if (has_capability('moodle/course:viewparticipants', $context)) {
+    // Print the grading table (the position above the sections).
+    if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_ABOVE) {
+        $renderer->print_grading_table($context, $course);
     }
 
-    // Sections.
-    if (!empty($displaysection)) {
+    // Print the sections.
+    if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 
-    // The position below the sections.
-    if ($etaskconfig['placement'] === FormatEtaskLib::PLACEMENT_BELOW) {
-        $renderer->render_grade_table($context, $course, $etasklib);
+    // Print the grading table (the position below the sections).
+    if (course_get_format($PAGE->course)->get_placement() === format_etask::PLACEMENT_BELOW) {
+        $renderer->print_grading_table($context, $course);
     }
 } else {
-    // Sections.
-    if (!empty($displaysection)) {
+    // Print the sections only (no grading table - user cannot view participants).
+    if ($displaysection > 0) {
         $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
     } else {
         $renderer->print_multiple_section_page($course, null, null, null, null);
     }
 }
-// The eTask topics course format END.
+// End of eTask topics course format.
 
-// Include course format js module.
+// Include course formats js modules.
 $PAGE->requires->js('/course/format/topics/format.js');
+$PAGE->requires->js('/course/format/etask/format.js');

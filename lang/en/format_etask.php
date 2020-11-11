@@ -38,36 +38,47 @@ $string['hidefromothers'] = 'Hide topic';
 $string['showfromothers'] = 'Show topic';
 $string['privacy:metadata'] = 'The eTask topics format plugin does not store any personal data.';
 // Course format settings strings.
-$string['privateview'] = 'eTask private view';
-$string['privateview_help'] = 'This settings determines whether all the students can see each other\'s grades in the eTask grading table or not.';
-$string['privateview_no'] = 'Each student can see the grades of the other students in the course/group';
-$string['privateview_yes'] = 'Logged in student can see own grades only';
-$string['progressbars'] = 'eTask progress bars';
-$string['progressbars_help'] = 'This settings determines whether progress bars Completed and Passed are calculated in the eTask grading table activity popover or not.';
-$string['progressbars_donotcalculate'] = 'Do not calculate progress bars Completed and Passed';
-$string['progressbars_calculate'] = 'Calculate progress bars Completed and Passed';
-$string['studentsperpage'] = 'eTask students per page';
-$string['studentsperpage_help'] = 'This settings determines the number of students per page in the eTask grading table.';
-$string['activitiessorting'] = 'eTask activities sorting';
-$string['activitiessorting_help'] = 'This settings determines whether activities of eTask grading table are sorted by the latest, by the oldest or as they are in the course.';
-$string['activitiessorting_latest'] = 'Sort the activities by the latest';
-$string['activitiessorting_oldest'] = 'Sort the activities by the oldest';
-$string['activitiessorting_inherit'] = 'Sort the activities as they are in the course';
-$string['placement'] = 'eTask placement';
-$string['placement_help'] = 'This settings determines placement of the eTask grading table above or below the course topics.';
+$string['studentprivacy'] = 'Student privacy';
+$string['studentprivacy_help'] = 'This setting determines whether the student can see the grades of others in the grading table or not.';
+$string['studentprivacy_no'] = 'The student can see the grades of others in the grading table';
+$string['studentprivacy_yes'] = 'The student can only see his/her grades in the grading table';
+$string['gradeitemprogressbars'] = 'Grade item progress bars';
+$string['gradeitemprogressbars_help'] = 'This setting determines whether the student should see a grade item progress bars in the grading table or not.';
+$string['gradeitemprogressbars_no'] = 'Hide the student\'s grade item progress bars in the grading table';
+$string['gradeitemprogressbars_yes'] = 'Show the student\'s grade item progress bars in the grading table';
+$string['studentsperpage'] = 'Students per page';
+$string['studentsperpage_help'] = 'This setting determines the number of students per page in the grading table.';
+$string['gradeitemssorting'] = 'Grade items sorting';
+$string['gradeitemssorting_help'] = 'This setting determines whether the grade items in the grading table are sorted by the latest, oldest, or as they are in the course.';
+$string['gradeitemssorting_latest'] = 'Sort grade items in the grading table by the latest';
+$string['gradeitemssorting_oldest'] = 'Sort grade items in the grading table by the oldest';
+$string['gradeitemssorting_inherit'] = 'Sort grade items in the grading table as they are in the course';
+$string['placement'] = 'Placement';
+$string['placement_help'] = 'This setting determines the placement of the grading table above or below the course topics.';
 $string['placement_above'] = 'Place the grading table above the course topics';
 $string['placement_below'] = 'Place the grading table below the course topics';
 // Plugin settings strings.
 $string['registeredduedatemodules'] = 'Registered due date modules';
 $string['registeredduedatemodules_help'] = 'Specifies in which module\'s database field the due date value is stored.';
-// The eTask grading table strings.
-$string['gradesavingsuccess'] = 'Grade to pass for <strong>{$a->itemName}</strong> was successfully updated to value <strong>{$a->gradePass}</strong>.';
-$string['gradesavingerror'] = 'Error in saving grade to pass for <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
+// Grading table strings.
+$string['nostudentsfound'] = 'No students were found to grade.';
+$string['nogradeitemsfound'] = 'No grade items were found.';
+// Grading table footer strings.
 $string['legend'] = 'Legend';
-$string['activitycompleted'] = 'Completed';
-$string['activitypassed'] = 'Passed';
-$string['activityfailed'] = 'Failed';
-$string['etask:teacher'] = 'Full management';
-$string['etask:noneditingteacher'] = 'Read only (all the data)';
-$string['etask:student'] = 'Read only (data in the context of a private view)';
-$string['notset'] = 'not set';
+$string['gradeitemcompleted'] = 'Completed';
+$string['gradeitempassed'] = 'Passed';
+$string['gradeitemfailed'] = 'Failed';
+// Grade item popover strings.
+$string['timemodified'] = 'Last modified on {$a}';
+$string['max'] = 'max.';
+$string['progresspercentage'] = '{$a} % <span class="text-black-50">of all students</span>';
+$string['choose'] = 'Choose ...';
+$string['showmore'] = 'Show more ...';
+// Grading table help strings.
+$string['helpabout'] = 'eTask topics format extends Topics format and provides the shortest way to manage activities and their comfortable grading. In addition to its clarity, it creates a motivating and competitive environment supporting a positive educational experience.';
+$string['helpimprovehead'] = 'Plugin improvements';
+$string['helpimprovebody'] = 'Help us improve this plugin! Write feedback, report issue, or fill out available questionnaires on the <a href="https://moodle.org/plugins/format_etask" target="_blank">plugin page</a>.';
+// Flash messages.
+$string['gradepasschanged'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
+$string['gradepassremoved'] = 'Grade to pass for grade item <strong>{$a}</strong> has been successfully removed.';
+$string['gradepassunablesave'] = 'Unable to change grade to pass for grade item <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';

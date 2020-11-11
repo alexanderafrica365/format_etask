@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for progress bar.
+ * Class containing data for grading table help popover.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
@@ -26,47 +26,61 @@ namespace format_etask\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_plugin_manager;
 use renderable;
 use renderer_base;
 use stdClass;
 use templatable;
+use html_writer;
 
 /**
- * Class to prepare a progress bar for display.
+ * Class to prepare a grading table help popover for display.
  *
- * @package format_etask
+ * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class progress_bar implements renderable, templatable {
+class gradingtable_help_popover implements renderable, templatable {
 
     /** @var int */
-    private $progressvalue;
+    private $version;
 
     /** @var string */
-    private $progressstate;
+    private $release;
+
+    /** @var string */
+    private $displayname;
 
     /**
-     * The progress_bar constructor.
-     *
-     * @param int $progressvalue
-     * @param string $progressstate
+     * The popover constructor.
      */
-    public function __construct(int $progressvalue, string $progressstate) {
-        $this->progressvalue = $progressvalue;
-        $this->progressstate = $progressstate;
+    public function __construct() {
+        $plugininfo = core_plugin_manager::instance()->get_plugin_info('format_etask');
+        $this->version = $plugininfo->versiondb;
+        $this->release = $plugininfo->release;
+        $this->displayname = $plugininfo->displayname;
     }
 
     /**
      * Export for template.
      *
      * @param renderer_base $output
+     *
      * @return stdClass
      */
     public function export_for_template(renderer_base $output): stdClass {
         $data = new stdClass();
-        $data->progressValue = $this->progressvalue;
-        $data->progressState = $this->progressstate;
+        $data->version = $this->version;
+        $data->release = $this->release;
+        $data->displayname = $this->displayname;
+        $data->pluginicon = html_writer::img($output->image_url('plugin', 'format_etask'), '', [
+            'class' => 'icon itemicon',
+            'alt' => '',
+        ]);
+        $data->improveicon = $output->pix_icon('t/messages', get_string('edit'), 'core', [
+            'class' => 'icon itemicon',
+            'alt' => '',
+        ]);
 
         return $data;
     }

@@ -19,11 +19,12 @@
  *
  * @package   format_etask
  * @category  backup
- * @copyright 2017 Marina Glancy
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/course/format/topics/backup/moodle2/restore_format_topics_plugin.class.php');
 
 /**
  * Specialised restore for eTask topics course format.
@@ -32,57 +33,10 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package   format_etask
  * @category  backup
- * @copyright 2017 Marina Glancy
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_format_etask_plugin extends restore_format_plugin {
-
-    /** @var int */
-    protected $originalnumsections = 0;
-
-    /**
-     * Checks if backup file was made on Moodle before 3.3 and we should respect the 'numsections'
-     * and potential "orphaned" sections in the end of the course.
-     *
-     * @return bool
-     */
-    protected function need_restore_numsections(): bool {
-        $backupinfo = $this->step->get_task()->get_info();
-        $backuprelease = $backupinfo->backup_release; // The major version: 2.9, 3.0, 3.10...
-        return version_compare($backuprelease, '3.3', '<');
-    }
-
-    /**
-     * Creates a dummy path element in order to be able to execute code after restore.
-     *
-     * @return restore_path_element[]
-     */
-    public function define_course_plugin_structure(): array {
-        global $DB;
-
-        // Since this method is executed before the restore we can do some pre-checks here.
-        // In case of merging backup into existing course find the current number of sections.
-        $target = $this->step->get_task()->get_target();
-        if (($target == backup::TARGET_CURRENT_ADDING || $target == backup::TARGET_EXISTING_ADDING) &&
-                $this->need_restore_numsections()) {
-            $maxsection = $DB->get_field_sql(
-                'SELECT max(section) FROM {course_sections} WHERE course = ?',
-                [$this->step->get_task()->get_courseid()]);
-            $this->originalnumsections = (int)$maxsection;
-        }
-
-        // Dummy path element is needed in order for after_restore_course() to be called.
-        return [new restore_path_element('dummy_course', $this->get_pathfor('/dummycourse'))];
-    }
-
-    /**
-     * Dummy process method.
-     *
-     * @return void
-     */
-    public function process_dummy_course(): void {
-
-    }
+class restore_format_etask_plugin extends restore_format_topics_plugin {
 
     /**
      * Executed after course restore is complete.
@@ -108,11 +62,10 @@ class restore_format_etask_plugin extends restore_format_plugin {
 
         $numsections = (int)$data['tags']['numsections'];
         foreach ($backupinfo->sections as $key => $section) {
-            // For each section from the backup file check if it was restored and if was "orphaned" in the original
-            // course and mark it as hidden. This will leave all activities in it visible and available just as it was
-            // in the original course.
-            // Exception is when we restore with merging and the course already had a section with this section number,
-            // in this case we don't modify the visibility.
+            // For each section from the backup file check if it was restored and if was "orphaned" in the original course and mark
+            // it as hidden. This will leave all activities in it visible and available just as it was in the original course.
+            // Exception is when we restore with merging and the course already had a section with this section number, in this
+            // case we don't modify the visibility.
             if ($this->step->get_task()->get_setting_value($key . '_included')) {
                 $sectionnum = (int)$section->title;
                 if ($sectionnum > $numsections && $sectionnum > $this->originalnumsections) {

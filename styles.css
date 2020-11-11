@@ -1,34 +1,44 @@
-.course-content ul.topics {
-    margin: 0;
-    list-style: none;
+/* The grading table popover. */
+body.format-etask .popover.etask-popover {
+    min-width: 380px;
+    max-width: 380px;
 }
 
-.course-content ul.topics li.section .content {
-    margin: 0 40px;
-}
-
-.course-content ul.topics li.section .left,
-.course-content ul.topics li.section .right {
-    width: 40px;
-    padding: 0 6px;
-}
-
-.course-content ul.topics li.section .left {
-    padding-top: 22px;
-    text-align: right;
-}
-
-.jsenabled .course-content ul.topics li.section .left,
-.jsenabled .course-content ul.topics li.section .right {
-    width: auto;
-}
-
-.course-content ul.topics li.section .left .section-handle img.icon {
+body.format-etask .popover.etask-popover .popover-body {
     padding: 0;
-    vertical-align: baseline;
 }
 
-.course-content ul.topics li.section .section_action_menu .textmenu,
-.course-content ul.topics li.section .section_action_menu .menu-action-text {
-    white-space: nowrap;
+/* Moodle to Bootstrap colors overrides. */
+body.format-etask .bg-passed,
+body.format-etask .badge-success,
+body.format-etask .progress-bar-passed .progress-bar.bar {
+    background-color: #28a745;
+}
+
+body.format-etask .bg-completed,
+body.format-etask .badge-warning,
+body.format-etask .progress-bar-completed .progress-bar.bar {
+    background-color: #ffc107;
+}
+
+body.format-etask td.bg-failed,
+body.format-etask .badge-danger {
+    background-color: #dc3545;
+}
+
+/* Backward compatibility due to the older Bootstrap version. */
+body.format-etask .mr-n3 {
+    margin-right: -16px;
+}
+
+body.format-etask .ml-n3 {
+    margin-left: -16px;
+}
+
+body.format-etask .mt-n3 {
+    margin-top: -16px;
+}
+
+body.format-etask .text-black-50 {
+    color: rgba(0, 0, 0, .5);
 }

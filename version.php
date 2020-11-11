@@ -17,16 +17,17 @@
 /**
  * Version details.
  *
- * @package    format_etask
- * @copyright  2020, Martin Drlik <martin.drlik@email.cz>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   format_etask
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020110300;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2020060900;        // Requires this Moodle version.
-$plugin->supported = [310, 310];
-$plugin->component = 'format_etask';    // Full name of the plugin (used for diagnostics).
-$plugin->release = '1.11';
+$plugin->version   = 2020111100;
+$plugin->requires  = 2019051100;
+$plugin->supported = [37, 37];
+$plugin->incompatible = 38;
+$plugin->component = 'format_etask';
 $plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.0';

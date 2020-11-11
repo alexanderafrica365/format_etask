@@ -15,23 +15,24 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template format_etask/progress_bar
+    @template format_etask/gradeitem_body
 
-    This template renders a simple progress bar.
+    This template renders the grade item body cell content.
 
     Example context (json):
     {
-        "progressValue": 50,
-        "progressState": "Completed"
+        "url": "/grade/edit/tree/grade.php?...",
+        "fullname": "John Doe",
+        "itemname": "Grade item name",
+        "value": "B- (80 %)",
+        "css": "text-white"
     }
 }}
 
-<div class="progress bg-white border">
-    <div class="progress-bar bar" role="progressbar" aria-valuenow="{{progressValue}}" style="width: {{progressValue}}%" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<div class="small">
-    <div class="d-flex justify-content-between">
-        <div>{{progressState}}</div>
-        <div>{{progressValue}} %</div>
-    </div>
-</div>
+{{#url}}
+    <a href="{{{url}}}" class="d-block stretched-link {{css}}" title="{{#str}}editgrade, grades{{/str}}: {{fullname}}, {{itemname}}">{{{value}}}</a>
+{{/url}}
+
+{{^url}}
+    {{{value}}}
+{{/url}}

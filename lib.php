@@ -15,224 +15,77 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains main class for eTask topics course format.
+ * This file contains the main class for the eTask topics course format.
  *
- * @since     Moodle 2.0
  * @package   format_etask
- * @copyright 2009 Sam Hemelryk
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/course/format/lib.php');
-require_once($CFG->dirroot. '/course/format/etask/format_etask_lib.php');
+require_once($CFG->dirroot . '/course/format/topics/lib.php');
 
 use core\output\inplace_editable;
 
 /**
- * Main class for the eTask topics course format.
+ * The main class for the eTask topics course format.
  *
- * @package    format_etask
- * @copyright  2012 Marina Glancy
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   format_etask
+ * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_etask extends format_base {
+class format_etask extends format_topics {
 
-    /**
-     * Returns true if this course format uses sections.
-     *
-     * @return bool
-     */
-    public function uses_sections(): bool {
-        return true;
-    }
+    /** @var string */
+    public const STATUS_COMPLETED = 'completed';
 
-    /**
-     * Returns the display name of the given section that the course prefers.
-     *
-     * Use section name is specified by user. Otherwise use default ("Topic #").
-     *
-     * @param int|stdClass $section Section object from database or just field section.section
-     * @return string Display name that the course format prefers, e.g. "Topic 2"
-     */
-    public function get_section_name($section): string {
-        $section = $this->get_section($section);
-        if ((string)$section->name !== '') {
-            return format_string($section->name, true,
-                ['context' => context_course::instance($this->courseid)]);
-        } else {
-            return $this->get_default_section_name($section);
-        }
-    }
+    /** @var string */
+    public const STATUS_PASSED = 'passed';
 
-    /**
-     * Returns the default section name for the eTask topics course format.
-     *
-     * If the section number is 0, it will use the string with key = section0name from the course format's lang file.
-     * If the section number is not 0, the base implementation of format_base::get_default_section_name which uses
-     * the string with the key = 'sectionname' from the course format's lang file + the section number will be used.
-     *
-     * @param stdClass $section Section object from database or just field course_sections section
-     * @return string The default value for the section name.
-     */
-    public function get_default_section_name($section): string {
-        if ($section->section == 0) {
-            // Return the general section.
-            return get_string('section0name', 'format_etask');
-        } else {
-            // Use format_base::get_default_section_name implementation which
-            // will display the section name in "Topic n" format.
-            return parent::get_default_section_name($section);
-        }
-    }
+    /** @var string */
+    public const STATUS_FAILED = 'failed';
 
-    /**
-     * The URL to use for the specified course (with section).
-     *
-     * @param int|stdClass $section Section object from database or just field course_sections.section
-     *     if omitted the course view page is returned
-     * @param array $options options for view URL. At the moment core uses:
-     *     'navigation' (bool) if true and section has no separate page, the function returns null
-     *     'sr' (int) used by multipage formats to specify to which section to return
-     * @return null|moodle_url
-     */
-    public function get_view_url($section, $options = []): ?moodle_url {
-        global $CFG;
-        $course = $this->get_course();
-        $url = new moodle_url('/course/view.php', ['id' => $course->id]);
+    /** @var string */
+    public const STATUS_NONE = 'none';
 
-        $sr = null;
-        if (array_key_exists('sr', $options)) {
-            $sr = $options['sr'];
-        }
-        if (is_object($section)) {
-            $sectionno = $section->section;
-        } else {
-            $sectionno = $section;
-        }
-        if ($sectionno !== null) {
-            if ($sr !== null) {
-                if ($sr) {
-                    $usercoursedisplay = COURSE_DISPLAY_MULTIPAGE;
-                    $sectionno = $sr;
-                } else {
-                    $usercoursedisplay = COURSE_DISPLAY_SINGLEPAGE;
-                }
-            } else {
-                $usercoursedisplay = $course->coursedisplay;
-            }
-            if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
-                $url->param('section', $sectionno);
-            } else {
-                if (empty($CFG->linkcoursesections) && !empty($options['navigation'])) {
-                    return null;
-                }
-                $url->set_anchor('section-'.$sectionno);
-            }
-        }
-        return $url;
-    }
+    /** @var int */
+    public const STUDENTS_PER_PAGE_DEFAULT = 10;
 
-    /**
-     * Returns the information about the ajax support in the given source format.
-     *
-     * The returned object's property (boolean)capable indicates that
-     * the course format supports Moodle course ajax features.
-     *
-     * @return stdClass
-     */
-    public function supports_ajax(): stdClass {
-        $ajaxsupport = new stdClass();
-        $ajaxsupport->capable = true;
-        return $ajaxsupport;
-    }
+    /** @var string */
+    public const GRADEITEMS_SORTING_LATEST = 'latest';
 
-    /**
-     * Loads all of the course sections into the navigation.
-     *
-     * @param global_navigation $navigation
-     * @param navigation_node $node The course node within the navigation
-     * @return void
-     */
-    public function extend_course_navigation($navigation, navigation_node $node): void {
-        global $PAGE;
-        // If section is specified in course/view.php, make sure it is expanded in navigation.
-        if ($navigation->includesectionnum === false) {
-            $selectedsection = optional_param('section', null, PARAM_INT);
-            if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
-                $navigation->includesectionnum = $selectedsection;
-            }
-        }
+    /** @var string */
+    public const GRADEITEMS_SORTING_OLDEST = 'oldest';
 
-        // Check if there are callbacks to extend course navigation.
-        parent::extend_course_navigation($navigation, $node);
+    /** @var string */
+    public const GRADEITEMS_SORTING_INHERIT = 'inherit';
 
-        // We want to remove the general section if it is empty.
-        $modinfo = get_fast_modinfo($this->get_course());
-        $sections = $modinfo->get_sections();
-        if (!isset($sections[0])) {
-            // The general section is empty to find the navigation node for it we need to get its ID.
-            $section = $modinfo->get_section_info(0);
-            $generalsection = $node->get($section->id, navigation_node::TYPE_SECTION);
-            if ($generalsection) {
-                // We found the node - now remove it.
-                $generalsection->remove();
-            }
-        }
-    }
+    /** @var string */
+    public const PLACEMENT_ABOVE = 'above';
 
-    /**
-     * Custom action after section has been moved in AJAX mode.
-     *
-     * Used in course/rest.php
-     *
-     * @return array This will be passed in ajax respose
-     */
-    public function ajax_section_move(): array {
-        global $PAGE;
-        $titles = [];
-        $course = $this->get_course();
-        $modinfo = get_fast_modinfo($course);
-        $renderer = $this->get_renderer($PAGE);
-        if ($renderer && ($sections = $modinfo->get_section_info_all())) {
-            foreach ($sections as $number => $section) {
-                $titles[$number] = $renderer->section_title($section, $course);
-            }
-        }
-        return ['sectiontitles' => $titles, 'action' => 'move'];
-    }
-
-    /**
-     * Returns the list of blocks to be automatically added for the newly created course.
-     *
-     * @return array of default blocks, must contain two keys BLOCK_POS_LEFT and BLOCK_POS_RIGHT
-     *     each of values is an array of block names (for left and right side columns)
-     */
-    public function get_default_blocks(): array {
-        return [
-            BLOCK_POS_LEFT => [],
-            BLOCK_POS_RIGHT => [],
-        ];
-    }
+    /** @var string */
+    public const PLACEMENT_BELOW = 'below';
 
     /**
      * Definitions of the additional options that this course format uses for course.
      *
      * eTask topics format uses the following options:
-     * - coursedisplay
-     * - hiddensections
-     * - privateview
-     * - progressbars
-     * - studentsperpage
-     * - activitiessorting
+     * - hiddensections,
+     * - coursedisplay,
+     * - studentprivacy,
+     * - gradeitemprogressbars,
+     * - studentsperpage,
+     * - gradeitemssorting,
+     * - placement.
      *
      * @param bool $foreditform
-     * @return array of options
+     *
+     * @return array<string, mixed>
      */
     public function course_format_options($foreditform = false): array {
         static $courseformatoptions = false;
-        if ($courseformatoptions === false) {
+
+        if (!$courseformatoptions) {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
                 'hiddensections' => [
@@ -243,28 +96,29 @@ class format_etask extends format_base {
                     'default' => $courseconfig->coursedisplay,
                     'type' => PARAM_INT,
                 ],
-                'privateview' => [
+                'studentprivacy' => [
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
-                'progressbars' => [
+                'gradeitemprogressbars' => [
                     'default' => 1,
                     'type' => PARAM_INT,
                 ],
                 'studentsperpage' => [
-                    'default' => FormatEtaskLib::STUDENTS_PER_PAGE_DEFAULT,
+                    'default' => self::STUDENTS_PER_PAGE_DEFAULT,
                     'type' => PARAM_INT,
                 ],
-                'activitiessorting' => [
-                    'default' => FormatEtaskLib::ACTIVITIES_SORTING_LATEST,
+                'gradeitemssorting' => [
+                    'default' => self::GRADEITEMS_SORTING_LATEST,
                     'type' => PARAM_ALPHA,
                 ],
                 'placement' => [
-                    'default' => FormatEtaskLib::PLACEMENT_ABOVE,
+                    'default' => self::PLACEMENT_ABOVE,
                     'type' => PARAM_ALPHA,
                 ],
             ];
         }
+
         if ($foreditform && !isset($courseformatoptions['coursedisplay']['label'])) {
             $courseformatoptionsedit = [
                 'hiddensections' => [
@@ -291,30 +145,27 @@ class format_etask extends format_base {
                     'help' => 'coursedisplay',
                     'help_component' => 'moodle',
                 ],
-            ];
-            // The eTask settings.
-            $etasksettings = [
-                'privateview' => [
-                    'label' => new lang_string('privateview', 'format_etask'),
-                    'help' => 'privateview',
+                'studentprivacy' => [
+                    'label' => new lang_string('studentprivacy', 'format_etask'),
+                    'help' => 'studentprivacy',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('privateview_no', 'format_etask'),
-                            1 => new lang_string('privateview_yes', 'format_etask'),
+                            0 => new lang_string('studentprivacy_no', 'format_etask'),
+                            1 => new lang_string('studentprivacy_yes', 'format_etask'),
                         ]
                     ],
                 ],
-                'progressbars' => [
-                    'label' => new lang_string('progressbars', 'format_etask'),
-                    'help' => 'progressbars',
+                'gradeitemprogressbars' => [
+                    'label' => new lang_string('gradeitemprogressbars', 'format_etask'),
+                    'help' => 'gradeitemprogressbars',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            0 => new lang_string('progressbars_donotcalculate', 'format_etask'),
-                            1 => new lang_string('progressbars_calculate', 'format_etask'),
+                            0 => new lang_string('gradeitemprogressbars_no', 'format_etask'),
+                            1 => new lang_string('gradeitemprogressbars_yes', 'format_etask'),
                         ],
                     ],
                 ],
@@ -324,21 +175,21 @@ class format_etask extends format_base {
                     'help_component' => 'format_etask',
                     'element_type' => 'text',
                 ],
-                'activitiessorting' => [
-                    'label' => new lang_string('activitiessorting', 'format_etask'),
-                    'help' => 'activitiessorting',
+                'gradeitemssorting' => [
+                    'label' => new lang_string('gradeitemssorting', 'format_etask'),
+                    'help' => 'gradeitemssorting',
                     'help_component' => 'format_etask',
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            FormatEtaskLib::ACTIVITIES_SORTING_LATEST => new lang_string(
-                                'activitiessorting_latest', 'format_etask'
+                            self::GRADEITEMS_SORTING_LATEST => new lang_string(
+                                'gradeitemssorting_latest', 'format_etask'
                             ),
-                            FormatEtaskLib::ACTIVITIES_SORTING_OLDEST => new lang_string(
-                                'activitiessorting_oldest', 'format_etask'
+                            self::GRADEITEMS_SORTING_OLDEST => new lang_string(
+                                'gradeitemssorting_oldest', 'format_etask'
                             ),
-                            FormatEtaskLib::ACTIVITIES_SORTING_INHERIT => new lang_string(
-                                'activitiessorting_inherit', 'format_etask'
+                            self::GRADEITEMS_SORTING_INHERIT => new lang_string(
+                                'gradeitemssorting_inherit', 'format_etask'
                             ),
                         ],
                     ],
@@ -350,174 +201,457 @@ class format_etask extends format_base {
                     'element_type' => 'select',
                     'element_attributes' => [
                         [
-                            FormatEtaskLib::PLACEMENT_ABOVE => new lang_string(
+                            self::PLACEMENT_ABOVE => new lang_string(
                                 'placement_above', 'format_etask'
                             ),
-                            FormatEtaskLib::PLACEMENT_BELOW => new lang_string(
+                            self::PLACEMENT_BELOW => new lang_string(
                                 'placement_below', 'format_etask'
                             ),
                         ],
                     ],
                 ],
             ];
-            $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit, $etasksettings);
+
+            $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
         }
+
         return $courseformatoptions;
     }
 
     /**
-     * Adds format options elements to the course/section edit form.
+     * Return the grade item completed/passed progress in percent.
      *
-     * This function is called from {@link course_edit_form::definition_after_data()}.
+     * @param string[]|null $gradeitemstatuses
+     * @param int $studentscountforcalculations
      *
-     * @param MoodleQuickForm $mform form the elements are added to.
-     * @param bool $forsection 'true' if this is a section edit form, 'false' if this is course edit form.
-     * @return array array of references to the added form elements.
+     * @return array<float, float>
      */
-    public function create_edit_form_elements(&$mform, $forsection = false): array {
-        global $COURSE;
-        $elements = parent::create_edit_form_elements($mform, $forsection);
-
-        if (!$forsection && (empty($COURSE->id) || $COURSE->id == SITEID)) {
-            // Add "numsections" element to the create course form - it will force new course to be prepopulated
-            // with empty sections.
-            // The "Number of sections" option is no longer available when editing course, instead teachers should
-            // delete and add sections when needed.
-            $courseconfig = get_config('moodlecourse');
-            $max = (int)$courseconfig->maxsections;
-            $element = $mform->addElement('select', 'numsections', get_string('numberweeks'), range(0, $max ?: 52));
-            $mform->setType('numsections', PARAM_INT);
-            if (is_null($mform->getElementValue('numsections'))) {
-                $mform->setDefault('numsections', $courseconfig->numsections);
-            }
-            array_unshift($elements, $element);
+    public function get_progress_values(?array $gradeitemstatuses, int $studentscountforcalculations): array {
+        // If progress bars are not allowed, return zero values.
+        if (!$this->show_grade_item_progress_bars() || $gradeitemstatuses === null) {
+            return [0.0, 0.0];
         }
 
-        return $elements;
+        // Merge initial values with the count of each status.
+        $progressbardatacount = array_merge(['passed' => 0.0, 'completed' => 0.0, 'failed' => 0.0],
+            array_count_values($gradeitemstatuses));
+
+        // Calculate % of completed/passed progress.
+        $progresscompleted = round(100 * (array_sum([$progressbardatacount['completed'], $progressbardatacount['passed'],
+            $progressbardatacount['failed']]) / $studentscountforcalculations));
+        $progresspassed = round(100 * ($progressbardatacount['passed'] / $studentscountforcalculations));
+
+        return [$progresscompleted, $progresspassed];
     }
 
     /**
-     * Updates format options for a course.
-     *
-     * In case if course format was changed to 'topics', we try to copy options
-     * 'coursedisplay' and 'hiddensections' from the previous format.
-     *
-     * @param stdClass|array $data return value from {@link moodleform::get_data()} or array with data
-     * @param stdClass $oldcourse if this function is called from {@link update_course()}
-     *     this object contains information about the course before update
-     * @return bool whether there were any changes to the options values
-     */
-    public function update_course_format_options($data, $oldcourse = null): bool {
-        $data = (array)$data;
-        if ($oldcourse !== null) {
-            $oldcourse = (array)$oldcourse;
-            $options = $this->course_format_options();
-            foreach ($options as $key => $unused) {
-                if (!array_key_exists($key, $data)) {
-                    if (array_key_exists($key, $oldcourse)) {
-                        $data[$key] = $oldcourse[$key];
-                    }
-                }
-            }
-        }
-        return $this->update_format_options($data);
-    }
-
-    /**
-     * Whether this format allows to delete sections.
-     *
-     * Do not call this function directly, instead use {@link course_can_delete_section()}
-     *
-     * @param int|stdClass|section_info $section
-     * @return bool
-     */
-    public function can_delete_section($section): bool {
-        return true;
-    }
-
-    /**
-     * Prepares the templateable object to display section name.
-     *
-     * @param \section_info|\stdClass $section
-     * @param bool $linkifneeded
-     * @param bool $editable
-     * @param null|lang_string|string $edithint
-     * @param null|lang_string|string $editlabel
-     * @return inplace_editable
-     */
-    public function inplace_editable_render_section_name($section, $linkifneeded = true,
-            $editable = null, $edithint = null, $editlabel = null): inplace_editable {
-        if (empty($edithint)) {
-            $edithint = new lang_string('editsectionname', 'format_etask');
-        }
-        if (empty($editlabel)) {
-            $title = get_section_name($section->course, $section);
-            $editlabel = new lang_string('newsectionname', 'format_etask', $title);
-        }
-        return parent::inplace_editable_render_section_name($section, $linkifneeded, $editable, $edithint, $editlabel);
-    }
-
-    /**
-     * Indicates whether the course format supports the creation of a news forum.
+     * Return 'true' if student privacy is required.
      *
      * @return bool
      */
-    public function supports_news(): bool {
-        return true;
-    }
-
-    /**
-     * Returns whether this course format allows the activity to
-     * have "triple visibility state" - visible always, hidden on course page but available, hidden.
-     *
-     * @param stdClass|cm_info $cm course module (may be null if we are displaying a form for adding a module)
-     * @param stdClass|section_info $section section where this module is located or will be added to
-     * @return bool
-     */
-    public function allow_stealth_module_visibility($cm, $section): bool {
-        // Allow the third visibility state inside visible sections or in section 0.
-        return !$section->section || $section->visible;
-    }
-
-    /**
-     * Callback used in WS core_course_edit_section when teacher performs an AJAX action on a section (show/hide).
-     *
-     * Access to the course is already validated in the WS but the callback has to make sure
-     * that particular action is allowed by checking capabilities
-     *
-     * Course formats should register.
-     *
-     * @param section_info|stdClass $section
-     * @param string $action
-     * @param int $sr
-     * @return null|array any data for the Javascript post-processor (must be json-encodeable)
-     */
-    public function section_action($section, $action, $sr): ?array {
+    public function is_student_privacy(): bool {
         global $PAGE;
 
-        if ($section->section && ($action === 'setmarker' || $action === 'removemarker')) {
-            // Format 'topics' allows to set and remove markers in addition to common section actions.
-            require_capability('moodle/course:setcurrentsection', context_course::instance($this->courseid));
-            course_set_marker($this->courseid, ($action === 'setmarker') ? $section->section : 0);
-            return null;
+        // If the user can view all the grades, return 'false', i.e. do not take care of student privacy.
+        if (has_capability('moodle/grade:viewall', $PAGE->context)) {
+            return false;
         }
 
-        // For show/hide actions call the parent method and return the new content for .section_availability element.
-        $rv = parent::section_action($section, $action, $sr);
-        $renderer = $PAGE->get_renderer('format_etask');
-        $rv['section_availability'] = $renderer->section_availability($this->get_section($section));
-        return $rv;
+        return (bool) $this->course->studentprivacy;
     }
 
     /**
-     * Return the plugin configs for external functions.
+     * Return 'true' if the grade item progress bars can be shown.
      *
-     * @return array the list of configuration settings
-     * @since Moodle 3.5
+     * @return bool
      */
-    public function get_config_for_external(): array {
-        // Return everything (nothing to hide).
-        return $this->get_format_options();
+    public function show_grade_item_progress_bars(): bool {
+        global $PAGE;
+
+        // If the user can view all the grades, return 'true', i.e. show the progress bars.
+        if (has_capability('moodle/grade:viewall', $PAGE->context)) {
+            return true;
+        }
+
+        return (bool) $this->course->gradeitemprogressbars;
+    }
+
+    /**
+     * Return number of students per page.
+     *
+     * @return int
+     */
+    public function get_students_per_page(): int {
+        return $this->course->studentsperpage ?? self::STUDENTS_PER_PAGE_DEFAULT;
+    }
+
+    /**
+     * Return grading table student's total count for view.
+     *
+     * @param array $students
+     *
+     * @return int
+     */
+    public function get_students_count_for_view(array $students): int {
+        global $USER;
+
+        if ($this->is_student_privacy()) {
+            return isset($students[$USER->id]) ? 1 : 0;
+        }
+
+        return count($students);
+    }
+
+    /**
+     * Return the grade items sorting type.
+     *
+     * @return string
+     */
+    public function get_grade_items_sorting(): string {
+        return $this->course->gradeitemssorting ?? self::GRADEITEMS_SORTING_LATEST;
+    }
+
+    /**
+     * Return the grading table placement.
+     *
+     * @return string
+     */
+    public function get_placement(): string {
+        return $this->course->placement ?? self::PLACEMENT_ABOVE;
+    }
+
+    /**
+     * Return 'true' if the cell is 'collectible', i.e collect table cells by student privacy - either all or the current student
+     * only.
+     *
+     * @param stdClass $user
+     *
+     * @return bool
+     */
+    public function is_collectible_cell(stdClass $user): bool {
+        global $USER;
+
+        return !$this->is_student_privacy() || ($this->is_student_privacy() && $user->id === $USER->id);
+    }
+
+    /**
+     * Return array of groups (ID => name). If the user cannot access all groups, only groups for a specific user are returned.
+     *
+     * @return array<int, string>
+     * @throws coding_exception
+     */
+    public function get_groups(): array {
+        global $PAGE, $USER;
+
+        // If the user can access all the groups set the user ID to '0'.
+        $userid = has_capability('moodle/site:accessallgroups', $PAGE->context) ? 0 : $USER->id;
+        // Get all groups by the user ID. If the user ID is '0', all groups are returned.
+        $groups = groups_get_all_groups($PAGE->course->id, $userid, 0, 'g.id, g.name', false);
+
+        // Transform groups to an array of group ID => group name.
+        foreach ($groups as $id => $group) {
+            /** @var array<int, string> $transformedgroups */
+            $transformedgroups[$id] = $group->name;
+        }
+
+        return $transformedgroups ?? [];
+    }
+
+    /**
+     * Return current group ID. If the user cannot access all groups, only groups for a specific user are returned.
+     *
+     * @return int
+     * @throws coding_exception
+     */
+    public function get_current_group_id(): int {
+        global $PAGE, $SESSION, $USER;
+
+        // If the user can access all the groups set the user ID to '0'.
+        $userid = has_capability('moodle/site:accessallgroups', $PAGE->context) ? 0 : $USER->id;
+        /** @var array<int, int> $groupids */
+        $groupids = array_keys(groups_get_all_groups($PAGE->course->id, $userid, 0, 'g.id', false));
+
+        // Set current group ID to '0' due to undefined variable notice.
+        $currentgroupid = 0;
+        if (isset($SESSION->format_etask['currentgroup']) && in_array($SESSION->format_etask['currentgroup'], $groupids)) {
+            // The group ID is in the session and this session is valid with the group IDs.
+            $currentgroupid = (int) $SESSION->format_etask['currentgroup'];
+        } else if (count($groupids) > 0) {
+            // The group ID is not in the session or is not valid with the group IDs, i.e. use the first group ID.
+            $currentgroupid = (int) $SESSION->format_etask['currentgroup'] = current($groupids);
+        }
+
+        return $currentgroupid;
+    }
+
+    /**
+     * Return the current pagination page.
+     *
+     * @param int $studentscountforview
+     * @param int $studentsperpage
+     *
+     * @return int
+     * @throws coding_exception
+     */
+    public function get_current_page(int $studentscountforview, int $studentsperpage): int {
+        global $SESSION;
+
+        // Try to get a page from the URL parameter.
+        $currentpage = optional_param('page', null, PARAM_INT);
+        if ($currentpage !== null) {
+            // If the page exists in the URL parameter, set it to the session and use it.
+            return (int) $SESSION->format_etask['currentpage'] = $currentpage;
+        }
+
+        // If the current page is out of bound set it to the last page. Use '<=' comparison because the pages are numbered from
+        // the zero.
+        if (isset($SESSION->format_etask['currentpage']) && $studentscountforview <= $SESSION->format_etask['currentpage']
+            * $studentsperpage && !$this->is_student_privacy()) {
+            return (int) $SESSION->format_etask['currentpage'] = round($studentscountforview / $studentsperpage, 0) - 1;
+        }
+
+        // Return valid current page, i.e. does not allow a negative current page.
+        return isset($SESSION->format_etask['currentpage']) && $SESSION->format_etask['currentpage'] > 0 ?
+            $SESSION->format_etask['currentpage'] : 0;
+    }
+
+    /**
+     * Return sorted grade items.
+     *
+     * @return array<string, grade_item>
+     */
+    public function get_sorted_gradeitems(): array {
+        global $COURSE;
+
+        // Fetch all the grade item instances.
+        $gradeiteminstances = grade_item::fetch_all(['courseid' => $COURSE->id, 'itemtype' => 'mod', 'hidden' => false]);
+
+        // If no grade items, return an empty array.
+        if (!$gradeiteminstances) {
+            return [];
+        }
+
+        /** @var array<string, grade_item> $gradeitems */
+        $gradeitems = [];
+        /** @var grade_item $gradeiteminstance */
+        foreach ($gradeiteminstances as $gradeiteminstance) {
+            // If deletion is in progress for a grade item, continue silently.
+            if ((bool) get_fast_modinfo($COURSE->id)->instances[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance]
+                ->deletioninprogress) {
+                continue;
+            }
+
+            // Initialize the grade item number.
+            $itemnum[$gradeiteminstance->itemmodule] = $itemnum[$gradeiteminstance->itemmodule] ?? 0;
+
+            // Store the grade item instances count due to sub-numbering. If the same instance is repeating (count is greater than
+            // zero), sub-numbering is needed.
+            $instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance] = $instancescount[$gradeiteminstance
+                ->itemmodule][$gradeiteminstance->iteminstance] ?? 0;
+
+            // If the item number exists, do not increment number and include this item number after the dot. E.g. the workshop has
+            // assessment and submission parts, i.e. shortcut is W1 and W1.1.
+            if ($gradeiteminstance->itemnumber > 0
+                && $instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance] > 0) {
+                $shortcut = sprintf('%s%d.%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
+                    $itemnum[$gradeiteminstance->itemmodule], $gradeiteminstance->itemnumber);
+            } else {
+                $shortcut = sprintf('%s%d', strtoupper(substr($gradeiteminstance->itemmodule, 0, 1)),
+                    ++$itemnum[$gradeiteminstance->itemmodule]);
+            }
+
+            // Increment the grade item instances count.
+            ++$instancescount[$gradeiteminstance->itemmodule][$gradeiteminstance->iteminstance];
+
+            // Collect grade items with numbering.
+            $gradeitems[$shortcut] = $gradeiteminstance;
+        }
+
+        // Sort grade items by course setting.
+        switch ($this->get_grade_items_sorting()) {
+            case self::GRADEITEMS_SORTING_OLDEST:
+                uasort($gradeitems, function($a, $b) {
+                    return $a->id > $b->id;
+                });
+                break;
+            case self::GRADEITEMS_SORTING_INHERIT:
+                $gradeitems = $this->sort_grade_items_by_sections($gradeitems);
+                break;
+            default:
+                uasort($gradeitems, function($a, $b) {
+                    return $a->id < $b->id;
+                });
+                break;
+        }
+
+        // Return sorted grade items with shortcuts as a key.
+        return $gradeitems;
+    }
+
+    /**
+     * Return the due date of the grade item.
+     *
+     * @param grade_item $gradeitem
+     *
+     * @return int|null
+     */
+    public function get_due_date(grade_item $gradeitem): ?int {
+        global $COURSE, $DB;
+
+        /** @var array<string, string> $duedatefields */
+        $duedatefields = $this->get_due_date_fields();
+        // If due date fields exist for the item module, try to return timestamp from the database.
+        if (isset($duedatefields[$gradeitem->itemmodule])) {
+            $time = (int) $DB->get_field($gradeitem->itemmodule, $duedatefields[$gradeitem->itemmodule],
+                ['id' => $gradeitem->iteminstance], IGNORE_MISSING);
+
+            if ($time > 0) {
+                return $time;
+            }
+        }
+
+        // If the due date field does not exist for the item module, try to return the expected completion timestamp from the item
+        // module instance.
+        $completionexpected = (int) get_fast_modinfo($COURSE->id)->instances[$gradeitem->itemmodule][$gradeitem->iteminstance]
+            ->completionexpected;
+
+        return $completionexpected > 0 ? $completionexpected : null;
+    }
+
+    /**
+     * Return the grade item status.
+     *
+     * @param grade_item $gradeitem
+     * @param stdClass $user
+     *
+     * @return string
+     */
+    public function get_grade_item_status(grade_item $gradeitem, stdClass $user): string {
+        global $PAGE;
+
+        // Get the grade item completion state, i.e. true for the completed grade item.
+        $completionstate = (bool) (new completion_info($PAGE->course))->get_data(get_fast_modinfo($PAGE->course->id, $user->id)
+            ->instances[$gradeitem->itemmodule][$gradeitem->iteminstance], false, $user->id)->completionstate;
+        $gradepass = (float) $gradeitem->gradepass;
+        $grade = $gradeitem->get_grade($user->id)->finalgrade ?? 0.0;
+
+        $status = self::STATUS_NONE;
+        // Switch the grade item statuses by the defined criteria.
+        if ($grade === 0.0 && $completionstate) {
+            // Activity no have grade value and have completed status or is marked as completed.
+            $status = self::STATUS_COMPLETED;
+        } else if ($grade === 0.0 || $gradepass === 0.0) {
+            // Activity no have grade value and is not completed or grade to pass is not set.
+            $status = self::STATUS_NONE;
+        } else if ($grade >= $gradepass) {
+            // Activity grade value is higher then grade to pass.
+            $status = self::STATUS_PASSED;
+        } else if ($grade < $gradepass) {
+            // Activity grade value is lower then grade to pass.
+            $status = self::STATUS_FAILED;
+        }
+
+        return $status;
+    }
+
+    /**
+     * Transform grade item status to the CSS attributes.
+     *
+     * @param string $status
+     *
+     * @return string
+     */
+    public function transform_status_to_css(string $status): string {
+        switch ($status) {
+            case self::STATUS_COMPLETED:
+                $css = 'text-white bg-completed';
+                break;
+            case self::STATUS_PASSED:
+                $css = 'text-white bg-passed';
+                break;
+            case self::STATUS_FAILED:
+                $css = 'text-white bg-failed';
+                break;
+            default:
+                $css = '';
+        }
+
+        return $css;
+    }
+
+    /**
+     * Get gradable students (logged in student move to the first position in the grade table).
+     *
+     * @return array<int, stdClass>
+     */
+    public function get_gradable_students(): array {
+        global $COURSE, $USER;
+
+        $students = get_enrolled_users(context_course::instance($COURSE->id), 'moodle/competency:coursecompetencygradable',
+            $this->get_current_group_id(), 'u.*', null, 0, 0, true);
+
+        if (isset($students[$USER->id]) && !$this->is_student_privacy()) {
+            $currentuser = $students[$USER->id];
+            unset($students[$USER->id]);
+            array_unshift($students , $currentuser);
+        }
+
+        return $students;
+    }
+
+    /**
+     * Sort grade items by sections.
+     *
+     * @param grade_item[] $gradeitems
+     *
+     * @return array<string, grade_item>
+     */
+    private function sort_grade_items_by_sections(array $gradeitems): array {
+        global $COURSE;
+
+        // Get an array of sections with course-module IDs.
+        $sections = get_fast_modinfo($COURSE)->get_sections();
+        /** @var string[] $cmids */
+        $cmids = [];
+
+        // Prepare ordered cmids by sections.
+        foreach ($sections as $section) {
+            $cmids = array_merge($cmids, $section);
+        }
+
+        // Sort grade items by cmids.
+        uasort($gradeitems, function($a, $b) use ($cmids, $COURSE) {
+            $cmida = get_fast_modinfo($COURSE->id)->instances[$a->itemmodule][$a->iteminstance]->id;
+            $cmidb = get_fast_modinfo($COURSE->id)->instances[$b->itemmodule][$b->iteminstance]->id;
+
+            $cmpa = array_search($cmida, $cmids);
+            $cmpb = array_search($cmidb, $cmids);
+
+            return $cmpa > $cmpb;
+        });
+
+        return $gradeitems;
+    }
+
+    /**
+     * Return registered due date modules.
+     *
+     * @return array<string, string>
+     */
+    private function get_due_date_fields(): array {
+        /** @var array<int, string> $registeredduedatemodules */
+        $registeredduedatemodules = explode(',', get_config('format_etask', 'registered_due_date_modules'));
+
+        $duedatefields = [];
+        // Prepare an array of due date fields, i.e. module => due date database field.
+        foreach ($registeredduedatemodules as $registeredduedatemodules) {
+            if (strpos($registeredduedatemodules, ':')) {
+                [$module, $duedatefield] = explode(':', $registeredduedatemodules);
+                $duedatefields[trim($module)] = trim($duedatefield);
+            }
+        }
+
+        return $duedatefields;
     }
 }
 
@@ -527,6 +661,7 @@ class format_etask extends format_base {
  * @param string $itemtype
  * @param int $itemid
  * @param mixed $newvalue
+ *
  * @return inplace_editable
  */
 function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_editable {
@@ -536,6 +671,7 @@ function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_e
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
             [$itemid, 'etask'], MUST_EXIST);
+
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
