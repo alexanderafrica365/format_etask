@@ -1,7 +1,3 @@
-![eTask topics format](https://moodle.org/pluginfile.php/50/local_plugins/plugin_logo/710/etask-topics-format.png?preview=thumb)
-
-#### eTask topics format
-
 eTask topics format extends Topics format and provides the shortest way to manage activities and their comfortable grading. In
 addition to its clarity, it creates a motivating and competitive environment supporting a positive educational experience.
 
