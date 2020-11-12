@@ -10,4 +10,5 @@ group :jekyll_plugins do
   gem 'jekyll-seo-tag', '2.6.1'
   gem 'jekyll-sitemap', '1.4.0'
   gem 'jekyll-include-cache', '0.2.0'
+  gem 'jekyll-gzip', '2.1.1'
 end

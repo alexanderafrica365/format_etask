@@ -36,6 +36,7 @@ plugins:
   - jekyll-feed
   - jekyll-archives
   - jekyll-include-cache
+  - jekyll-gzip
 
 exclude:
   - Gemfile
