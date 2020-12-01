@@ -50,6 +50,9 @@ class gradeitem_popover implements renderable, templatable {
     /** @var int */
     private $passed;
 
+    /** @var string */
+    private $passedlabel;
+
     /** @var int|null */
     private $duedate;
 
@@ -98,6 +101,7 @@ class gradeitem_popover implements renderable, templatable {
         $this->timemodified = $gradeitem->timemodified;
         $this->completed = $completed;
         $this->passed = $passed;
+        $this->passedlabel = course_get_format($PAGE->course)->get_passed_label();
         $this->duedate = $duedate;
         $this->gradepass = $gradepass;
         $this->grademax = $grademax;
@@ -149,6 +153,7 @@ class gradeitem_popover implements renderable, templatable {
         $data->timemodified = $this->timemodified;
         $data->completed = $this->completed;
         $data->passed = $this->passed;
+        $data->passedlabel = $this->passedlabel;
         $data->duedate = $this->duedate;
         $data->gradepass = $this->gradepass;
         $data->grademax = $this->grademax;
