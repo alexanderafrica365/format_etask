@@ -76,7 +76,9 @@ class format_etask extends format_topics {
      * - gradeitemprogressbars,
      * - studentsperpage,
      * - gradeitemssorting,
-     * - placement.
+     * - placement,
+     * - passedlabel,
+     * - failedlabel.
      *
      * @param bool $foreditform
      *
@@ -116,6 +118,14 @@ class format_etask extends format_topics {
                     'default' => self::PLACEMENT_ABOVE,
                     'type' => PARAM_ALPHA,
                 ],
+                'passedlabel' => [
+                    'default' => get_string('gradeitempassed', 'format_etask'),
+                    'type' => PARAM_RAW,
+                ],
+                'failedlabel' => [
+                    'default' => get_string('gradeitemfailed', 'format_etask'),
+                    'type' => PARAM_RAW,
+                ],
             ];
         }
 
@@ -129,7 +139,7 @@ class format_etask extends format_topics {
                     'element_attributes' => [
                         [
                             0 => new lang_string('hiddensectionscollapsed'),
-                            1 => new lang_string('hiddensectionsinvisible')
+                            1 => new lang_string('hiddensectionsinvisible'),
                         ],
                     ],
                 ],
@@ -210,6 +220,18 @@ class format_etask extends format_topics {
                         ],
                     ],
                 ],
+                'passedlabel' => [
+                    'label' => new lang_string('passedlabel', 'format_etask'),
+                    'help' => 'passedlabel',
+                    'help_component' => 'format_etask',
+                    'element_type' => 'text',
+                ],
+                'failedlabel' => [
+                    'label' => new lang_string('failedlabel', 'format_etask'),
+                    'help' => 'failedlabel',
+                    'help_component' => 'format_etask',
+                    'element_type' => 'text',
+                ],
             ];
 
             $courseformatoptions = array_merge_recursive($courseformatoptions, $courseformatoptionsedit);
@@ -282,7 +304,11 @@ class format_etask extends format_topics {
      * @return int
      */
     public function get_students_per_page(): int {
-        return $this->course->studentsperpage ?? self::STUDENTS_PER_PAGE_DEFAULT;
+        if ($this->course->studentsperpage === 0) {
+            return self::STUDENTS_PER_PAGE_DEFAULT;
+        }
+
+        return $this->course->studentsperpage;
     }
 
     /**
@@ -308,7 +334,7 @@ class format_etask extends format_topics {
      * @return string
      */
     public function get_grade_items_sorting(): string {
-        return $this->course->gradeitemssorting ?? self::GRADEITEMS_SORTING_LATEST;
+        return $this->course->gradeitemssorting;
     }
 
     /**
@@ -317,7 +343,33 @@ class format_etask extends format_topics {
      * @return string
      */
     public function get_placement(): string {
-        return $this->course->placement ?? self::PLACEMENT_ABOVE;
+        return $this->course->placement;
+    }
+
+    /**
+     * Return passed label.
+     *
+     * @return string
+     */
+    public function get_passed_label(): string {
+        if ($this->course->passedlabel === '') {
+            return get_string('gradeitempassed', 'format_etask');
+        }
+
+        return $this->course->passedlabel;
+    }
+
+    /**
+     * Return failed label.
+     *
+     * @return string
+     */
+    public function get_failed_label(): string {
+        if ($this->course->failedlabel === '') {
+            return get_string('gradeitemfailed', 'format_etask');
+        }
+
+        return $this->course->failedlabel;
     }
 
     /**
