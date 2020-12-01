@@ -1,17 +1,17 @@
 ---
-date: 2020-10-18
+date: 2020-12-01
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
 
-## 2.1 (2020-11-11)
+## 2.1 (2020-12-01)
 
 **Changed (1 change)**
 
 - Replace negative margin CSS with appropriate Bootstrap classes `mr-n*`/`ml-n*` (available from Moodle 3.8).
 
-## 2.0 (2020-11-11)
+## 2.0 (2020-12-01)
 
 **Changed (5 changes)**
 
@@ -25,7 +25,7 @@ type: Document
 
 - Responsive design fixes.
 - Show only groups of which non-editing teacher is a part.
-- Getting of students for the grading table.
+- Getting students for the grading table.
 - Hide grade items with "deletion in progress" from the grading table.
 - State when the grading table is empty (without students and/or without grade items).
 
@@ -38,11 +38,12 @@ type: Document
 - Course format `styles.css` selectors (they are a part of core styles).
 - `mform`s classes (replaced with single select component).
 
-**Added (6 changes)**
+**Added (7 changes)**
 
 - Last modified information in the grade item popover.
 - Grade max. in the grade item popover.
 - Support formatting of grade value, e.g. `B- (80%)`.
+- Ability to change `Passed` and `Failed` label's texts.
 - New `licence` and `readme.md`.
 - Help link from the grading table to the plugin directory page.
 - Code documentation.
