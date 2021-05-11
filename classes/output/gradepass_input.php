@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for grade item body cell content.
+ * Class containing data for gradepass input form content.
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,7 +38,7 @@ use templatable;
  * Class to prepare a gradepass input form for display.
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class gradepass_input implements renderable, templatable {
