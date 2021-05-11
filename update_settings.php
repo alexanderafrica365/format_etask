@@ -84,7 +84,19 @@ if (confirm_sesskey()) {
             get_string('gradepasserrgrademax', 'format_etask', [
                 'itemname' => $itemname,
                 'gradepass' => $gradepassparam,
-                'grademax' => format_float($gradeitem->grademax, 0),
+            ]),
+            null,
+            notification::ERROR
+        );
+    }
+
+    // Gradepass is lower than grademin.
+    if ($gradepass < $gradeitem->grademin) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepasserrgrademin', 'format_etask', [
+                'itemname' => $itemname,
+                'gradepass' => $gradepassparam,
             ]),
             null,
             notification::ERROR

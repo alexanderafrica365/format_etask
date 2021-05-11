@@ -87,4 +87,5 @@ $string['gradepasschanged'] = 'Grade to pass for grade item <strong>{$a->itemnam
 $string['gradepassremoved'] = 'Grade to pass for grade item <strong>{$a}</strong> has been successfully removed.';
 $string['gradepasserrdatabase'] = 'Unable to change grade to pass for grade item <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
 $string['gradepasserrnumeric'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. You must enter a number here.';
-$string['gradepasserrgrademax'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. Allowed max. grade is <strong>{$a->grademax}.';
+$string['gradepasserrgrademax'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. Value is greater than max. grade.';
+$string['gradepasserrgrademin'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. Value is lower than min. grade.';

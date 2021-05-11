@@ -87,4 +87,5 @@ $string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <st
 $string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> byla úšpěšně odstraněna.';
 $string['gradepasserrdatabase'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
 $string['gradepasserrnumeric'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Musíte zadat číslo.';
-$string['gradepasserrgrademax'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Max. povolená hodnota pro hodnocení je <strong>{$a->grademax}.';
+$string['gradepasserrgrademax'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Hodnota je větší než max. hodnocení.';
+$string['gradepasserrgrademin'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Hodnota je menší než min. hodnocení.';

@@ -113,7 +113,6 @@ class gradepass_input implements renderable, templatable {
         $data->formid = !empty($this->formid) ? $this->formid : html_writer::random_id('single_input_f');
         $data->id = $attributes['id'] ?? html_writer::random_id('single_input');
 
-        // Select element attributes.
         // Unset attributes that are already predefined in the template.
         unset($attributes['id']);
         unset($attributes['class']);
