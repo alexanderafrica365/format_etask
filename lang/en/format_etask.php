@@ -85,4 +85,6 @@ $string['helpimprovebody'] = 'Help us improve this plugin! Write feedback, repor
 // Flash messages.
 $string['gradepasschanged'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> has been successfully changed to <strong>{$a->gradepass}</strong>.';
 $string['gradepassremoved'] = 'Grade to pass for grade item <strong>{$a}</strong> has been successfully removed.';
-$string['gradepassunablesave'] = 'Unable to change grade to pass for grade item <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
+$string['gradepasserrdatabase'] = 'Unable to change grade to pass for grade item <strong>{$a}</strong>. Please, try it again later or contact plugin developer.';
+$string['gradepasserrnumeric'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. You must enter a number here.';
+$string['gradepasserrgrademax'] = 'Grade to pass for grade item <strong>{$a->itemname}</strong> cannot be changed to <strong>{$a->gradepass}</strong>. Allowed max. grade is <strong>{$a->grademax}.';
