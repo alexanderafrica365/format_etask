@@ -1,25 +1,26 @@
 ---
-date: 2020-12-01
+date: 2021-05-11
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
 
-## 2.1 (2020-12-01)
+## 2.1 (2021-05-11)
 
 **Changed (1 change)**
 
 - Replace negative margin CSS with appropriate Bootstrap classes `mr-n*`/`ml-n*` (available from Moodle 3.8).
 
-## 2.0 (2020-12-01)
+## 2.0 (2021-05-11)
 
-**Changed (5 changes)**
+**Changed (6 changes)**
 
 - Replace most of the CSS classes with Bootstrap.
 - Move specific CSS to the `styles.css`.
 - Renderer logic to the output classes with `.mustache` templates.
 - System of plugin versioning.
 - Popover redesign (including grade to pass setting).
+- Grading table and grade to pass accept decimals.
 
 **Fixed (5 changes)**
 
