@@ -26,18 +26,20 @@ require("../../../config.php");
 require_once("../../lib.php");
 require_once("../../../lib/grade/grade_item.php");
 require_once("../../../lib/grade/constants.php");
+require_once("../../../lib/grade/grade_scale.php");
 
 use core\notification;
 
 // Get values from the URL parameters.
-$gradepass = optional_param('gradepass', null, PARAM_INT);
+$gradepassparam = optional_param('gradepass', null, PARAM_TEXT);
+$gradepass = unformat_float($gradepassparam, true) ?? 0.0;
 $groupid = optional_param('group', null, PARAM_INT);
 $courseid = required_param('course', PARAM_INT);
 
 // Checks that the current user is logged in.
 require_login();
 
-if ($gradepass !== null && confirm_sesskey()) {
+if (confirm_sesskey()) {
     // Update the grade item 'gradepass' and 'timemodified' fields.
     $gradeitemid = required_param('gradeitemid', PARAM_INT);
 
@@ -54,29 +56,91 @@ if ($gradepass !== null && confirm_sesskey()) {
 
     // Fetch the grade item by ID, set the 'gradepass' with 'timemodified', and save it.
     $gradeitem = (new grade_item())->fetch(['id' => $gradeitemid]);
+    $gradepassbeforeupdate = floatval($gradeitem->gradepass);
     $itemname = $gradeitem->get_name();
+
+    // No change in the gradepass.
+    if (($gradepass === 0.0 && $gradepassbeforeupdate === 0.0) || ($gradepass === $gradepassbeforeupdate)) {
+        redirect(course_get_url($course));
+    }
+
+    // Gradepass is false, i.e. no numeric.
+    if ($gradepass !== 0.0 && !$gradepass) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepasserrnumeric', 'format_etask', [
+                'itemname' => $itemname,
+                'gradepass' => $gradepassparam,
+            ]),
+            null,
+            notification::ERROR
+        );
+    }
+
+    // Gradepass is greater than grademax.
+    if ($gradepass > $gradeitem->grademax) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepasserrgrademax', 'format_etask', [
+                'itemname' => $itemname,
+                'gradepass' => $gradepassparam,
+            ]),
+            null,
+            notification::ERROR
+        );
+    }
+
+    // Gradepass is lower than grademin.
+    if ($gradepass < $gradeitem->grademin) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepasserrgrademin', 'format_etask', [
+                'itemname' => $itemname,
+                'gradepass' => $gradepassparam,
+            ]),
+            null,
+            notification::ERROR
+        );
+    }
+
     $gradeitem->gradepass = $gradepass;
     $gradeitem->timemodified = time();
     $saved = $DB->update_record('grade_items', $gradeitem);
 
-    // Prepare a flash message for the redirect.
-    $message = get_string('gradepassunablesave', 'format_etask', $itemname);
-    $messagetype = notification::ERROR;
-    if ($saved) {
-        if ($gradepass > 0) {
-            $message = get_string('gradepasschanged', 'format_etask', [
-                'itemname' => $itemname,
-                'gradepass' => $gradepass,
-            ]);
-        } else {
-            $message = get_string('gradepassremoved', 'format_etask', $itemname);
-        }
-
-
-        $messagetype = notification::SUCCESS;
+    if (!$saved) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepasserrdatabase', 'format_etask', $itemname),
+            null,
+            notification::ERROR
+        );
     }
 
-     redirect(course_get_url($course), $message, null, $messagetype);
+    // Gradepass removed.
+    if ($gradepass === 0.0 && $gradepassbeforeupdate > 0.0) {
+        redirect(
+            course_get_url($course),
+            get_string('gradepassremoved', 'format_etask', $itemname),
+            null,
+            notification::SUCCESS
+        );
+    }
+
+    // Gradepass scale successfully changed.
+    if (($scale = $gradeitem->load_scale()) !== null) {
+        $gradepass = make_menu_from_list($scale->scale)[$gradepass];
+    }
+
+    // In other cases, gradepass points successfully changed.
+    redirect(
+        course_get_url($course),
+        get_string('gradepasschanged', 'format_etask', [
+            'itemname' => $itemname,
+            'gradepass' => $gradepass,
+        ]),
+        null,
+        notification::SUCCESS
+    );
 } else if ($groupid > 0) {
     // Checks that the current user is logged in and has the required privileges.
     require_login($courseid, false);

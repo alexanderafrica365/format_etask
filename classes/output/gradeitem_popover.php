@@ -25,6 +25,7 @@
 namespace format_etask\output;
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/course/format/etask/classes/output/gradepass_input.php');
 
 use grade_item;
 use html_writer;
@@ -70,6 +71,9 @@ class gradeitem_popover implements renderable, templatable {
 
     /** @var single_select|null */
     private $select = null;
+
+    /** @var gradepass_input|single_select|null */
+    private $gradepassform = null;
 
     /** @var bool */
     private $showsettings;
@@ -123,12 +127,25 @@ class gradeitem_popover implements renderable, templatable {
                 ]
             );
 
-            $select = new single_select($action, 'gradepass', $this->get_options($gradeitem), round($gradeitem->gradepass, 0),
-                [get_string('choose', 'format_etask')]);
-            $select->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
-            $select->attributes = ['onchange' => 'this.form.submit()'];
+            if (($scale = $gradeitem->load_scale()) !== null) {
+                $gradepassform = new single_select(
+                    $action,
+                    'gradepass',
+                    make_menu_from_list($scale->scale),
+                    round($gradeitem->gradepass),
+                    [get_string('choose', 'format_etask')]);
+                $gradepassform->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
+                $gradepassform->attributes = ['onchange' => 'this.form.submit()'];
+            } else {
+                $gradepassform = new gradepass_input(
+                    $action,
+                    'gradepass',
+                    $gradeitem->gradepass > 0 ? format_float($gradeitem->gradepass, $gradeitem->get_decimals(), true, false) : null
+                );
+                $gradepassform->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
+            }
 
-            $this->select = $select;
+            $this->gradepassform = $gradepassform;
 
             $sesskey = sesskey();
             $sectionreturn = optional_param('sr', 0, PARAM_INT);
@@ -166,34 +183,12 @@ class gradeitem_popover implements renderable, templatable {
             'class' => 'icon itemicon',
             'alt' => '',
         ]);
-        $data->select = $this->select ? $output->box($output->render($this->select), 'mt-n3') : null;
+        $data->gradepassform = $this->gradepassform ? $output->box($output->render($this->gradepassform), 'mt-n3') : null;
         $data->showsettings = $this->showsettings;
         $data->viewurl = $this->viewurl;
         $data->editurl = $this->editurl;
         $data->margintop = $this->gradepass !== null || $this->duedate !== null;
 
         return $data;
-    }
-
-    /**
-     * Return 'gradepass' options for select.
-     *
-     * @param grade_item $gradeitem
-     *
-     * @return array<int, int>
-     */
-    private function get_options(grade_item $gradeitem): array {
-        if (($scale = $gradeitem->load_scale()) !== null) {
-            return make_menu_from_list($scale->scale);
-        }
-
-        // If no scale defined, prepare the integer scale in interval <grade max., 1>.
-        $grademax = round($gradeitem->grademax, 0);
-        $options = [];
-        for ($i = $grademax; $i >= 1; --$i) {
-            $options[$i] = $i;
-        }
-
-        return $options;
     }
 }

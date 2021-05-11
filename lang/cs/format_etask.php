@@ -83,6 +83,9 @@ $string['helpabout'] = 'Tématické uspořádání eTask rozšiřuje Tématické
 $string['helpimprovehead'] = 'Vylepšení pluginu';
 $string['helpimprovebody'] = 'Pomozte nám vylepšit tento plugin! Napište zpětnou vazbu, nahlaste problém nebo vyplňte dostupné dotazníky na <a href="https://moodle.org/plugins/format_etask" target="_blank">stránce pluginu</a>.';
 // Flash messages.
-$string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> bylo úspěšně změněno na <strong>{$a->gradepass}</strong>.';
-$string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> bylo úšpěšně odstraněno.';
-$string['gradepassunablesave'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
+$string['gradepasschanged'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> byla úspěšně změněna na <strong>{$a->gradepass}</strong>.';
+$string['gradepassremoved'] = 'Potřebná známka u&nbsp;hodnocené položky <strong>{$a}</strong> byla úšpěšně odstraněna.';
+$string['gradepasserrdatabase'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a}</strong> nelze změnit. Prosím, zkuste to znovu později nebo kontaktujte vývojáře pluginu.';
+$string['gradepasserrnumeric'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Musíte zadat číslo.';
+$string['gradepasserrgrademax'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Hodnota je větší než max. hodnocení.';
+$string['gradepasserrgrademin'] = 'Potřebnou známku u&nbsp;hodnocené položky <strong>{$a->itemname}</strong> nelze změnit na <strong>{$a->gradepass}</strong>. Hodnota je menší než min. hodnocení.';

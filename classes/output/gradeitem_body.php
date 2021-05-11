@@ -80,7 +80,7 @@ class gradeitem_body implements renderable, templatable {
         // value.
         $this->value = $status === format_etask::STATUS_COMPLETED
             ? html_writer::tag('i', '', ['class' => 'fa fa-check-square-o', 'area-hidden' => 'true'])
-            : grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, 0);
+            : grade_format_gradevalue($usergrade->finalgrade, $gradeitem, true, null, null);
 
         // If the table cell has some status except 'none', text color is white.
         if ($status !== format_etask::STATUS_NONE) {

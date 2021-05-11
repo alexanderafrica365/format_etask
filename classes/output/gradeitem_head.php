@@ -81,8 +81,10 @@ class gradeitem_head implements renderable, templatable {
         [$progresscompleted, $progresspassed] = course_get_format($PAGE->course)->get_progress_values(
             $gradeitemstatuses, $studentscountforcalculations);
         $duedate = course_get_format($PAGE->course)->get_due_date($gradeitem);
-        $gradepass = $gradeitem->gradepass > 0 ? grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, 0) : null;
-        $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, 0);
+        $gradepass = $gradeitem->gradepass > 0
+            ? grade_format_gradevalue($gradeitem->gradepass, $gradeitem, true, null, null)
+            : null;
+        $grademax = grade_format_gradevalue($gradeitem->grademax, $gradeitem, true, null, null);
 
         $this->gradeitem = $gradeitem;
         $this->shortcut = $shortcut;
