@@ -79,7 +79,7 @@ if (confirm_sesskey()) {
 
     // Gradepass is greater than grademax.
     if ($gradepass > $gradeitem->grademax) {
-       redirect(
+        redirect(
             course_get_url($course),
             get_string('gradepasserrgrademax', 'format_etask', [
                 'itemname' => $itemname,

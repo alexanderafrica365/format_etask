@@ -128,12 +128,20 @@ class gradeitem_popover implements renderable, templatable {
             );
 
             if (($scale = $gradeitem->load_scale()) !== null) {
-                $gradepassform = new single_select($action, 'gradepass', make_menu_from_list($scale->scale), round($gradeitem->gradepass, 0),
+                $gradepassform = new single_select(
+                    $action,
+                    'gradepass',
+                    make_menu_from_list($scale->scale),
+                    round($gradeitem->gradepass),
                     [get_string('choose', 'format_etask')]);
                 $gradepassform->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
                 $gradepassform->attributes = ['onchange' => 'this.form.submit()'];
             } else {
-                $gradepassform = new gradepass_input($action, 'gradepass', $gradeitem->gradepass > 0 ? format_float($gradeitem->gradepass, $gradeitem->get_decimals(), true, false) : null);
+                $gradepassform = new gradepass_input(
+                    $action,
+                    'gradepass',
+                    $gradeitem->gradepass > 0 ? format_float($gradeitem->gradepass, $gradeitem->get_decimals(), true, false) : null
+                );
                 $gradepassform->set_label(get_string('gradepass', 'grades'), ['class' => 'mb-0']);
             }
 
