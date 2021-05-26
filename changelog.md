@@ -1,17 +1,23 @@
 ---
-date: 2021-05-11
+date: 2021-05-26
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
 
-## 2.1 (2021-05-11)
+## 2021-05-26
+
+**Fixed (1 change)**
+
+- Missing `sesskey` on group change.
+
+## 2021-05-11
 
 **Changed (1 change)**
 
-- Replace negative margin CSS with appropriate Bootstrap classes `mr-n*`/`ml-n*` (available from Moodle 3.8).
+- Grading table and grade to pass accept decimals.
 
-## 2.0 (2021-05-11)
+## 2020-11-11
 
 **Changed (6 changes)**
 
@@ -20,16 +26,15 @@ type: Document
 - Renderer logic to the output classes with `.mustache` templates.
 - System of plugin versioning.
 - Popover redesign (including grade to pass setting).
-- Grading table and grade to pass accept decimals.
+- Replace negative margin CSS with appropriate Bootstrap classes `mr-n*`/`ml-n*` (available from Moodle 3.8).
 
-**Fixed (6 changes)**
+**Fixed (5 changes)**
 
 - Responsive design fixes.
 - Show only groups of which non-editing teacher is a part.
 - Getting students for the grading table.
 - Hide grade items with "deletion in progress" from the grading table.
 - State when the grading table is empty (without students and/or without grade items).
-- Missing `sesskey` on group change.
 
 **Security (1 change)**
 
