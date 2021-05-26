@@ -39,7 +39,7 @@ $courseid = required_param('course', PARAM_INT);
 // Checks that the current user is logged in.
 require_login();
 
-if (confirm_sesskey()) {
+if ($gradepassparam !== null && confirm_sesskey()) {
     // Update the grade item 'gradepass' and 'timemodified' fields.
     $gradeitemid = required_param('gradeitemid', PARAM_INT);
 
