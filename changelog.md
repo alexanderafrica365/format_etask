@@ -22,13 +22,14 @@ type: Document
 - Popover redesign (including grade to pass setting).
 - Grading table and grade to pass accept decimals.
 
-**Fixed (5 changes)**
+**Fixed (6 changes)**
 
 - Responsive design fixes.
 - Show only groups of which non-editing teacher is a part.
 - Getting students for the grading table.
 - Hide grade items with "deletion in progress" from the grading table.
 - State when the grading table is empty (without students and/or without grade items).
+- Missing `sesskey` on group change.
 
 **Security (1 change)**
 
