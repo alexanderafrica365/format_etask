@@ -9,7 +9,7 @@ type: Document
 
 **Changed (1 change)**
 
-- Show help popover only if the user has the capability to update course settings.
+- Show help popover in the grading table footer only if the user has the capability to update course settings.
 
 ## 2021-05-26
 
