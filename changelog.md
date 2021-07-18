@@ -1,9 +1,15 @@
 ---
-date: 2021-05-26
+date: 2021-07-18
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
+
+## 2021-07-18
+
+**Changed (1 change)**
+
+- Show help popover only if the user has the capability to update course settings.
 
 ## 2021-05-26
 
