@@ -26,7 +26,7 @@
 namespace format_etask\output;
 
 use format_etask\output\courseformat\content;
-use \format_topics\output\renderer as format_topics_renderer;
+use format_topics\output\renderer as format_topics_renderer;
 
 defined('MOODLE_INTERNAL') || die();
 
