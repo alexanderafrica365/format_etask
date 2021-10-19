@@ -132,9 +132,9 @@ class gradingtable implements renderable, templatable {
         $this->table = $this->get_gradingtable($headcells, $rows);
         $this->footer = new gradingtable_footer($studentscountforview, course_get_format($COURSE->id)->get_groups(),
             course_get_format($COURSE)->get_current_group_id());
-        $this->css = 'border-bottom mb-3 pb-3';
+        $this->css = 'border-bottom pb-3';
         if (course_get_format($COURSE)->get_placement() === format_etask::PLACEMENT_BELOW) {
-            $this->css = 'border-top mt-4 pt-4';
+            $this->css = 'border-top pt-3';
         }
     }
 

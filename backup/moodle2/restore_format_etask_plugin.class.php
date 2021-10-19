@@ -24,7 +24,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/course/format/topics/backup/moodle2/restore_format_topics_plugin.class.php');
 
 /**
  * Specialised restore for eTask topics course format.

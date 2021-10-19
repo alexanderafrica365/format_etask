@@ -20,29 +20,25 @@
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since     Moodle 3.7
+ * @since     Moodle 4.0
  */
 
-defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/course/format/topics/renderer.php');
+namespace format_etask\output;
 
-use format_etask\output\gradingtable;
+use format_etask\output\courseformat\content;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Basic renderer for eTask topics format.
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class format_etask_renderer extends format_topics_renderer {
-
-    /**
-     * Print the grading table with all features.
-     *
-     * @return void
-     */
-    public function print_grading_table() {
-        echo $this->render(new gradingtable());
+class renderer extends \format_topics\output\renderer {
+    public function render_etask(content $widget) {
+        $data = $widget->export_for_template($this);
+        return $this->render_from_template('format_etask/content', $data);
     }
 }
