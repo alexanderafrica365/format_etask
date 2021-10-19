@@ -51,6 +51,7 @@ class renderer extends format_topics_renderer {
      */
     public function render_format_etask(content $widget): string {
         $data = $widget->export_for_template($this);
+
         return $this->render_from_template('format_etask/content', $data);
     }
 }
