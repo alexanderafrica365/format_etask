@@ -617,7 +617,7 @@ class format_etask extends format_topics {
     public function transform_status_to_css(string $status): string {
         switch ($status) {
             case self::STATUS_COMPLETED:
-                $css = 'text-white bg-completed';
+                $css = 'text-white bg-warning';
                 break;
             case self::STATUS_PASSED:
                 $css = 'text-white bg-passed';
