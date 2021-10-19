@@ -52,9 +52,6 @@ class gradingtable implements renderable, templatable {
     /** @var string */
     private $footer;
 
-    /** @var string */
-    private $css;
-
     /**
      * Grading table constructor.
      */
@@ -132,10 +129,6 @@ class gradingtable implements renderable, templatable {
         $this->table = $this->get_gradingtable($headcells, $rows);
         $this->footer = new gradingtable_footer($studentscountforview, course_get_format($COURSE->id)->get_groups(),
             course_get_format($COURSE)->get_current_group_id());
-        $this->css = 'border-bottom pb-3';
-        if (course_get_format($COURSE)->get_placement() === format_etask::PLACEMENT_BELOW) {
-            $this->css = 'border-top pt-3';
-        }
     }
 
     /**
@@ -149,7 +142,6 @@ class gradingtable implements renderable, templatable {
         $data = new stdClass();
         $data->table = html_writer::table($this->table);
         $data->footer = $output->render($this->footer);
-        $data->css = $this->css;
 
         return $data;
     }
