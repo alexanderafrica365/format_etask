@@ -620,10 +620,10 @@ class format_etask extends format_topics {
                 $css = 'text-white bg-warning';
                 break;
             case self::STATUS_PASSED:
-                $css = 'text-white bg-passed';
+                $css = 'text-white bg-success';
                 break;
             case self::STATUS_FAILED:
-                $css = 'text-white bg-failed';
+                $css = 'text-white bg-danger';
                 break;
             default:
                 $css = '';
