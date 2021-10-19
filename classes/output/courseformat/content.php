@@ -61,13 +61,6 @@ class content extends core_courseformat_content implements renderable, templatab
     }
 
     /**
-     * Export this data so it can be used as the context for a mustache template (core/inplace_editable).
-     *
-     * @param renderer_base $output typically, the renderer that's calling this function
-     * @return stdClass data context for a mustache template
-     */
-
-    /**
      * Export for template.
      *
      * @param renderer_base $output
