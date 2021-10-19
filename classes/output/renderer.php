@@ -25,8 +25,10 @@
 
 namespace format_etask\output;
 
+use coding_exception;
 use format_etask\output\courseformat\content;
 use format_topics\output\renderer as format_topics_renderer;
+use moodle_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,7 +40,16 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends format_topics_renderer {
-    public function render_format_etask(content $widget) {
+    /**
+     * Render widget.
+     *
+     * @param content $widget
+     *
+     * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    public function render_format_etask(content $widget): string {
         $data = $widget->export_for_template($this);
         return $this->render_from_template('format_etask/content', $data);
     }

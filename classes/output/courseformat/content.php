@@ -68,7 +68,7 @@ class content extends core_courseformat_content implements renderable, templatab
      * @return stdClass
      * @throws coding_exception
      */
-    public function export_for_template(renderer_base $output) {
+    public function export_for_template(renderer_base $output): stdClass {
         $data = parent::export_for_template($output);
         $data->gradingtable = $output->render($this->gradingtable);
         $data->placementbelow = $this->placementbelow;
