@@ -24,9 +24,13 @@
 
 namespace format_etask\output\courseformat;
 
+use coding_exception;
 use core_courseformat\base as course_format;
+use core_courseformat\output\local\content as core_courseformat_content;
 use format_etask\output\gradingtable;
 use renderable;
+use renderer_base;
+use stdClass;
 use templatable;
 
 /**
@@ -36,7 +40,7 @@ use templatable;
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class content extends \core_courseformat\output\local\content implements renderable, templatable {
+class content extends core_courseformat_content implements renderable, templatable {
 
     /** @var string */
     protected $gradingtable;
@@ -45,9 +49,9 @@ class content extends \core_courseformat\output\local\content implements rendera
     protected $placementbelow;
 
     /**
-     * Constructor.
+     * Content constructor.
      *
-     * @param course_format $format the coruse format
+     * @param course_format $format
      */
     public function __construct(course_format $format) {
         parent::__construct($format);
@@ -62,7 +66,16 @@ class content extends \core_courseformat\output\local\content implements rendera
      * @param renderer_base $output typically, the renderer that's calling this function
      * @return stdClass data context for a mustache template
      */
-    public function export_for_template(\renderer_base $output) {
+
+    /**
+     * Export for template.
+     *
+     * @param renderer_base $output
+     *
+     * @return stdClass
+     * @throws coding_exception
+     */
+    public function export_for_template(renderer_base $output) {
         $data = parent::export_for_template($output);
         $data->gradingtable = $output->render($this->gradingtable);
         $data->placementbelow = $this->placementbelow;

@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends format_topics_renderer {
-    public function render_etask(content $widget) {
+    public function render_format_etask(content $widget) {
         $data = $widget->export_for_template($this);
         return $this->render_from_template('format_etask/content', $data);
     }

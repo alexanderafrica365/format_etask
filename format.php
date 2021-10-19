@@ -56,7 +56,7 @@ if (!empty($displaysection)) {
 }
 $outputclass = $format->get_output_classname('content');
 $widget = new $outputclass($format);
-echo $renderer->render_etask($widget);
+echo $renderer->render_format_etask($widget);
 
 // Include course formats js modules.
 $PAGE->requires->js('/course/format/topics/format.js');

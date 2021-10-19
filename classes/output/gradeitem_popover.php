@@ -25,6 +25,7 @@
 namespace format_etask\output;
 
 defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/course/format/etask/classes/output/gradepass_input.php');
 
 use grade_item;
