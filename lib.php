@@ -640,7 +640,7 @@ class format_etask extends format_topics {
     public function get_gradable_students(): array {
         global $COURSE, $USER;
 
-        $students = get_enrolled_users(context_course::instance($COURSE->id), 'moodle/competency:coursecompetencygradable',
+        $students = get_enrolled_users(context_course::instance($COURSE->id), 'moodle/grade:view',
             $this->get_current_group_id(), 'u.*', null, 0, 0, true);
 
         if (isset($students[$USER->id]) && !$this->is_student_privacy()) {
