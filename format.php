@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The eTask topics course format extends Topics format and includes the grading table above or below the course topics.
+ * ETask topics course format extends Topics format and includes the grading table above or below the course topics.
  *
  * @package   format_etask
  * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
@@ -58,6 +58,6 @@ $outputclass = $format->get_output_classname('content');
 $widget = new $outputclass($format);
 echo $renderer->render_format_etask($widget);
 
-// Include course formats js modules.
+// Include course format js modules.
 $PAGE->requires->js('/course/format/topics/format.js');
 $PAGE->requires->js('/course/format/etask/format.js');

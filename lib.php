@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the main class for the eTask topics course format.
+ * This file contains main class for eTask topics course format.
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,10 +29,10 @@ require_once($CFG->dirroot . '/course/format/topics/lib.php');
 use core\output\inplace_editable;
 
 /**
- * The main class for the eTask topics course format.
+ * Main class for the eTask topics course format.
  *
  * @package   format_etask
- * @copyright 2020, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_etask extends format_topics {
@@ -88,7 +88,7 @@ class format_etask extends format_topics {
     public function course_format_options($foreditform = false): array {
         static $courseformatoptions = false;
 
-        if (!$courseformatoptions) {
+        if ($courseformatoptions === false) {
             $courseconfig = get_config('moodlecourse');
             $courseformatoptions = [
                 'hiddensections' => [

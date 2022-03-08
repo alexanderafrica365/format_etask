@@ -18,7 +18,7 @@
  * Class containing data for course format content.
  *
  * @package   format_etask
- * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -37,7 +37,7 @@ use templatable;
  * Class to render a course format.
  *
  * @package   format_etask
- * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class content extends core_courseformat_content implements renderable, templatable {

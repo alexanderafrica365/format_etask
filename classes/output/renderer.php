@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Renderer for outputting the eTask topics course format.
- *
- * @package   format_etask
- * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since     Moodle 4.0
- */
-
 namespace format_etask\output;
 
 use coding_exception;
@@ -30,14 +21,13 @@ use format_etask\output\courseformat\content;
 use format_topics\output\renderer as format_topics_renderer;
 use moodle_exception;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * Basic renderer for eTask topics format.
+ * Basic renderer for eTask topics course format.
  *
  * @package   format_etask
- * @copyright 2021, Martin Drlik <martin.drlik@email.cz>
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since     Moodle 4.0
  */
 class renderer extends format_topics_renderer {
     /**
