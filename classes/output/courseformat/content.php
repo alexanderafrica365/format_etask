@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for course format content.
+ * Contains the default content output class.
  *
  * @package   format_etask
  * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
@@ -34,7 +34,7 @@ use stdClass;
 use templatable;
 
 /**
- * Class to render a course format.
+ * Class to render a course content.
  *
  * @package   format_etask
  * @copyright 2022, Martin Drlik <martin.drlik@email.cz>

@@ -68,7 +68,6 @@ $string['registeredduedatemodules_help'] = 'Specifies in which module\'s databas
 $string['nostudentsfound'] = 'No students were found to grade.';
 $string['nogradeitemsfound'] = 'No grade items were found.';
 // Grading table footer strings.
-$string['legend'] = 'Legend';
 $string['gradeitemcompleted'] = 'Completed';
 $string['gradeitempassed'] = 'Passed';
 $string['gradeitemfailed'] = 'Failed';

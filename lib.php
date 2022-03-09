@@ -617,19 +617,44 @@ class format_etask extends format_topics {
     public function transform_status_to_css(string $status): string {
         switch ($status) {
             case self::STATUS_COMPLETED:
-                $css = 'text-white bg-warning';
+                $css = 'badge badge-warning';
                 break;
             case self::STATUS_PASSED:
-                $css = 'text-white bg-success';
+                $css = 'badge badge-success';
                 break;
             case self::STATUS_FAILED:
-                $css = 'text-white bg-danger';
+                $css = 'badge badge-danger';
                 break;
             default:
                 $css = '';
         }
 
         return $css;
+    }
+
+    /**
+     * Transform grade item status to the CSS attributes.
+     *
+     * @param string $status
+     *
+     * @return string
+     */
+    public function transform_status_to_label(string $status): string {
+        switch ($status) {
+            case self::STATUS_COMPLETED:
+                $label = get_string('gradeitemcompleted', 'format_etask');
+                break;
+            case self::STATUS_PASSED:
+                $label = $this->get_passed_label();
+                break;
+            case self::STATUS_FAILED:
+                $label = $this->get_failed_label();
+                break;
+            default:
+                $label = '';
+        }
+
+        return $label;
     }
 
     /**
