@@ -5,7 +5,7 @@ description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
 
-## 2022-03-14
+## 2022-03-15
 
 Release of eTask topics format v2.2 for Moodle 4.0.
 
