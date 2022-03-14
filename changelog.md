@@ -13,7 +13,7 @@ type: Document
 - Title of the final grade cell shows its status.
 - The badge is used instead of the cell's background color in the grading table to fit Moodle 4.0 design.
 - Default Moodle colors are applied.
-- Activity popover use thinner progress bars.
+- Activity popover uses thinner progress bars.
 
 **Removed (3 changes)**
 - `table-striped` grading table style.
