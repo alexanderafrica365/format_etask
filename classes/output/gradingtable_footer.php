@@ -24,8 +24,6 @@
 
 namespace format_etask\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use coding_exception;
 use moodle_exception;
 use moodle_url;

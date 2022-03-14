@@ -24,8 +24,6 @@
 
 namespace format_etask\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use coding_exception;
 use format_etask;
 use grade_item;
