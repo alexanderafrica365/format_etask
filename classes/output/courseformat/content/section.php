@@ -15,18 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Contains the default section controls output class.
  *
  * @package   format_etask
  * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace format_etask\output\courseformat\content;
 
-$plugin->version   = 2022031502;
-$plugin->requires  = 2022031100;
-$plugin->supported = [400, 400];
-$plugin->component = 'format_etask';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.2';
+use format_topics\output\courseformat\content\section as format_topics_section;
+
+/**
+ * Base class to render a course section.
+ *
+ * @package   format_etask
+ * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class section extends format_topics_section {
+}
