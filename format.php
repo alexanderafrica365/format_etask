@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot. '/course/format/etask/classes/output/courseformat/content.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/completionlib.php');
 
@@ -57,7 +58,8 @@ if (!empty($displaysection)) {
 
 $outputclass = $format->get_output_classname('content');
 $widget = new $outputclass($format);
-echo $renderer->render_format_etask($widget);
+
+echo $renderer->render($widget);
 
 // Include course format js modules.
 $PAGE->requires->js('/course/format/topics/format.js');

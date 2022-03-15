@@ -38,7 +38,7 @@ class renderer extends format_topics_renderer {
      * @return string
      * @throws moodle_exception
      */
-    public function render_format_etask(renderable $widget): string {
+    public function render_content(renderable $widget): string {
         $data = $widget->export_for_template($this);
 
         return $this->render_from_template('format_etask/content', $data);
