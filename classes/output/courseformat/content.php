@@ -26,7 +26,7 @@ namespace format_etask\output\courseformat;
 
 use coding_exception;
 use core_courseformat\base as course_format;
-use core_courseformat\output\local\content as core_courseformat_content;
+use format_topics\output\courseformat\content as format_topics_content;
 use format_etask\output\gradingtable;
 use renderable;
 use renderer_base;
@@ -40,7 +40,7 @@ use templatable;
  * @copyright 2022, Martin Drlik <martin.drlik@email.cz>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class content extends core_courseformat_content implements renderable, templatable {
+class content extends format_topics_content implements renderable, templatable {
 
     /** @var string */
     protected $gradingtable;
