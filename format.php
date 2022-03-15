@@ -54,6 +54,7 @@ $renderer = $format->get_renderer($PAGE);
 if (!empty($displaysection)) {
     $format->set_section_number($displaysection);
 }
+
 $outputclass = $format->get_output_classname('content');
 $widget = new $outputclass($format);
 echo $renderer->render_format_etask($widget);
