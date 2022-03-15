@@ -1,9 +1,26 @@
 ---
-date: 2021-07-18
+date: 2022-03-14
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
+
+## 2022-03-15
+
+Release of eTask topics format v2.2 for Moodle 4.0.
+
+**Changed (6 changes)**
+- Course format renderer background.
+- Selecting of gradable students use `moodle/grade:view` capability instead of `moodle/competency:coursecompetencygradable`.
+- Title of the final grade cell shows its status.
+- The badge is used instead of the cell's background color in the grading table to fit Moodle 4.0 design.
+- Default Moodle colors are applied.
+- Activity popover uses thinner progress bars.
+
+**Removed (3 changes)**
+- `table-striped` grading table style.
+- Legend of the grading table (status is shown as a title of the grade item cell).
+- Plugin string for `Legend`.
 
 ## 2021-07-18
 
