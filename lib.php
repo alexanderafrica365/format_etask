@@ -752,6 +752,6 @@ function format_etask_inplace_editable($itemtype, $itemid, $newvalue): ?inplace_
 
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
-    
+
     return null;
 }
