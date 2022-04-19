@@ -16,7 +16,6 @@
 
 namespace format_etask\output;
 
-use coding_exception;
 use format_topics\output\renderer as format_topics_renderer;
 use moodle_exception;
 use renderable;

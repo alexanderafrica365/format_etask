@@ -740,9 +740,9 @@ class format_etask extends format_topics {
  * @param int $itemid
  * @param mixed $newvalue
  *
- * @return inplace_editable
+ * @return null|inplace_editable
  */
-function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_editable {
+function format_etask_inplace_editable($itemtype, $itemid, $newvalue): ?inplace_editable {
     global $DB, $CFG;
     require_once($CFG->dirroot . '/course/lib.php');
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
@@ -752,4 +752,6 @@ function format_etask_inplace_editable($itemtype, $itemid, $newvalue): inplace_e
 
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
+    
+    return null;
 }

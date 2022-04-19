@@ -23,7 +23,7 @@
  */
 
 // Topics format strings.
-$string['addsections'] = 'Add topics';
+$string['addsections'] = 'Add topic';
 $string['currentsection'] = 'This topic';
 $string['editsection'] = 'Edit topic';
 $string['editsectionname'] = 'Edit topic name';
