@@ -1,9 +1,14 @@
 ---
-date: 2022-03-14
+date: 2022-07-25
 title: Changelog
 description: Log of all notable changes for eTask topics format project.
 type: Document
 ---
+
+## 2022-07-25
+
+**Fixed (1 change)**
+- `Exception - Class 'restore_format_topics_plugin' not found`.
 
 ## 2022-03-15
 
