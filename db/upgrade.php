@@ -30,7 +30,16 @@
  * @return bool result
  */
 function xmldb_format_etask_upgrade($oldversion) {
-    // No upgrade steps.
+    if ($oldversion < 2023030700) {
+        // For sites migrating from 4.0.x or 4.1.x where the indentation was removed,
+        // we are disabling 'indentation' value by default.
+        if ($oldversion >= 2022041900) {
+            set_config('indentation', 0, 'format_etask');
+        } else {
+            set_config('indentation', 1, 'format_etask');
+        }
+        upgrade_plugin_savepoint(true, 2023030700, 'format', 'etask');
+    }
 
     return true;
 }
